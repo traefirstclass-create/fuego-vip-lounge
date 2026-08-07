@@ -78,6 +78,24 @@
     outline: none;
   }
   .login-box input:focus { border-color: var(--gold); }
+  .password-field { position: relative; margin-bottom: 12px; }
+  .password-field input { margin-bottom: 0; padding-right: 58px; }
+  .toggle-pass {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--off-white-dim);
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    padding: 4px 8px;
+  }
+  .toggle-pass:hover { color: var(--gold); }
   .btn {
     font-family: var(--mono);
     font-size: 12px;
@@ -284,7 +302,10 @@
     <h1>FUEGO <span>ADMIN</span></h1>
     <p class="sub">Staff access only</p>
     <input type="email" id="loginEmail" placeholder="Email" autocomplete="username">
-    <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password">
+    <div class="password-field">
+      <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password">
+      <button type="button" class="toggle-pass" id="togglePass" aria-label="Show password">Show</button>
+    </div>
     <button class="btn" id="loginBtn">Sign In</button>
     <div class="login-error" id="loginError"></div>
     <div class="login-note">
@@ -404,6 +425,15 @@
     auth.signInWithEmailAndPassword(email, pass).catch(err => {
       loginError.textContent = err.message.replace('Firebase: ', '');
     });
+  });
+
+  document.getElementById('togglePass').addEventListener('click', () => {
+    const input = document.getElementById('loginPass');
+    const btn = document.getElementById('togglePass');
+    const showing = input.type === 'text';
+    input.type = showing ? 'password' : 'text';
+    btn.textContent = showing ? 'Show' : 'Hide';
+    btn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
   });
 
   document.getElementById('signOutBtn').addEventListener('click', () => auth.signOut());
