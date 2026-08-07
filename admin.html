@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fuego VIP — Admin</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --black: #0A0A0A;
+    --black-soft: #141210;
+    --charcoal: #1C1917;
+    --crimson: #8B1A1A;
+    --crimson-hover: #A82323;
+    --gold: #C9A228;
+    --off-white: #F5F5F0;
+    --off-white-dim: #B8B4AC;
+    --display: 'Bebas Neue', sans-serif;
+    --body: 'Manrope', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--black);
+    color: var(--off-white);
+    font-family: var(--body);
+    min-height: 100vh;
+  }
+  a { color: inherit; }
+
+  /* --- Login screen --- */
+  #loginScreen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .login-box {
+    background: var(--black-soft);
+    border: 1px solid rgba(201,162,40,0.2);
+    border-radius: 10px;
+    padding: 40px 36px;
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+  }
+  .login-box h1 {
+    font-family: var(--display);
+    font-size: 34px;
+    letter-spacing: 1px;
+  }
+  .login-box h1 span { color: var(--gold); }
+  .login-box p.sub {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--off-white-dim);
+    margin: 8px 0 28px;
+    letter-spacing: 0.5px;
+  }
+  .login-box input {
+    width: 100%;
+    background: var(--charcoal);
+    border: 1px solid rgba(245,245,240,0.15);
+    color: var(--off-white);
+    padding: 12px 14px;
+    border-radius: 5px;
+    margin-bottom: 12px;
+    font-family: var(--body);
+    font-size: 14px;
+    outline: none;
+  }
+  .login-box input:focus { border-color: var(--gold); }
+  .btn {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: var(--crimson);
+    color: var(--off-white);
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.2s ease;
+  }
+  .btn:hover { background: var(--crimson-hover); }
+  .btn.secondary {
+    background: transparent;
+    border: 1px solid rgba(201,162,40,0.3);
+    color: var(--gold);
+  }
+  .btn.secondary:hover { background: rgba(201,162,40,0.08); }
+  .login-error {
+    color: #E07A7A;
+    font-family: var(--mono);
+    font-size: 12px;
+    margin-top: 10px;
+    min-height: 16px;
+  }
+  .login-note {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--off-white-dim);
+    margin-top: 22px;
+    line-height: 1.6;
+  }
+
+  /* --- Dashboard --- */
+  #dashboard { display: none; }
+  header {
+    border-bottom: 1px solid rgba(201,162,40,0.15);
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header .logo { font-family: var(--display); font-size: 24px; letter-spacing: 1px; }
+  header .logo span { color: var(--gold); }
+  header .signout {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--off-white-dim);
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+  header .signout:hover { color: var(--off-white); }
+
+  .tabs {
+    display: flex;
+    gap: 4px;
+    padding: 0 28px;
+    border-bottom: 1px solid rgba(245,245,240,0.08);
+  }
+  .tab {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 16px 18px;
+    cursor: pointer;
+    color: var(--off-white-dim);
+    border-bottom: 2px solid transparent;
+    background: none;
+    border-left: none; border-right: none; border-top: none;
+  }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  .panel { display: none; padding: 32px 28px; max-width: 1000px; }
+  .panel.active { display: block; }
+
+  .panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .panel-head h2 { font-family: var(--display); font-size: 26px; letter-spacing: 0.5px; }
+  .panel-head .count { font-family: var(--mono); font-size: 12px; color: var(--off-white-dim); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--off-white-dim);
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(201,162,40,0.15);
+  }
+  td { padding: 12px; border-bottom: 1px solid rgba(245,245,240,0.06); vertical-align: top; }
+  tr.contacted td { opacity: 0.5; }
+  td.contact-cell { font-family: var(--mono); font-size: 13px; }
+
+  .chip {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 3px;
+    background: rgba(201,162,40,0.12);
+    color: var(--gold);
+  }
+
+  .row-actions { display: flex; gap: 8px; }
+  .row-actions button {
+    font-family: var(--mono);
+    font-size: 11px;
+    background: var(--charcoal);
+    color: var(--off-white-dim);
+    border: 1px solid rgba(245,245,240,0.1);
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .row-actions button:hover { color: var(--off-white); border-color: var(--gold); }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--off-white-dim);
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+
+  /* --- Content editor --- */
+  .field { margin-bottom: 20px; }
+  .field label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .field input, .field textarea {
+    width: 100%;
+    background: var(--charcoal);
+    border: 1px solid rgba(245,245,240,0.15);
+    color: var(--off-white);
+    padding: 10px 12px;
+    border-radius: 5px;
+    font-family: var(--body);
+    font-size: 14px;
+    outline: none;
+  }
+  .field input:focus, .field textarea:focus { border-color: var(--gold); }
+  .field textarea { resize: vertical; min-height: 60px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .event-edit-card {
+    background: var(--black-soft);
+    border: 1px solid rgba(139,26,26,0.25);
+    border-radius: 8px;
+    padding: 18px;
+    margin-bottom: 14px;
+  }
+  .event-edit-card .field-row-3 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+
+  .save-bar {
+    position: sticky;
+    bottom: 0;
+    background: var(--black);
+    border-top: 1px solid rgba(201,162,40,0.2);
+    padding: 16px;
+    margin-top: 30px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .save-bar .btn { width: auto; }
+  .save-status { font-family: var(--mono); font-size: 12px; color: var(--off-white-dim); }
+  .save-status.ok { color: var(--gold); }
+  .save-status.err { color: #E07A7A; }
+
+  @media (max-width: 700px) {
+    .field-row, .event-edit-card .field-row-3 { grid-template-columns: 1fr; }
+    table, thead, tbody, th, td, tr { display: block; }
+    thead { display: none; }
+    tr { border-bottom: 1px solid rgba(245,245,240,0.1); padding: 10px 0; }
+    td { border: none; padding: 4px 0; }
+    td::before { content: attr(data-label); display: block; font-family: var(--mono); font-size: 10px; color: var(--off-white-dim); text-transform: uppercase; }
+  }
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <div class="login-box">
+    <h1>FUEGO <span>ADMIN</span></h1>
+    <p class="sub">Staff access only</p>
+    <input type="email" id="loginEmail" placeholder="Email" autocomplete="username">
+    <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password">
+    <button class="btn" id="loginBtn">Sign In</button>
+    <div class="login-error" id="loginError"></div>
+    <div class="login-note">
+      First time setup: create an admin user in Firebase Console → Authentication → Users, then sign in here with that email/password.
+    </div>
+  </div>
+</div>
+
+<div id="dashboard">
+  <header>
+    <div class="logo">FUEGO <span>ADMIN</span></div>
+    <button class="signout" id="signOutBtn">Sign out</button>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-panel="guestPanel">Guest List</button>
+    <button class="tab" data-panel="contentPanel">Site Content</button>
+  </div>
+
+  <!-- GUEST LIST PANEL -->
+  <div class="panel active" id="guestPanel">
+    <div class="panel-head">
+      <h2>Guest List Signups</h2>
+      <div>
+        <span class="count" id="guestCount">0 signups</span>
+        <button class="btn secondary" id="exportBtn" style="width:auto; margin-left:16px; display:inline-block; padding:8px 14px;">Export CSV</button>
+      </div>
+    </div>
+    <div id="guestTableWrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Contact</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="guestTableBody"></tbody>
+      </table>
+      <div class="empty-state" id="guestEmpty" style="display:none;">No signups yet. Share the site link to start filling the list.</div>
+    </div>
+  </div>
+
+  <!-- CONTENT EDITOR PANEL -->
+  <div class="panel" id="contentPanel">
+    <div class="panel-head">
+      <h2>Edit Site Content</h2>
+    </div>
+
+    <div class="field">
+      <label>Hero Headline (HTML allowed, e.g. &lt;span class="accent"&gt;)</label>
+      <input type="text" id="cHeroHeadline" placeholder="Skip the Line. Own the Night.">
+    </div>
+    <div class="field">
+      <label>Hero Subheadline</label>
+      <textarea id="cHeroSub" placeholder="Join the Fuego VIP guest list..."></textarea>
+    </div>
+    <div class="field">
+      <label>Guest List Button Label</label>
+      <input type="text" id="cCtaLabel" placeholder="Reserve My Spot">
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Address</label>
+        <input type="text" id="cAddress" placeholder="2104 W Busch Blvd, Tampa, FL 33612">
+      </div>
+      <div class="field">
+        <label>Hours</label>
+        <input type="text" id="cHours" placeholder="Mon–Thu 5PM–12AM · Fri–Sat 5PM–2AM · Sun 4PM–11PM">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Instagram Handle (no @)</label>
+        <input type="text" id="cInstagram" placeholder="fuegoviplounge">
+      </div>
+      <div class="field">
+        <label>Phone</label>
+        <input type="text" id="cPhone" placeholder="(813) 679-7751">
+      </div>
+    </div>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="cEmail" placeholder="info@fuegolounge813.com">
+    </div>
+
+    <div class="field">
+      <label>This Week's Events</label>
+      <div id="eventsEditor"></div>
+      <button class="btn secondary" id="addEventBtn" style="width:auto; padding:10px 16px;">+ Add Event</button>
+    </div>
+
+    <div class="save-bar">
+      <button class="btn" id="saveContentBtn" style="width:auto;">Save Changes</button>
+      <span class="save-status" id="saveStatus"></span>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+  // ---------------- AUTH ----------------
+  const loginScreen = document.getElementById('loginScreen');
+  const dashboard = document.getElementById('dashboard');
+  const loginError = document.getElementById('loginError');
+
+  document.getElementById('loginBtn').addEventListener('click', () => {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass = document.getElementById('loginPass').value;
+    loginError.textContent = '';
+    auth.signInWithEmailAndPassword(email, pass).catch(err => {
+      loginError.textContent = err.message.replace('Firebase: ', '');
+    });
+  });
+
+  document.getElementById('signOutBtn').addEventListener('click', () => auth.signOut());
+
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      loginScreen.style.display = 'none';
+      dashboard.style.display = 'block';
+      loadGuestList();
+      loadContent();
+    } else {
+      loginScreen.style.display = 'flex';
+      dashboard.style.display = 'none';
+    }
+  });
+
+  // ---------------- TABS ----------------
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.panel).classList.add('active');
+    });
+  });
+
+  // ---------------- GUEST LIST ----------------
+  let guestCache = [];
+
+  async function loadGuestList() {
+    const snap = await db.collection('guestList').orderBy('createdAt', 'desc').limit(500).get();
+    guestCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderGuestList();
+  }
+
+  function renderGuestList() {
+    const body = document.getElementById('guestTableBody');
+    const empty = document.getElementById('guestEmpty');
+    document.getElementById('guestCount').textContent = `${guestCache.length} signup${guestCache.length === 1 ? '' : 's'}`;
+
+    if (!guestCache.length) {
+      body.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    body.innerHTML = guestCache.map(g => {
+      const date = g.createdAt && g.createdAt.toDate ? g.createdAt.toDate().toLocaleString() : '—';
+      return `
+        <tr class="${g.contacted ? 'contacted' : ''}">
+          <td data-label="Name">${escapeHtml(g.name || '')}</td>
+          <td data-label="Contact" class="contact-cell">${escapeHtml(g.contact || '')} <span class="chip">${g.contactType || ''}</span></td>
+          <td data-label="Date">${date}</td>
+          <td data-label="Status">${g.contacted ? 'Contacted' : 'New'}</td>
+          <td data-label="Actions">
+            <div class="row-actions">
+              <button onclick="toggleContacted('${g.id}', ${!g.contacted})">${g.contacted ? 'Mark New' : 'Mark Contacted'}</button>
+              <button onclick="deleteGuest('${g.id}')">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  async function toggleContacted(id, value) {
+    await db.collection('guestList').doc(id).update({ contacted: value });
+    loadGuestList();
+  }
+
+  async function deleteGuest(id) {
+    if (!confirm('Delete this signup? This cannot be undone.')) return;
+    await db.collection('guestList').doc(id).delete();
+    loadGuestList();
+  }
+
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    if (!guestCache.length) return;
+    const rows = [['Name', 'Contact', 'Type', 'Date', 'Contacted']];
+    guestCache.forEach(g => {
+      const date = g.createdAt && g.createdAt.toDate ? g.createdAt.toDate().toISOString() : '';
+      rows.push([g.name || '', g.contact || '', g.contactType || '', date, g.contacted ? 'yes' : 'no']);
+    });
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `fuego-guest-list-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // ---------------- CONTENT EDITOR ----------------
+  let eventCount = 0;
+
+  async function loadContent() {
+    const doc = await db.collection('siteContent').doc('main').get();
+    const data = doc.exists ? doc.data() : {};
+
+    document.getElementById('cHeroHeadline').value = data.heroHeadline || '';
+    document.getElementById('cHeroSub').value = data.heroSubheadline || '';
+    document.getElementById('cCtaLabel').value = data.ctaLabel || '';
+    document.getElementById('cAddress').value = data.address || '';
+    document.getElementById('cHours').value = data.hours || '';
+    document.getElementById('cInstagram').value = data.instagramHandle || '';
+    document.getElementById('cPhone').value = data.phone || '';
+    document.getElementById('cEmail').value = data.email || '';
+
+    const events = Array.isArray(data.events) && data.events.length ? data.events : [
+      { title: '', date: '', description: '' }
+    ];
+    document.getElementById('eventsEditor').innerHTML = '';
+    events.forEach(ev => addEventRow(ev));
+  }
+
+  function addEventRow(ev = { title: '', date: '', description: '' }) {
+    eventCount++;
+    const id = `ev${eventCount}`;
+    const div = document.createElement('div');
+    div.className = 'event-edit-card';
+    div.id = id;
+    div.innerHTML = `
+      <div class="field-row-3">
+        <div class="field" style="margin-bottom:0;">
+          <label>Date/Time Label</label>
+          <input type="text" class="ev-date" value="${escapeAttr(ev.date)}" placeholder="Friday · 10PM">
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label>Title</label>
+          <input type="text" class="ev-title" value="${escapeAttr(ev.title)}" placeholder="Ladies Night">
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:8px;">
+        <label>Description</label>
+        <textarea class="ev-desc" placeholder="Free entry & drink specials...">${escapeHtml(ev.description || '')}</textarea>
+      </div>
+      <button class="btn secondary" style="width:auto; padding:6px 12px; font-size:10px;" onclick="document.getElementById('${id}').remove()">Remove</button>
+    `;
+    document.getElementById('eventsEditor').appendChild(div);
+  }
+
+  document.getElementById('addEventBtn').addEventListener('click', () => addEventRow());
+
+  document.getElementById('saveContentBtn').addEventListener('click', async () => {
+    const status = document.getElementById('saveStatus');
+    status.textContent = 'Saving...';
+    status.className = 'save-status';
+
+    const events = Array.from(document.querySelectorAll('.event-edit-card')).map(card => ({
+      date: card.querySelector('.ev-date').value.trim(),
+      title: card.querySelector('.ev-title').value.trim(),
+      description: card.querySelector('.ev-desc').value.trim()
+    })).filter(ev => ev.title);
+
+    const payload = {
+      heroHeadline: document.getElementById('cHeroHeadline').value.trim(),
+      heroSubheadline: document.getElementById('cHeroSub').value.trim(),
+      ctaLabel: document.getElementById('cCtaLabel').value.trim(),
+      address: document.getElementById('cAddress').value.trim(),
+      hours: document.getElementById('cHours').value.trim(),
+      instagramHandle: document.getElementById('cInstagram').value.trim(),
+      phone: document.getElementById('cPhone').value.trim(),
+      email: document.getElementById('cEmail').value.trim(),
+      events
+    };
+
+    try {
+      await db.collection('siteContent').doc('main').set(payload, { merge: true });
+      status.textContent = 'Saved ✓';
+      status.className = 'save-status ok';
+    } catch (err) {
+      status.textContent = 'Error: ' + err.message;
+      status.className = 'save-status err';
+    }
+  });
+
+  // ---------------- helpers ----------------
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+  function escapeAttr(str) {
+    return (str || '').replace(/"/g, '&quot;');
+  }
+</script>
+
+</body>
+</html>

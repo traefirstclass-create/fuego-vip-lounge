@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fuego VIP Lounge — Tampa | Skip the Line, Reserve Your Table</title>
+<meta name="description" content="Tampa's premier nightclub and hookah lounge. Join the guest list for VIP table reservations, no cover before 3:30am, and first access to bottle service.">
+<link rel="icon" type="image/jpeg" href="images/logo.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --black: #0A0A0A;
+    --black-soft: #141210;
+    --charcoal: #1C1917;
+    --crimson: #8B1A1A;
+    --crimson-hover: #A82323;
+    --gold: #C9A228;
+    --gold-dim: #8A7020;
+    --off-white: #F5F5F0;
+    --off-white-dim: #B8B4AC;
+
+    --display: 'Bebas Neue', sans-serif;
+    --body: 'Manrope', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--off-white);
+    font-family: var(--body);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* --- Signature ember divider --- */
+  .ember-line {
+    height: 3px;
+    width: 120px;
+    margin: 20px auto 0;
+    background: linear-gradient(90deg, transparent, var(--gold) 20%, var(--crimson) 55%, var(--gold) 85%, transparent);
+    background-size: 200% 100%;
+    animation: flicker 3.2s ease-in-out infinite;
+    border-radius: 2px;
+  }
+  .ember-line.left { margin: 20px 0 0; }
+
+  @keyframes flicker {
+    0%, 100% { background-position: 0% 50%; opacity: 1; }
+    45% { background-position: 100% 50%; opacity: 0.85; }
+    60% { opacity: 1; }
+    75% { background-position: 40% 50%; opacity: 0.9; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ember-line { animation: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* --- Nav --- */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(201,162,40,0.15);
+  }
+  nav {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo img { height: 44px; width: auto; display: block; }
+  .nav-cta {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: var(--crimson);
+    color: var(--off-white);
+    padding: 10px 18px;
+    border-radius: 3px;
+    transition: background 0.2s ease;
+  }
+  .nav-cta:hover { background: var(--crimson-hover); }
+
+  /* --- Hero --- */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 140px 24px 80px;
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(139,26,26,0.25), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 50% 100%, rgba(201,162,40,0.08), transparent 60%),
+      var(--black);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('images/logo.jpg');
+    background-position: center 40%;
+    background-repeat: no-repeat;
+    background-size: min(900px, 90vw);
+    opacity: 0.07;
+    filter: grayscale(0.3);
+    pointer-events: none;
+  }
+  .hero > * { position: relative; z-index: 1; }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-family: var(--display);
+    font-size: clamp(48px, 9vw, 96px);
+    line-height: 0.95;
+    letter-spacing: 1px;
+    max-width: 900px;
+  }
+  .hero h1 .accent { color: var(--crimson-hover); }
+  .hero p {
+    font-size: 18px;
+    color: var(--off-white-dim);
+    max-width: 520px;
+    margin: 26px 0 8px;
+  }
+  .hero-form-note {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--off-white-dim);
+    margin-top: 14px;
+  }
+
+  /* --- Opt-in form --- */
+  .optin {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .optin input {
+    background: var(--charcoal);
+    border: 1px solid rgba(245,245,240,0.15);
+    color: var(--off-white);
+    font-family: var(--body);
+    font-size: 15px;
+    padding: 14px 16px;
+    border-radius: 4px;
+    width: 220px;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+  .optin input:focus { border-color: var(--gold); }
+  .optin input::placeholder { color: var(--off-white-dim); }
+
+  .btn-primary {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: var(--crimson);
+    color: var(--off-white);
+    border: none;
+    padding: 14px 26px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+  }
+  .btn-primary:hover { background: var(--crimson-hover); transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:disabled { opacity: 0.6; cursor: default; transform: none; }
+
+  .form-msg {
+    margin-top: 14px;
+    font-family: var(--mono);
+    font-size: 13px;
+    min-height: 18px;
+  }
+  .form-msg.success { color: var(--gold); }
+  .form-msg.error { color: #E07A7A; }
+
+  /* --- Section shared --- */
+  section { padding: 100px 0; }
+  .section-head { text-align: center; margin-bottom: 56px; }
+  .section-head .eyebrow { margin-bottom: 12px; }
+  .section-head h2 {
+    font-family: var(--display);
+    font-size: clamp(36px, 6vw, 56px);
+    letter-spacing: 1px;
+  }
+  .section-head .ember-line { margin-top: 22px; }
+
+  /* --- Gallery --- */
+  .gallery {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .gallery > div {
+    aspect-ratio: 4/3;
+    border-radius: 6px;
+    background: linear-gradient(155deg, var(--charcoal), var(--black-soft));
+    border: 1px solid rgba(201,162,40,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--off-white-dim);
+    text-align: center;
+    padding: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+  .gallery img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+
+  @media (max-width: 720px) {
+    .gallery { grid-template-columns: 1fr; }
+  }
+
+  /* --- Perks --- */
+  .perks {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  .perk {
+    background: var(--black-soft);
+    border: 1px solid rgba(201,162,40,0.15);
+    border-radius: 8px;
+    padding: 32px 26px;
+  }
+  .perk .num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 1px;
+  }
+  .perk h3 {
+    font-family: var(--display);
+    font-size: 26px;
+    letter-spacing: 0.5px;
+    margin: 10px 0 10px;
+  }
+  .perk p { color: var(--off-white-dim); font-size: 15px; }
+
+  @media (max-width: 860px) {
+    .perks { grid-template-columns: 1fr; }
+  }
+
+  /* --- Events (dynamic from Firestore) --- */
+  .flyer-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+  .flyer-wrap img {
+    max-width: 420px;
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid rgba(201,162,40,0.25);
+    box-shadow: 0 20px 60px rgba(139,26,26,0.25);
+  }
+
+  .events { display: grid; gap: 16px; }
+  .event-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    background: var(--black-soft);
+    border: 1px solid rgba(139,26,26,0.25);
+    border-radius: 8px;
+    padding: 22px 26px;
+    flex-wrap: wrap;
+  }
+  .event-card .date {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .event-card h4 {
+    font-family: var(--display);
+    font-size: 24px;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+  .event-card p { color: var(--off-white-dim); font-size: 14px; margin-top: 4px; }
+
+  /* --- Social proof --- */
+  .proof {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .quote {
+    background: var(--black-soft);
+    border-left: 3px solid var(--gold);
+    padding: 22px 24px;
+    border-radius: 4px;
+  }
+  .quote p { font-style: italic; color: var(--off-white); font-size: 15px; }
+  .quote .who {
+    margin-top: 14px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--gold);
+    font-style: normal;
+  }
+
+  @media (max-width: 860px) {
+    .proof { grid-template-columns: 1fr; }
+  }
+
+  /* --- Footer / logistics --- */
+  footer {
+    background: var(--black-soft);
+    border-top: 1px solid rgba(201,162,40,0.15);
+    padding: 60px 0 100px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 40px;
+  }
+  .footer-grid h3 {
+    font-family: var(--display);
+    font-size: 22px;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+    color: var(--gold);
+  }
+  .footer-grid p, .footer-grid a { color: var(--off-white-dim); font-size: 14px; }
+  .footer-grid a:hover { color: var(--off-white); }
+  .footer-bottom {
+    margin-top: 50px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(245,245,240,0.08);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--off-white-dim);
+    text-align: center;
+  }
+
+  @media (max-width: 720px) {
+    .footer-grid { grid-template-columns: 1fr; }
+  }
+
+  /* --- Sticky mobile CTA --- */
+  .sticky-cta {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 90;
+    background: var(--black);
+    border-top: 1px solid rgba(201,162,40,0.2);
+    padding: 12px 20px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .sticky-cta span { font-family: var(--mono); font-size: 12px; color: var(--off-white-dim); }
+  .sticky-cta .btn-primary { padding: 12px 22px; }
+
+  @media (max-width: 720px) {
+    .sticky-cta { display: flex; }
+    body { padding-bottom: 70px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo"><img src="images/logo.jpg" alt="Fuego VIP Lounge"></div>
+    <a href="#guestForm" class="nav-cta" onclick="setTimeout(() => document.getElementById('gName').focus(), 400)">Get On The List</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="eyebrow">Tampa's VIP Nightlife &amp; Hookah Lounge</div>
+  <h1>Skip the Line.<br>Own the <span class="accent">Night.</span></h1>
+  <div class="ember-line"></div>
+  <p>Join the Fuego VIP guest list for priority entry, no cover before 3:30am, and first access to table &amp; bottle service. Open Fri–Sat, 2PM–6AM.</p>
+
+  <form class="optin" id="guestForm">
+    <input type="text" id="gName" placeholder="First name" required>
+    <input type="text" id="gContact" placeholder="Phone or email" required>
+    <button type="submit" class="btn-primary" id="gSubmit">Reserve My Spot</button>
+  </form>
+  <div class="form-msg" id="gMsg"></div>
+  <div class="hero-form-note">No spam. Just guest list confirmations &amp; event drops.</div>
+</section>
+
+<section id="vibe">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Inside Fuego</div>
+      <h2>Feel The Room</h2>
+      <div class="ember-line left" style="margin-left:auto;margin-right:auto;"></div>
+    </div>
+    <div class="gallery">
+      <div><img src="images/gallery-1.jpg" alt="Crowd at the bar inside Fuego VIP Lounge"></div>
+      <div>More photos coming soon</div>
+    </div>
+  </div>
+</section>
+
+<section id="bottle">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Bottle Service, VIP Style</div>
+      <h2>Top Shelf Only</h2>
+      <div class="ember-line left" style="margin-left:auto;margin-right:auto;"></div>
+    </div>
+    <div class="proof">
+      <div class="quote">
+        <p>Signature cocktails: Fuego Punch, Mango Habanero Margarita, Hennessy Lemonade, Passion Fruit Mojito.</p>
+        <div class="who">Made fresh, every night</div>
+      </div>
+      <div class="quote">
+        <p>Bottle brands: Hennessy, Patron, Ciroc, Don Julio, Moët &amp; Chandon — served VIP style at your table.</p>
+        <div class="who">Reserve ahead for best selection</div>
+      </div>
+      <div class="quote">
+        <p>Custom bottle packages and reserved sections available for groups, birthdays, and private events.</p>
+        <div class="who">Ask your host on arrival</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="perks">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Why Join</div>
+      <h2>Why Insiders Never Wait In Line</h2>
+      <div class="ember-line left" style="margin-left:auto;margin-right:auto;"></div>
+    </div>
+    <div class="perks">
+      <div class="perk">
+        <div class="num">01</div>
+        <h3>No Cover Before 3:30am</h3>
+        <p>Guest list members walk in free before 3:30am, every Friday and Saturday.</p>
+      </div>
+      <div class="perk">
+        <div class="num">02</div>
+        <h3>Priority Seating</h3>
+        <p>Skip the wait for hookah lounge seating and get first pick of open tables.</p>
+      </div>
+      <div class="perk">
+        <div class="num">03</div>
+        <h3>First Access</h3>
+        <p>Bottle service deals and event announcements land in your inbox before anyone else's.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="events">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">What's Coming Up</div>
+      <h2>This Week At Fuego</h2>
+      <div class="ember-line left" style="margin-left:auto;margin-right:auto;"></div>
+    </div>
+    <div class="flyer-wrap">
+      <img src="images/flyer-fri-sat.jpg" alt="Fuego VIP Lounge Friday & Saturday Hip Hop & Latin After Party, 2-6AM">
+    </div>
+    <div class="events" id="eventsList">
+      <!-- Special one-off events (holidays, guest DJs, private parties) get added here via the admin Site Content tab -->
+    </div>
+  </div>
+</section>
+
+<section id="proof">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">The Word On The Street</div>
+      <h2>People Keep Coming Back</h2>
+      <div class="ember-line left" style="margin-left:auto;margin-right:auto;"></div>
+    </div>
+    <div class="proof">
+      <div class="quote">
+        <p>Guest list got us straight in on a Saturday, no wait at all. Table was ready when we walked up.</p>
+        <div class="who">— Tampa regular</div>
+      </div>
+      <div class="quote">
+        <p>Hookah lounge has the best vibe in the city. Perfect spot before hitting the floor.</p>
+        <div class="who">— Instagram review</div>
+      </div>
+      <div class="quote">
+        <p>Best bottle service deal I've found in Tampa. Staff remembered our order the second time.</p>
+        <div class="who">— Google review</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="join">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h3>Fuego VIP Lounge</h3>
+        <p>Tampa's premier nightclub &amp; hookah lounge. Reserve your table before you arrive — it's free.</p>
+      </div>
+      <div>
+        <h3>Visit</h3>
+        <p id="footAddress">2104 W Busch Blvd, Tampa, FL 33612</p>
+        <p id="footHours" style="margin-top:8px;">Fri–Sat 2PM–6AM</p>
+      </div>
+      <div>
+        <h3>Follow</h3>
+        <p><a id="footInstagram" href="https://instagram.com/fuegoviplounge" target="_blank" rel="noopener">@fuegoviplounge</a></p>
+        <p style="margin-top:8px;" id="footPhone">(813) 679-7751</p>
+        <p style="margin-top:8px;"><a id="footEmail" href="mailto:info@fuegolounge813.com">info@fuegolounge813.com</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom">© <span id="year"></span> Fuego VIP Lounge, Tampa FL. Must be 21+ to enter.</div>
+  </div>
+</footer>
+
+<div class="sticky-cta">
+  <span>Skip the line tonight</span>
+  <a href="#join" class="btn-primary" onclick="document.getElementById('gName').focus()">Get On List</a>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // --- Load dynamic content from Firestore (falls back to hardcoded HTML above if it fails) ---
+  async function loadSiteContent() {
+    try {
+      const doc = await db.collection('siteContent').doc('main').get();
+      if (!doc.exists) return;
+      const data = doc.data();
+
+      if (data.heroHeadline) document.querySelector('.hero h1').innerHTML = data.heroHeadline;
+      if (data.heroSubheadline) document.querySelector('.hero p').textContent = data.heroSubheadline;
+      if (data.ctaLabel) document.getElementById('gSubmit').textContent = data.ctaLabel;
+      if (data.address) document.getElementById('footAddress').textContent = data.address;
+      if (data.hours) document.getElementById('footHours').textContent = data.hours;
+      if (data.phone) document.getElementById('footPhone').textContent = data.phone;
+      if (data.email) {
+        const em = document.getElementById('footEmail');
+        em.textContent = data.email;
+        em.href = 'mailto:' + data.email;
+      }
+      if (data.instagramHandle) {
+        const ig = document.getElementById('footInstagram');
+        ig.textContent = '@' + data.instagramHandle;
+        ig.href = 'https://instagram.com/' + data.instagramHandle;
+      }
+
+      if (Array.isArray(data.events) && data.events.length) {
+        const list = document.getElementById('eventsList');
+        list.innerHTML = data.events.map(ev => `
+          <div class="event-card">
+            <div>
+              <div class="date">${escapeHtml(ev.date || '')}</div>
+              <h4>${escapeHtml(ev.title || '')}</h4>
+              <p>${escapeHtml(ev.description || '')}</p>
+            </div>
+          </div>
+        `).join('');
+      }
+    } catch (err) {
+      // Firebase not configured yet, or offline — page still works with default content.
+      console.warn('Site content load skipped:', err.message);
+    }
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  loadSiteContent();
+
+  // --- Guest list opt-in form ---
+  const form = document.getElementById('guestForm');
+  const msg = document.getElementById('gMsg');
+  const submitBtn = document.getElementById('gSubmit');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('gName').value.trim();
+    const contact = document.getElementById('gContact').value.trim();
+    if (!name || !contact) return;
+
+    const isEmail = contact.includes('@');
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Reserving...';
+    msg.textContent = '';
+    msg.className = 'form-msg';
+
+    try {
+      await db.collection('guestList').add({
+        name,
+        contact,
+        contactType: isEmail ? 'email' : 'phone',
+        partySize: 1,
+        contacted: false,
+        notes: '',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      msg.textContent = `You're on the list, ${name}. See you tonight.`;
+      msg.className = 'form-msg success';
+      form.reset();
+    } catch (err) {
+      console.error(err);
+      msg.textContent = 'Something went wrong — try again, or DM us on Instagram.';
+      msg.className = 'form-msg error';
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Reserve My Spot';
+    }
+  });
+</script>
+
+</body>
+</html>
