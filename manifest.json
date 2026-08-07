@@ -1,0 +1,21 @@
+{
+  "name": "Fuego VIP Lounge",
+  "short_name": "Fuego",
+  "description": "Tampa's premier nightclub and hookah lounge. Reserve your VIP table.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#0A0A0A",
+  "theme_color": "#0A0A0A",
+  "icons": [
+    {
+      "src": "images/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
