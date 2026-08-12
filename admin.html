@@ -592,7 +592,17 @@
   let guestCache = [];
 
   async function loadGuestList() {
-    const snap = await db.collection('guestList').orderBy('createdAt', 'desc').limit(500).get();
+    let snap;
+    try {
+      snap = await db.collection('guestList').orderBy('createdAt', 'desc').limit(500).get();
+    } catch (err) {
+      console.warn('Failed to load guest list:', err.message);
+      document.getElementById('guestTableBody').innerHTML = '';
+      const empty = document.getElementById('guestEmpty');
+      empty.textContent = 'Could not load guest list: ' + err.message;
+      empty.style.display = 'block';
+      return;
+    }
     guestCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     renderGuestList();
   }
@@ -947,6 +957,9 @@
       snap = await db.collection('portalMembers').orderBy('createdAt', 'desc').limit(500).get();
     } catch (err) {
       console.warn('Failed to load portal members:', err.message);
+      body.innerHTML = '';
+      empty.textContent = 'Could not load portal members: ' + err.message;
+      empty.style.display = 'block';
       return;
     }
 
