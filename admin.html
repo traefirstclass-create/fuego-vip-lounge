@@ -912,7 +912,20 @@
     }
 
     const visitCap = member.visitCap || 0;
-    const used = await countVisitsThisCycle(memberId);
+    let used;
+    try {
+      used = await countVisitsThisCycle(memberId);
+    } catch (err) {
+      console.warn('Failed to count visits:', err.message);
+      scanResultBox.innerHTML = `
+        <div class="scan-result-card">
+          <div class="scan-result-name">${escapeHtml(member.name || 'Member')}</div>
+          <div class="scan-result-tier">${escapeHtml(TIER_LABELS[member.tier] || member.tier || '')}</div>
+          <div class="scan-result-note">Visit logged, but the visit count couldn't load: ${escapeHtml(err.message)}${err.message && err.message.includes('index') ? ' — check the browser console for a Firestore "create index" link.' : ''}</div>
+        </div>
+      `;
+      return;
+    }
     const over = visitCap > 0 && used > visitCap;
 
     scanResultBox.innerHTML = `
@@ -929,22 +942,20 @@
     }
   }
 
+  // Throws on failure (e.g. missing Firestore composite index) instead of
+  // silently returning 0 — callers must handle the error explicitly so a
+  // failed count is never mistaken for a real "0 visits" result.
   async function countVisitsThisCycle(memberId) {
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    try {
-      const snap = await db.collection('visits')
-        .where('memberId', '==', memberId)
-        .orderBy('scannedAt', 'desc')
-        .limit(200)
-        .get();
-      return snap.docs.filter(d => {
-        const data = d.data();
-        return data.scannedAt && data.scannedAt.toDate && data.scannedAt.toDate() >= thirtyDaysAgo;
-      }).length;
-    } catch (err) {
-      console.warn('Failed to count visits:', err.message);
-      return 0;
-    }
+    const snap = await db.collection('visits')
+      .where('memberId', '==', memberId)
+      .orderBy('scannedAt', 'desc')
+      .limit(200)
+      .get();
+    return snap.docs.filter(d => {
+      const data = d.data();
+      return data.scannedAt && data.scannedAt.toDate && data.scannedAt.toDate() >= thirtyDaysAgo;
+    }).length;
   }
 
   // ---------------- PORTAL MEMBERS ----------------
@@ -974,15 +985,25 @@
     empty.style.display = 'none';
 
     const rows = await Promise.all(members.map(async (m) => {
-      const used = await countVisitsThisCycle(m.id);
       const since = m.createdAt && m.createdAt.toDate ? m.createdAt.toDate().toLocaleDateString() : '—';
-      const over = m.visitCap > 0 && used > m.visitCap;
+
+      let visitsCell;
+      let over = false;
+      try {
+        const used = await countVisitsThisCycle(m.id);
+        over = m.visitCap > 0 && used > m.visitCap;
+        visitsCell = `${used} / ${m.visitCap || 0}`;
+      } catch (err) {
+        console.warn('Failed to count visits for', m.id, err.message);
+        visitsCell = 'Error loading';
+      }
+
       return `
         <tr>
           <td data-label="Name">${escapeHtml(m.name || '')}</td>
           <td data-label="Email" class="contact-cell">${escapeHtml(m.email || '')}</td>
           <td data-label="Tier"><span class="chip">${escapeHtml(TIER_LABELS[m.tier] || m.tier || '')}</span></td>
-          <td data-label="Visits (30-Day Cycle)" style="${over ? 'color:#E07A7A;' : ''}">${used} / ${m.visitCap || 0}</td>
+          <td data-label="Visits (30-Day Cycle)" style="${over ? 'color:#E07A7A;' : ''}">${visitsCell}</td>
           <td data-label="Member Since">${since}</td>
         </tr>
       `;
