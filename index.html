@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fuego VIP Lounge — Tampa | Skip the Line, Reserve Your Table</title>
-<meta name="description" content="Tampa's premier nightclub and hookah lounge. Join the guest list for VIP table reservations, no cover before 3:30am, and first access to bottle service.">
+<meta name="description" content="Tampa's premier nightclub and hookah lounge. Reserve your VIP section, unlock exclusive membership access, and get first access to bottle service.">
 <link rel="icon" type="image/png" sizes="32x32" href="images/icons/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="images/icons/favicon-16x16.png">
 <link rel="apple-touch-icon" href="images/icons/apple-touch-icon.png">
@@ -96,18 +96,44 @@
     justify-content: space-between;
   }
   .logo img { height: 44px; width: auto; display: block; }
-  .nav-cta {
-    font-family: var(--mono);
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .lang-toggle {
+    display: flex;
+    border: 1px solid rgba(201,162,40,0.25);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .lang-toggle-btn {
+    font-family: var(--body);
+    font-weight: 700;
     font-size: 12px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    background: transparent;
+    border: none;
+    color: var(--off-white-dim);
+    padding: 8px 13px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .lang-toggle-btn.active { background: rgba(201,162,40,0.15); color: var(--gold); }
+  .lang-toggle-btn:hover:not(.active) { color: var(--off-white); }
+  .nav-cta {
+    font-family: var(--body);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.1px;
     background: var(--crimson);
     color: var(--off-white);
-    padding: 10px 18px;
-    border-radius: 3px;
-    transition: background 0.2s ease;
+    padding: 11px 20px;
+    border-radius: 12px;
+    transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
   }
-  .nav-cta:hover { background: var(--crimson-hover); }
+  .nav-cta:hover {
+    background: var(--crimson-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(139,26,26,0.35);
+  }
+  .nav-cta:active { transform: translateY(0); box-shadow: none; }
 
   /* --- Hero --- */
   .hero {
@@ -138,6 +164,14 @@
     pointer-events: none;
   }
   .hero > * { position: relative; z-index: 1; }
+  .hero #members {
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+    text-align: left;
+    padding: 44px 0 8px;
+  }
+  .hero #members .section-head { text-align: center; }
   .eyebrow {
     font-family: var(--mono);
     font-size: 12px;
@@ -342,20 +376,22 @@
   }
   .auth-form .field-row { margin-bottom: 14px; }
   .btn.secondary {
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+    font-family: var(--body);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.1px;
     background: transparent;
     border: 1px solid rgba(201,162,40,0.3);
     color: var(--gold);
-    padding: 12px 20px;
-    border-radius: 5px;
+    padding: 13px 20px;
+    border-radius: 12px;
     cursor: pointer;
     width: 100%;
     margin-top: 10px;
+    transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
   }
-  .btn.secondary:hover { background: rgba(201,162,40,0.08); }
+  .btn.secondary:hover { background: rgba(201,162,40,0.1); border-color: rgba(201,162,40,0.5); transform: translateY(-2px); }
+  .btn.secondary:active { transform: translateY(0); }
   .member-lock {
     margin-top: 26px;
     font-family: var(--mono);
@@ -384,44 +420,25 @@
     .membership-grid { grid-template-columns: 1fr; }
   }
 
-  /* --- Opt-in form --- */
-  .optin {
-    display: flex;
-    gap: 10px;
-    margin-top: 30px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .optin input {
-    background: var(--charcoal);
-    border: 1px solid rgba(245,245,240,0.15);
-    color: var(--off-white);
-    font-family: var(--body);
-    font-size: 15px;
-    padding: 14px 16px;
-    border-radius: 4px;
-    width: 220px;
-    outline: none;
-    transition: border-color 0.2s ease;
-  }
-  .optin input:focus { border-color: var(--gold); }
-  .optin input::placeholder { color: var(--off-white-dim); }
-
   .btn-primary {
-    font-family: var(--mono);
-    font-size: 13px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+    font-family: var(--body);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.1px;
     background: var(--crimson);
     color: var(--off-white);
     border: none;
-    padding: 14px 26px;
-    border-radius: 4px;
+    padding: 15px 26px;
+    border-radius: 12px;
     cursor: pointer;
-    transition: background 0.2s ease, transform 0.15s ease;
+    transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
   }
-  .btn-primary:hover { background: var(--crimson-hover); transform: translateY(-1px); }
-  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:hover {
+    background: var(--crimson-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(139,26,26,0.35);
+  }
+  .btn-primary:active { transform: translateY(0); box-shadow: none; }
   .btn-primary:disabled { opacity: 0.6; cursor: default; transform: none; }
 
   .form-msg {
@@ -669,8 +686,13 @@
     background: transparent;
     border: 1px solid rgba(201,162,40,0.3);
     color: var(--gold);
+    box-shadow: none;
   }
-  .lang-modal-btn[data-lang="es"]:hover { background: rgba(201,162,40,0.08); }
+  .lang-modal-btn[data-lang="es"]:hover {
+    background: rgba(201,162,40,0.1);
+    border-color: rgba(201,162,40,0.5);
+    box-shadow: none;
+  }
 </style>
 </head>
 <body>
@@ -689,7 +711,13 @@
 <header>
   <nav>
     <div class="logo"><img src="images/logo.jpg" alt="Fuego VIP Lounge"></div>
-    <a href="#vipPricing" class="nav-cta" onclick="setTimeout(() => document.getElementById('vipPricing').scrollIntoView({ behavior: 'smooth' }), 400)">Reserve VIP</a>
+    <div class="nav-right">
+      <div class="lang-toggle" role="group" aria-label="Language toggle">
+        <button type="button" class="lang-toggle-btn active" id="langToggleEnBtn" data-lang="en">EN</button>
+        <button type="button" class="lang-toggle-btn" id="langToggleEsBtn" data-lang="es">ES</button>
+      </div>
+      <a href="#vipPricing" class="nav-cta" onclick="setTimeout(() => document.getElementById('vipPricing').scrollIntoView({ behavior: 'smooth' }), 400)">Reserve VIP</a>
+    </div>
   </nav>
 </header>
 
@@ -697,7 +725,55 @@
   <div class="eyebrow">Tampa's VIP Nightlife &amp; Hookah Lounge</div>
   <h1>Skip the Line.<br>Own the <span class="accent">Night.</span></h1>
   <div class="ember-line"></div>
-  <p>Join the Fuego VIP guest list for instant access to the gallery, first updates from us, and first access to VIP sections. Open Fri–Sat, 3AM–6AM.</p>
+  <p>Reserve your Fuego VIP section for instant access to the gallery, first updates from us, and premium lounge access. Open Fri–Sat, 3AM–6AM.</p>
+
+  <section id="members">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Members Only</div>
+        <h2>Unlock the Lounge Gallery</h2>
+        <div class="ember-line left" style="margin-left:auto;margin-right:auto;"></div>
+      </div>
+      <div class="membership-grid">
+        <div class="membership-copy">
+          <p>Register with your email and password, then log in anytime to access the exclusive Fuego VIP photo gallery. Members get access to lounge images, event highlights, and insider access to new drops.</p>
+          <div class="member-status" id="memberStatus">Login or register to view the gallery.</div>
+        </div>
+        <div class="membership-card">
+          <div class="auth-tabs">
+            <button type="button" id="authJoinBtn" class="auth-tab active">Register</button>
+            <button type="button" id="authLoginBtn" class="auth-tab">Login</button>
+          </div>
+          <form id="memberForm" class="auth-form">
+            <div class="field-row" id="mNameField">
+              <input type="text" id="mName" placeholder="First name" autocomplete="name">
+            </div>
+            <div class="field-row" id="mContactField">
+              <input type="text" id="mContact" placeholder="Phone or contact details (optional)" autocomplete="tel">
+            </div>
+            <div class="field-row">
+              <input type="email" id="mEmail" placeholder="Email address" required autocomplete="email">
+            </div>
+            <div class="field-row">
+              <input type="password" id="mPassword" placeholder="Create a password" required autocomplete="new-password">
+            </div>
+            <button type="submit" class="btn-primary" id="memberSubmit">Create Membership</button>
+            <button type="button" class="btn secondary hidden" id="memberSignOut">Sign Out</button>
+            <div class="form-msg" id="memberMsg"></div>
+          </form>
+        </div>
+      </div>
+
+      <div class="member-lock" id="memberLocked">Register or log in above to unlock the members-only photo gallery.</div>
+      <div class="member-gallery hidden" id="memberGallery">
+        <div class="gallery" id="memberGalleryGrid">
+          <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
+          <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
+          <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <div class="pricing-cards" id="vipPricing">
     <article class="pricing-card">
@@ -708,7 +784,7 @@
         <li>Section seating for up to 6</li>
         <li>Hookah included</li>
       </ul>
-      <a href="#" class="btn-primary vip-tier-btn" data-stripe-url="/checkout?vip=150">Reserve $150</a>
+      <a href="#" class="btn-primary vip-tier-btn" data-stripe-url="https://book.stripe.com/3cI6oH5my9Znamvbz96Ri00">Reserve $150</a>
     </article>
     <article class="pricing-card">
       <h3>VIP Section</h3>
@@ -718,7 +794,7 @@
         <li>Section seating for up to 10</li>
         <li>Hookah included</li>
       </ul>
-      <a href="#" class="btn-primary vip-tier-btn" data-stripe-url="/checkout?vip=250">Reserve $250</a>
+      <a href="#" class="btn-primary vip-tier-btn" data-stripe-url="https://book.stripe.com/9B68wPdT44F33Y77iT6Ri03">Reserve $250</a>
     </article>
     <article class="pricing-card">
       <h3>VIP Section</h3>
@@ -728,27 +804,10 @@
         <li>Section seating for up to 15</li>
         <li>Hookah included</li>
       </ul>
-      <a href="#" class="btn-primary vip-tier-btn" data-stripe-url="/checkout?vip=350">Reserve $350</a>
+      <a href="#" class="btn-primary vip-tier-btn" data-stripe-url="https://book.stripe.com/28EfZhdT41sR7ajbz96Ri02">Reserve $350</a>
     </article>
   </div>
   <div class="hero-form-note">These VIP section reservations include a hookah and premium lounge access; entry or cover for individuals is not included. Select your tier to continue to checkout.</div>
-</section>
-
-<section id="guestList">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="eyebrow">Guest List</div>
-      <h2>Reserve Your Spot</h2>
-      <div class="ember-line left" style="margin-left:auto;margin-right:auto;"></div>
-    </div>
-    <form class="optin" id="guestForm">
-      <input type="text" id="gName" placeholder="First name" required>
-      <input type="text" id="gContact" placeholder="Phone or email" required>
-      <button type="submit" class="btn-primary" id="gSubmit">Reserve My Spot</button>
-    </form>
-    <div class="form-msg" id="gMsg"></div>
-    <div class="hero-form-note">No spam. Just guest list confirmations &amp; event drops.</div>
-  </div>
 </section>
 
 <section id="membershipPlans">
@@ -779,56 +838,8 @@
           <li>Member-only entry access</li>
           <li>Designed for frequent VIP nights</li>
         </ul>
-        <a href="#" class="btn-primary membership-tier-btn" data-stripe-url="/checkout?membership=200">Choose Super ELITE</a>
+        <a href="#" class="btn-primary membership-tier-btn" data-stripe-url="https://buy.stripe.com/5kQfZhbKW5J7amvbz96Ri04">Choose Super ELITE</a>
       </article>
-    </div>
-  </div>
-</section>
-
-<section id="members">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="eyebrow">Members Only</div>
-      <h2>Unlock the Lounge Gallery</h2>
-      <div class="ember-line left" style="margin-left:auto;margin-right:auto;"></div>
-    </div>
-    <div class="membership-grid">
-      <div class="membership-copy">
-        <p>Register with your email and password, then log in anytime to access the exclusive Fuego VIP photo gallery. Members get access to lounge images, event highlights, and insider access to new drops.</p>
-        <div class="member-status" id="memberStatus">Login or register to view the gallery.</div>
-      </div>
-      <div class="membership-card">
-        <div class="auth-tabs">
-          <button type="button" id="authJoinBtn" class="auth-tab active">Register</button>
-          <button type="button" id="authLoginBtn" class="auth-tab">Login</button>
-        </div>
-        <form id="memberForm" class="auth-form">
-          <div class="field-row" id="mNameField">
-            <input type="text" id="mName" placeholder="First name" autocomplete="name">
-          </div>
-          <div class="field-row" id="mContactField">
-            <input type="text" id="mContact" placeholder="Phone or contact details (optional)" autocomplete="tel">
-          </div>
-          <div class="field-row">
-            <input type="email" id="mEmail" placeholder="Email address" required autocomplete="email">
-          </div>
-          <div class="field-row">
-            <input type="password" id="mPassword" placeholder="Create a password" required autocomplete="new-password">
-          </div>
-          <button type="submit" class="btn-primary" id="memberSubmit">Create Membership</button>
-          <button type="button" class="btn secondary hidden" id="memberSignOut">Sign Out</button>
-          <div class="form-msg" id="memberMsg"></div>
-        </form>
-      </div>
-    </div>
-
-    <div class="member-lock" id="memberLocked">Register or log in above to unlock the members-only photo gallery.</div>
-    <div class="member-gallery hidden" id="memberGallery">
-      <div class="gallery" id="memberGalleryGrid">
-        <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
-        <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
-        <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
-      </div>
     </div>
   </div>
 </section>
@@ -881,8 +892,8 @@
     <div class="perks">
       <div class="perk">
         <div class="num">01</div>
-        <h3>No Cover Before 3:30am</h3>
-        <p>Guest list members walk in free before 3:30am, every Friday and Saturday.</p>
+        <h3>Skip The Wait</h3>
+        <p>Reserve your VIP section online in minutes and walk straight to your table.</p>
       </div>
       <div class="perk">
         <div class="num">02</div>
@@ -923,7 +934,7 @@
     </div>
     <div class="proof">
       <div class="quote">
-        <p>Guest list got us straight in on a Saturday, no wait at all. Table was ready when we walked up.</p>
+        <p>Reserved our VIP section online in two minutes flat. Table was ready when we walked up.</p>
         <div class="who">— Tampa regular</div>
       </div>
       <div class="quote">
@@ -982,13 +993,8 @@
       navCta: 'Reserve VIP',
       heroEyebrow: "Tampa's VIP Nightlife & Hookah Lounge",
       heroHeadline: 'Skip the Line.<br>Own the <span class="accent">Night.</span>',
-      heroCopy: 'Join the Fuego VIP guest list for instant access to the gallery, first updates from us, and first access to VIP sections. Open Fri–Sat, 3AM–6AM.',
+      heroCopy: 'Reserve your Fuego VIP section for instant access to the gallery, first updates from us, and premium lounge access. Open Fri–Sat, 3AM–6AM.',
       heroNote: 'These VIP section reservations include a hookah and premium lounge access; entry or cover for individuals is not included. Select your tier to continue to checkout.',
-      guestEyebrow: 'Guest List',
-      guestTitle: 'Reserve Your Spot',
-      guestNamePlaceholder: 'First name',
-      guestContactPlaceholder: 'Phone or email',
-      guestSubmit: 'Reserve My Spot',
       membershipSectionEyebrow: 'Membership Access',
       membershipSectionTitle: 'Secure your VIP status',
       vipMembershipTitle: 'VIP MEMBERSHIP',
@@ -1028,8 +1034,8 @@
       bottleWho3: 'Ask your host on arrival',
       perksEyebrow: 'Why Join',
       perksTitle: 'Why Insiders Never Wait In Line',
-      perk1Title: 'No Cover Before 3:30am',
-      perk1Copy: 'Guest list members walk in free before 3:30am, every Friday and Saturday.',
+      perk1Title: 'Skip The Wait',
+      perk1Copy: 'Reserve your VIP section online in minutes and walk straight to your table.',
       perk2Title: 'Priority Seating',
       perk2Copy: 'Skip the wait for hookah lounge seating and get first pick of open tables.',
       perk3Title: 'First Access',
@@ -1038,7 +1044,7 @@
       eventsTitle: 'This Week At Fuego',
       proofEyebrow: 'The Word On The Street',
       proofTitle: 'People Keep Coming Back',
-      proofQuote1: 'Guest list got us straight in on a Saturday, no wait at all. Table was ready when we walked up.',
+      proofQuote1: 'Reserved our VIP section online in two minutes flat. Table was ready when we walked up.',
       proofWho1: '— Tampa regular',
       proofQuote2: 'Hookah lounge has the best vibe in the city. Perfect spot before hitting the floor.',
       proofWho2: '— Instagram review',
@@ -1059,13 +1065,8 @@
       navCta: 'Reservar VIP',
       heroEyebrow: 'Vida nocturna VIP y lounge de hookah en Tampa',
       heroHeadline: 'Evita la fila.<br>Domina la <span class="accent">Noche.</span>',
-      heroCopy: 'Únete a la lista VIP de Fuego para acceso instantáneo a la galería, primeras novedades y acceso prioritario a secciones VIP. Abierto Vie–Sáb 3AM–6AM.',
+      heroCopy: 'Reserva tu sección VIP de Fuego para acceso instantáneo a la galería, primeras novedades y acceso premium al lounge. Abierto Vie–Sáb 3AM–6AM.',
       heroNote: 'Estas reservaciones de sección VIP incluyen hookah y acceso premium al lounge; la entrada o la cover individual no está incluida. Selecciona tu nivel para continuar al pago.',
-      guestEyebrow: 'Guest List',
-      guestTitle: 'Reserva tu lugar',
-      guestNamePlaceholder: 'Nombre',
-      guestContactPlaceholder: 'Teléfono o correo',
-      guestSubmit: 'Reservar',
       membershipSectionEyebrow: 'Acceso de Membresía',
       membershipSectionTitle: 'Asegura tu estatus VIP',
       vipMembershipTitle: 'VIP MEMBERSHIP',
@@ -1105,8 +1106,8 @@
       bottleWho3: 'Pregunta a tu anfitrión al llegar',
       perksEyebrow: 'Por qué unirse',
       perksTitle: 'Por qué los insiders nunca esperan en la fila',
-      perk1Title: 'Sin Cover Antes De 3:30am',
-      perk1Copy: 'Los miembros de la guest list entran gratis antes de las 3:30am, todos los viernes y sábados.',
+      perk1Title: 'Evita La Espera',
+      perk1Copy: 'Reserva tu sección VIP en línea en minutos y camina directo a tu mesa.',
       perk2Title: 'Asientos Prioritarios',
       perk2Copy: 'Evita la espera para el lounge de hookah y ten la primera opción de mesas disponibles.',
       perk3Title: 'Acceso Prioritario',
@@ -1115,7 +1116,7 @@
       eventsTitle: 'Esta semana en Fuego',
       proofEyebrow: 'Lo que se dice en la calle',
       proofTitle: 'La gente sigue regresando',
-      proofQuote1: 'La guest list nos dejó entrar directo un sábado, sin espera. La mesa estaba lista cuando llegamos.',
+      proofQuote1: 'Reservamos nuestra sección VIP en línea en dos minutos. La mesa estaba lista cuando llegamos.',
       proofWho1: '— Cliente habitual de Tampa',
       proofQuote2: 'El lounge de hookah tiene el mejor ambiente de la ciudad. El lugar perfecto antes de salir a la pista.',
       proofWho2: '— Reseña de Instagram',
@@ -1139,9 +1140,6 @@
     { selector: '.hero h1', property: 'innerHTML', key: 'heroHeadline' },
     { selector: '.hero p', property: 'textContent', key: 'heroCopy' },
     { selector: '.hero-form-note', property: 'textContent', key: 'heroNote' },
-    { selector: '#guestList .section-head .eyebrow', property: 'textContent', key: 'guestEyebrow' },
-    { selector: '#guestList .section-head h2', property: 'textContent', key: 'guestTitle' },
-    { selector: '#gSubmit', property: 'textContent', key: 'guestSubmit' },
     { selector: '#membershipPlans .section-head .eyebrow', property: 'textContent', key: 'membershipSectionEyebrow' },
     { selector: '#membershipPlans .section-head h2', property: 'textContent', key: 'membershipSectionTitle' },
     { selector: '#membershipPlans article:nth-of-type(1) h3', property: 'textContent', key: 'vipMembershipTitle' },
@@ -1203,8 +1201,6 @@
   ];
 
   const placeholderMap = [
-    { selector: '#gName', key: 'guestNamePlaceholder' },
-    { selector: '#gContact', key: 'guestContactPlaceholder' },
     { selector: '#mName', key: 'namePlaceholder' },
     { selector: '#mContact', key: 'contactPlaceholder' },
     { selector: '#mEmail', key: 'emailPlaceholder' },
@@ -1230,22 +1226,27 @@
     if (memberSubmitBtn) {
       memberSubmitBtn.textContent = authMode === 'login' ? translation.memberSignIn : translation.memberCreate;
     }
+    document.querySelectorAll('.lang-toggle-btn').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
   }
 
-  // --- First-visit language selection ---
+  // --- Language selection (first-visit modal + always-on nav toggle) ---
   const langModalOverlay = document.getElementById('langModalOverlay');
+
+  function selectLanguage(lang) {
+    applyLanguage(lang);
+    localStorage.setItem('fuegoLang', lang);
+    langModalOverlay.classList.add('hidden');
+  }
+
   const savedLanguage = localStorage.getItem('fuegoLang');
   if (savedLanguage) {
     applyLanguage(savedLanguage);
     langModalOverlay.classList.add('hidden');
   }
-  document.querySelectorAll('.lang-modal-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const lang = btn.dataset.lang;
-      applyLanguage(lang);
-      localStorage.setItem('fuegoLang', lang);
-      langModalOverlay.classList.add('hidden');
-    });
+  document.querySelectorAll('.lang-modal-btn, .lang-toggle-btn').forEach((btn) => {
+    btn.addEventListener('click', () => selectLanguage(btn.dataset.lang));
   });
 
   // --- Load dynamic content from Firestore (falls back to hardcoded HTML above if it fails) ---
@@ -1257,7 +1258,6 @@
 
       if (data.heroHeadline) document.querySelector('.hero h1').innerHTML = data.heroHeadline;
       if (data.heroSubheadline) document.querySelector('.hero p').textContent = data.heroSubheadline;
-      if (data.ctaLabel) document.getElementById('gSubmit').textContent = data.ctaLabel;
       if (data.address) document.getElementById('footAddress').textContent = data.address;
       if (data.hours) document.getElementById('footHours').textContent = data.hours;
       if (data.phone) document.getElementById('footPhone').textContent = data.phone;
@@ -1316,47 +1316,6 @@
         window.location.href = url;
       }
     });
-  });
-
-  // --- Guest list opt-in form ---
-  const form = document.getElementById('guestForm');
-  const msg = document.getElementById('gMsg');
-  const submitBtn = document.getElementById('gSubmit');
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const name = document.getElementById('gName').value.trim();
-    const contact = document.getElementById('gContact').value.trim();
-    if (!name || !contact) return;
-
-    const isEmail = contact.includes('@');
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Reserving...';
-    msg.textContent = '';
-    msg.className = 'form-msg';
-
-    try {
-      await db.collection('guestList').add({
-        name,
-        contact,
-        contactType: isEmail ? 'email' : 'phone',
-        partySize: 1,
-        contacted: false,
-        notes: '',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      msg.textContent = `You're on the list, ${name}. See you tonight.`;
-      msg.className = 'form-msg success';
-      form.reset();
-    } catch (err) {
-      console.error(err);
-      msg.textContent = 'Something went wrong — try again, or DM us on Instagram.';
-      msg.className = 'form-msg error';
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Reserve My Spot';
-    }
   });
 
   const authJoinBtn = document.getElementById('authJoinBtn');

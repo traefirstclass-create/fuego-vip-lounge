@@ -293,6 +293,49 @@
     td { border: none; padding: 4px 0; }
     td::before { content: attr(data-label); display: block; font-family: var(--mono); font-size: 10px; color: var(--off-white-dim); text-transform: uppercase; }
   }
+
+  /* --- Scan-In panel --- */
+  .scan-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  .scan-camera-box {
+    background: var(--black-soft);
+    border: 1px solid rgba(201,162,40,0.15);
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .scan-video-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: var(--charcoal);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .scan-video-wrap video { width: 100%; height: 100%; object-fit: cover; }
+  .scan-camera-actions { display: flex; gap: 10px; }
+  .scan-camera-actions .btn { width: auto; padding: 10px 16px; }
+  .scan-manual { margin-top: 20px; }
+  .scan-manual .field { margin-bottom: 10px; }
+
+  .scan-result-box {
+    background: var(--black-soft);
+    border: 1px solid rgba(201,162,40,0.15);
+    border-radius: 10px;
+    padding: 22px;
+    min-height: 220px;
+  }
+  .scan-result-empty { color: var(--off-white-dim); font-family: var(--mono); font-size: 13px; text-align: center; padding: 60px 10px; }
+  .scan-result-card.warn { border-color: rgba(139,26,26,0.5); }
+  .scan-result-name { font-family: var(--display); font-size: 28px; letter-spacing: 0.5px; }
+  .scan-result-tier { font-family: var(--mono); font-size: 12px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 6px; }
+  .scan-result-visits { font-family: var(--display); font-size: 36px; margin-top: 16px; color: var(--gold); }
+  .scan-result-visits.over { color: #E07A7A; }
+  .scan-result-note { font-family: var(--mono); font-size: 12px; color: var(--off-white-dim); margin-top: 10px; }
+  .scan-result-error { color: #E07A7A; font-family: var(--mono); font-size: 13px; text-align: center; padding: 60px 10px; }
+
+  @media (max-width: 780px) {
+    .scan-layout { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
@@ -324,6 +367,8 @@
     <button class="tab active" data-panel="guestPanel">Guest List</button>
     <button class="tab" data-panel="contentPanel">Site Content</button>
     <button class="tab" data-panel="galleryPanel">Gallery</button>
+    <button class="tab" data-panel="scanPanel">Scan-In</button>
+    <button class="tab" data-panel="portalPanel">Portal Members</button>
   </div>
 
   <!-- GUEST LIST PANEL -->
@@ -431,12 +476,67 @@
     <div class="empty-state" id="galleryEmpty" style="display:none; margin-top:24px;">No gallery photos yet. Add image URLs to populate the members-only gallery.</div>
     <div id="galleryItemsEditor" style="margin-top:24px;"></div>
   </div>
+
+  <!-- SCAN-IN PANEL -->
+  <div class="panel" id="scanPanel">
+    <div class="panel-head">
+      <h2>Door Scan-In</h2>
+    </div>
+    <div class="scan-layout">
+      <div class="scan-camera-box">
+        <div class="scan-video-wrap">
+          <video id="scanVideo" playsinline muted></video>
+        </div>
+        <div class="scan-camera-actions">
+          <button class="btn" id="startScanBtn" style="width:auto;">Start Camera</button>
+          <button class="btn secondary hidden" id="stopScanBtn" style="width:auto;">Stop Camera</button>
+        </div>
+        <div class="login-note" id="scanCameraNote">Point the camera at a member's portal QR code to log their visit.</div>
+
+        <div class="scan-manual">
+          <div class="field">
+            <label>Or Enter Member Code Manually</label>
+            <input type="text" id="manualMemberCode" placeholder="Paste member code">
+          </div>
+          <button class="btn secondary" id="manualLookupBtn" style="width:auto; padding:10px 16px;">Log Visit</button>
+        </div>
+      </div>
+
+      <div class="scan-result-box" id="scanResultBox">
+        <div class="scan-result-empty">Scan a member's code to see their visit status here.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PORTAL MEMBERS PANEL -->
+  <div class="panel" id="portalPanel">
+    <div class="panel-head">
+      <h2>Portal Members</h2>
+      <span class="count" id="portalCount">0 members</span>
+    </div>
+    <div id="portalTableWrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Tier</th>
+            <th>Visits (30-Day Cycle)</th>
+            <th>Member Since</th>
+          </tr>
+        </thead>
+        <tbody id="portalTableBody"></tbody>
+      </table>
+      <div class="empty-state" id="portalEmpty" style="display:none;">No portal members yet. They'll show up here after activating via their post-payment link.</div>
+    </div>
+  </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <script>
   // ---------------- AUTH ----------------
   const loginScreen = document.getElementById('loginScreen');
@@ -470,6 +570,7 @@
       loadGuestList();
       loadContent();
       loadGallery();
+      loadPortalMembers();
     } else {
       loginScreen.style.display = 'flex';
       dashboard.style.display = 'none';
@@ -479,6 +580,7 @@
   // ---------------- TABS ----------------
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
+      if (tab.dataset.panel !== 'scanPanel' && typeof stopCamera === 'function') stopCamera();
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
       tab.classList.add('active');
@@ -697,6 +799,183 @@
     if (!confirm('Delete this gallery photo?')) return;
     await db.collection('galleryItems').doc(id).delete();
     loadGallery();
+  }
+
+  // ---------------- SCAN-IN ----------------
+  const TIER_LABELS = {
+    vip100: 'VIP Membership — $100/month',
+    elite200: 'Super ELITE Membership — $200/month'
+  };
+
+  const scanVideo = document.getElementById('scanVideo');
+  const startScanBtn = document.getElementById('startScanBtn');
+  const stopScanBtn = document.getElementById('stopScanBtn');
+  const scanCameraNote = document.getElementById('scanCameraNote');
+  const scanResultBox = document.getElementById('scanResultBox');
+
+  let scanStream = null;
+  let scanLoopId = null;
+  let scanCanvas = document.createElement('canvas');
+  let scanCanvasCtx = scanCanvas.getContext('2d');
+  let scanCooldownUntil = 0;
+
+  startScanBtn.addEventListener('click', startCamera);
+  stopScanBtn.addEventListener('click', stopCamera);
+
+  async function startCamera() {
+    try {
+      scanStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      scanVideo.srcObject = scanStream;
+      await scanVideo.play();
+      startScanBtn.classList.add('hidden');
+      stopScanBtn.classList.remove('hidden');
+      scanCameraNote.textContent = 'Camera active — hold a member\'s QR code steady in frame.';
+      scanLoopId = requestAnimationFrame(scanFrame);
+    } catch (err) {
+      console.error(err);
+      scanCameraNote.textContent = 'Camera unavailable (' + (err.message || 'permission denied') + '). Use manual entry below instead.';
+    }
+  }
+
+  function stopCamera() {
+    if (scanLoopId) cancelAnimationFrame(scanLoopId);
+    scanLoopId = null;
+    if (scanStream) {
+      scanStream.getTracks().forEach(track => track.stop());
+      scanStream = null;
+    }
+    scanVideo.srcObject = null;
+    startScanBtn.classList.remove('hidden');
+    stopScanBtn.classList.add('hidden');
+    scanCameraNote.textContent = "Point the camera at a member's portal QR code to log their visit.";
+  }
+
+  function scanFrame() {
+    if (scanVideo.readyState === scanVideo.HAVE_ENOUGH_DATA) {
+      scanCanvas.width = scanVideo.videoWidth;
+      scanCanvas.height = scanVideo.videoHeight;
+      scanCanvasCtx.drawImage(scanVideo, 0, 0, scanCanvas.width, scanCanvas.height);
+      const imageData = scanCanvasCtx.getImageData(0, 0, scanCanvas.width, scanCanvas.height);
+      const code = jsQR(imageData.data, imageData.width, imageData.height);
+      if (code && code.data && Date.now() > scanCooldownUntil) {
+        scanCooldownUntil = Date.now() + 4000;
+        processScan(code.data.trim());
+      }
+    }
+    scanLoopId = requestAnimationFrame(scanFrame);
+  }
+
+  document.getElementById('manualLookupBtn').addEventListener('click', () => {
+    const code = document.getElementById('manualMemberCode').value.trim();
+    if (!code) return;
+    processScan(code);
+    document.getElementById('manualMemberCode').value = '';
+  });
+
+  async function processScan(memberId) {
+    scanResultBox.innerHTML = '<div class="scan-result-empty">Looking up member...</div>';
+
+    let memberDoc;
+    try {
+      memberDoc = await db.collection('portalMembers').doc(memberId).get();
+    } catch (err) {
+      scanResultBox.innerHTML = `<div class="scan-result-error">Lookup failed: ${escapeHtml(err.message)}</div>`;
+      return;
+    }
+
+    if (!memberDoc.exists) {
+      scanResultBox.innerHTML = '<div class="scan-result-error">Not a recognized Fuego portal member code.</div>';
+      return;
+    }
+
+    const member = memberDoc.data();
+
+    try {
+      await db.collection('visits').add({
+        memberId,
+        scannedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        scannedByEmail: auth.currentUser ? auth.currentUser.email : null
+      });
+    } catch (err) {
+      scanResultBox.innerHTML = `<div class="scan-result-error">Could not log visit: ${escapeHtml(err.message)}</div>`;
+      return;
+    }
+
+    const visitCap = member.visitCap || 0;
+    const used = await countVisitsThisCycle(memberId);
+    const over = visitCap > 0 && used > visitCap;
+
+    scanResultBox.innerHTML = `
+      <div class="scan-result-card ${over ? 'warn' : ''}">
+        <div class="scan-result-name">${escapeHtml(member.name || 'Member')}</div>
+        <div class="scan-result-tier">${escapeHtml(TIER_LABELS[member.tier] || member.tier || '')}</div>
+        <div class="scan-result-visits ${over ? 'over' : ''}">${used} / ${visitCap}</div>
+        <div class="scan-result-note">${over ? '⚠ Over their monthly visit cap for this cycle.' : 'Visit logged for this 30-day cycle.'}</div>
+      </div>
+    `;
+
+    if (document.getElementById('portalPanel').classList.contains('active')) {
+      loadPortalMembers();
+    }
+  }
+
+  async function countVisitsThisCycle(memberId) {
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    try {
+      const snap = await db.collection('visits')
+        .where('memberId', '==', memberId)
+        .orderBy('scannedAt', 'desc')
+        .limit(200)
+        .get();
+      return snap.docs.filter(d => {
+        const data = d.data();
+        return data.scannedAt && data.scannedAt.toDate && data.scannedAt.toDate() >= thirtyDaysAgo;
+      }).length;
+    } catch (err) {
+      console.warn('Failed to count visits:', err.message);
+      return 0;
+    }
+  }
+
+  // ---------------- PORTAL MEMBERS ----------------
+  async function loadPortalMembers() {
+    const body = document.getElementById('portalTableBody');
+    const empty = document.getElementById('portalEmpty');
+
+    let snap;
+    try {
+      snap = await db.collection('portalMembers').orderBy('createdAt', 'desc').limit(500).get();
+    } catch (err) {
+      console.warn('Failed to load portal members:', err.message);
+      return;
+    }
+
+    const members = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    document.getElementById('portalCount').textContent = `${members.length} member${members.length === 1 ? '' : 's'}`;
+
+    if (!members.length) {
+      body.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    const rows = await Promise.all(members.map(async (m) => {
+      const used = await countVisitsThisCycle(m.id);
+      const since = m.createdAt && m.createdAt.toDate ? m.createdAt.toDate().toLocaleDateString() : '—';
+      const over = m.visitCap > 0 && used > m.visitCap;
+      return `
+        <tr>
+          <td data-label="Name">${escapeHtml(m.name || '')}</td>
+          <td data-label="Email" class="contact-cell">${escapeHtml(m.email || '')}</td>
+          <td data-label="Tier"><span class="chip">${escapeHtml(TIER_LABELS[m.tier] || m.tier || '')}</span></td>
+          <td data-label="Visits (30-Day Cycle)" style="${over ? 'color:#E07A7A;' : ''}">${used} / ${m.visitCap || 0}</td>
+          <td data-label="Member Since">${since}</td>
+        </tr>
+      `;
+    }));
+
+    body.innerHTML = rows.join('');
   }
 
   // ---------------- helpers ----------------

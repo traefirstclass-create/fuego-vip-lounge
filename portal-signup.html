@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fuego VIP — Activate Your Membership</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" sizes="32x32" href="images/icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/icons/favicon-16x16.png">
+<link rel="apple-touch-icon" href="images/icons/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --black: #0A0A0A;
+    --black-soft: #141210;
+    --charcoal: #1C1917;
+    --crimson: #8B1A1A;
+    --crimson-hover: #A82323;
+    --gold: #C9A228;
+    --off-white: #F5F5F0;
+    --off-white-dim: #B8B4AC;
+    --display: 'Bebas Neue', sans-serif;
+    --body: 'Manrope', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  .hidden { display: none !important; }
+  body {
+    background: var(--black);
+    color: var(--off-white);
+    font-family: var(--body);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    line-height: 1.5;
+  }
+  a { color: var(--gold); }
+
+  .card {
+    background: var(--black-soft);
+    border: 1px solid rgba(201,162,40,0.2);
+    border-radius: 14px;
+    padding: 40px 36px;
+    width: 100%;
+    max-width: 440px;
+  }
+  .emblem {
+    font-family: var(--display);
+    font-size: 30px;
+    letter-spacing: 1px;
+    text-align: center;
+  }
+  .emblem span { color: var(--gold); }
+  .tier-chip {
+    display: block;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 10px 0 4px;
+  }
+  .sub {
+    text-align: center;
+    font-size: 14px;
+    color: var(--off-white-dim);
+    margin: 4px 0 28px;
+  }
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .field input {
+    width: 100%;
+    background: var(--charcoal);
+    border: 1px solid rgba(245,245,240,0.15);
+    color: var(--off-white);
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-family: var(--body);
+    font-size: 14px;
+    outline: none;
+  }
+  .field input:focus { border-color: var(--gold); }
+
+  .btn-primary {
+    font-family: var(--body);
+    font-weight: 700;
+    font-size: 15px;
+    background: var(--crimson);
+    color: var(--off-white);
+    border: none;
+    padding: 15px 26px;
+    border-radius: 12px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 6px;
+    transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .btn-primary:hover { background: var(--crimson-hover); transform: translateY(-2px); box-shadow: 0 10px 24px rgba(139,26,26,0.35); }
+  .btn-primary:active { transform: translateY(0); box-shadow: none; }
+  .btn-primary:disabled { opacity: 0.6; cursor: default; transform: none; box-shadow: none; }
+
+  .form-msg { margin-top: 14px; font-family: var(--mono); font-size: 12px; text-align: center; min-height: 16px; }
+  .form-msg.success { color: var(--gold); }
+  .form-msg.error { color: #E07A7A; }
+
+  .footnote {
+    margin-top: 22px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--off-white-dim);
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  .error-state { text-align: center; }
+  .error-state p { color: var(--off-white-dim); margin: 14px 0 22px; font-size: 14px; }
+
+  .success-state { display: none; text-align: center; }
+  .success-state p { color: var(--off-white-dim); margin: 14px 0 22px; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="emblem">FUEGO <span>VIP</span></div>
+
+  <div id="invalidTier" class="error-state hidden">
+    <p>This page is only reachable after completing a Fuego membership payment. If you just paid and landed somewhere else, check your Stripe receipt email or reach out on Instagram.</p>
+    <a href="index.html">&larr; Back to the main site</a>
+  </div>
+
+  <div id="signupState">
+    <div class="tier-chip" id="tierLabel">Membership</div>
+    <p class="sub">Payment received — set up your portal login below.</p>
+
+    <form id="signupForm">
+      <div class="field">
+        <label>First Name</label>
+        <input type="text" id="sName" placeholder="First name" required autocomplete="name">
+      </div>
+      <div class="field">
+        <label>Email Address</label>
+        <input type="email" id="sEmail" placeholder="Email address" required autocomplete="email">
+      </div>
+      <div class="field">
+        <label>Create a Password</label>
+        <input type="password" id="sPassword" placeholder="Create a password" required autocomplete="new-password">
+      </div>
+      <button type="submit" class="btn-primary" id="signupBtn">Activate My Portal</button>
+      <div class="form-msg" id="signupMsg"></div>
+    </form>
+
+    <div class="footnote">Already activated your portal? <a href="portal.html">Log in here</a> instead.</div>
+  </div>
+
+  <div class="success-state" id="successState">
+    <div class="tier-chip">You're In</div>
+    <p>Your Fuego VIP portal account is ready. Redirecting you now — if nothing happens, use the link below.</p>
+    <a href="portal.html">Go to My Portal &rarr;</a>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+  const TIERS = {
+    vip100: { label: 'VIP Membership — $100/month', visitCap: 4 },
+    elite200: { label: 'Super ELITE Membership — $200/month', visitCap: 12 }
+  };
+
+  const params = new URLSearchParams(window.location.search);
+  const tierKey = params.get('tier');
+  const sessionId = params.get('session_id') || null;
+  const tier = TIERS[tierKey];
+
+  const signupState = document.getElementById('signupState');
+  const invalidTier = document.getElementById('invalidTier');
+  const successState = document.getElementById('successState');
+
+  if (!tier) {
+    signupState.classList.add('hidden');
+    invalidTier.classList.remove('hidden');
+  } else {
+    document.getElementById('tierLabel').textContent = tier.label;
+  }
+
+  const signupForm = document.getElementById('signupForm');
+  const signupBtn = document.getElementById('signupBtn');
+  const signupMsg = document.getElementById('signupMsg');
+
+  if (signupForm) {
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('sName').value.trim();
+      const email = document.getElementById('sEmail').value.trim();
+      const password = document.getElementById('sPassword').value;
+
+      if (!name || !email || !password) return;
+
+      signupBtn.disabled = true;
+      signupBtn.textContent = 'Activating...';
+      signupMsg.textContent = '';
+      signupMsg.className = 'form-msg';
+
+      try {
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        await user.updateProfile({ displayName: name });
+
+        const portalDoc = {
+          name,
+          email,
+          tier: tierKey,
+          visitCap: tier.visitCap,
+          membershipStartDate: firebase.firestore.FieldValue.serverTimestamp(),
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        if (sessionId) portalDoc.stripeSessionId = sessionId;
+
+        await db.collection('portalMembers').doc(user.uid).set(portalDoc);
+
+        signupState.classList.add('hidden');
+        successState.style.display = 'block';
+        setTimeout(() => { window.location.href = 'portal.html'; }, 1800);
+      } catch (err) {
+        console.error(err);
+        signupMsg.textContent = err.message || 'Unable to activate your portal. Try again.';
+        signupMsg.className = 'form-msg error';
+        signupBtn.disabled = false;
+        signupBtn.textContent = 'Activate My Portal';
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

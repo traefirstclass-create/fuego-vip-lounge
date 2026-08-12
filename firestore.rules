@@ -37,5 +37,30 @@ service cloud.firestore {
       allow read: if request.auth != null;
       allow write, update, delete: if isAdmin();
     }
+
+    // Portal members: paying monthly members who signed up via the private post-payment link.
+    // They may create their own account record; only they (or an admin) may read it; only
+    // admins can change tier/cap/etc, so a member can't grant themselves extra visits.
+    match /portalMembers/{memberId} {
+      allow create: if request.auth != null
+                    && request.auth.uid == memberId
+                    && request.resource.data.keys().hasAll(['name', 'email', 'tier', 'visitCap', 'membershipStartDate', 'createdAt'])
+                    && request.resource.data.name is string
+                    && request.resource.data.email is string
+                    && request.resource.data.tier is string
+                    && request.resource.data.visitCap is int;
+      allow read: if request.auth != null && (request.auth.uid == memberId || isAdmin());
+      allow update, delete: if isAdmin();
+    }
+
+    // Visits: door-scan check-ins. Only admin/staff (signed in via admin.html) can log a visit;
+    // a member can read their own visit history, admins can read all.
+    match /visits/{visitId} {
+      allow create: if isAdmin()
+                    && request.resource.data.keys().hasAll(['memberId', 'scannedAt'])
+                    && request.resource.data.memberId is string;
+      allow read: if isAdmin() || (request.auth != null && resource.data.memberId == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
   }
 }
