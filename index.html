@@ -34,6 +34,8 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  .hidden { display: none !important; }
+
   html { scroll-behavior: smooth; }
 
   body {
@@ -163,6 +165,223 @@
     font-size: 12px;
     color: var(--off-white-dim);
     margin-top: 14px;
+  }
+
+  .pricing-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
+    gap: 18px;
+    margin-top: 34px;
+    width: 100%;
+    max-width: 1120px;
+  }
+  #membershipPlans .pricing-cards {
+    grid-template-columns: repeat(2, minmax(260px, 1fr));
+    max-width: 840px;
+    margin: 34px auto 0;
+    justify-content: center;
+  }
+  .pricing-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(245,245,240,0.12);
+    border-radius: 16px;
+    padding: 26px;
+    text-align: left;
+  }
+  .pricing-card h3 {
+    font-family: var(--display);
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  .pricing-card .price {
+    font-size: 32px;
+    font-family: var(--display);
+    margin-bottom: 12px;
+    color: var(--gold);
+  }
+  .pricing-card p {
+    color: var(--off-white-dim);
+    line-height: 1.8;
+    margin-bottom: 16px;
+  }
+  .pricing-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px;
+    color: var(--off-white-dim);
+    line-height: 1.8;
+  }
+  .pricing-card ul li::before {
+    content: '•';
+    color: var(--gold);
+    margin-right: 8px;
+  }
+  .pricing-card .btn-primary {
+    width: 100%;
+    text-align: center;
+    padding: 14px 0;
+  }
+
+  .membership-copy p {
+    color: var(--off-white-dim);
+    max-width: 620px;
+    line-height: 1.8;
+  }
+  .member-status {
+    margin-top: 18px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--gold);
+  }
+  .membership-tiers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin: 22px 0 10px;
+  }
+  .membership-tier-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(245,245,240,0.12);
+    border-radius: 14px;
+    padding: 18px;
+  }
+  .membership-tier-card .tier-price {
+    font-family: var(--display);
+    font-size: 30px;
+    color: var(--gold);
+    margin: 8px 0 10px;
+  }
+  .membership-tier-card p {
+    color: var(--off-white-dim);
+    line-height: 1.8;
+    margin-bottom: 12px;
+    font-size: 14px;
+  }
+  .membership-tier-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 14px;
+    color: var(--off-white-dim);
+    line-height: 1.8;
+  }
+  .membership-tier-card ul li::before {
+    content: '•';
+    color: var(--gold);
+    margin-right: 8px;
+  }
+  .membership-tier-card .btn-primary {
+    width: 100%;
+    text-align: center;
+    padding: 14px 0;
+  }
+
+  .membership-card {
+    background: var(--black-soft);
+    border: 1px solid rgba(201,162,40,0.12);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .membership-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 24px;
+    align-items: start;
+    margin-top: 30px;
+  }
+  .membership-copy p {
+    color: var(--off-white-dim);
+    max-width: 620px;
+    line-height: 1.8;
+  }
+  .member-status {
+    margin-top: 18px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--gold);
+  }
+  .membership-card {
+    background: var(--black-soft);
+    border: 1px solid rgba(201,162,40,0.12);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .membership-card input {
+    width: 100%;
+    background: var(--charcoal);
+    border: 1px solid rgba(245,245,240,0.15);
+    color: var(--off-white);
+    padding: 12px 14px;
+    border-radius: 5px;
+    font-family: var(--body);
+    font-size: 14px;
+    outline: none;
+  }
+  .membership-card input:focus { border-color: var(--gold); }
+  .auth-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 22px;
+  }
+  .auth-tab {
+    flex: 1;
+    background: rgba(245,245,240,0.05);
+    border: 1px solid rgba(245,245,240,0.08);
+    color: var(--off-white-dim);
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-family: var(--mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+  }
+  .auth-tab.active {
+    background: rgba(201,162,40,0.12);
+    color: var(--gold);
+    border-color: rgba(201,162,40,0.22);
+  }
+  .auth-form .field-row { margin-bottom: 14px; }
+  .btn.secondary {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: transparent;
+    border: 1px solid rgba(201,162,40,0.3);
+    color: var(--gold);
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+  }
+  .btn.secondary:hover { background: rgba(201,162,40,0.08); }
+  .member-lock {
+    margin-top: 26px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--off-white-dim);
+    text-align: center;
+  }
+  .member-gallery { margin-top: 26px; }
+  .member-gallery .gallery {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .member-gallery .gallery > div { min-height: 220px; position: relative; overflow: hidden; border-radius: 8px; }
+  .member-gallery .gallery > div img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .gallery-item {
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--off-white-dim);
+    font-family: var(--mono);
+    text-align: center;
+  }
+
+  @media (max-width: 860px) {
+    .membership-grid { grid-template-columns: 1fr; }
   }
 
   /* --- Opt-in form --- */
@@ -410,7 +629,7 @@
 <header>
   <nav>
     <div class="logo"><img src="images/logo.jpg" alt="Fuego VIP Lounge"></div>
-    <a href="#guestForm" class="nav-cta" onclick="setTimeout(() => document.getElementById('gName').focus(), 400)">Get On The List</a>
+    <a href="#vipPricing" class="nav-cta" onclick="setTimeout(() => document.getElementById('vipPricing').scrollIntoView({ behavior: 'smooth' }), 400)">Reserve VIP</a>
   </nav>
 </header>
 
@@ -418,15 +637,140 @@
   <div class="eyebrow">Tampa's VIP Nightlife &amp; Hookah Lounge</div>
   <h1>Skip the Line.<br>Own the <span class="accent">Night.</span></h1>
   <div class="ember-line"></div>
-  <p>Join the Fuego VIP guest list for priority entry, no cover before 3:30am, and first access to table &amp; bottle service. Open Fri–Sat, 2PM–6AM.</p>
+  <p>Join the Fuego VIP guest list for instant access to the gallery, first updates from us, and first access to VIP sections. Open Fri–Sat, 3AM–6AM.</p>
 
-  <form class="optin" id="guestForm">
-    <input type="text" id="gName" placeholder="First name" required>
-    <input type="text" id="gContact" placeholder="Phone or email" required>
-    <button type="submit" class="btn-primary" id="gSubmit">Reserve My Spot</button>
-  </form>
-  <div class="form-msg" id="gMsg"></div>
-  <div class="hero-form-note">No spam. Just guest list confirmations &amp; event drops.</div>
+  <div class="pricing-cards" id="vipPricing">
+    <article class="pricing-card">
+      <h3>VIP Section</h3>
+      <div class="price">$150</div>
+      <p>Section reservation for up to 6 people with a hookah and premium lounge access. Reservation includes the section only; entry or cover for individuals is not included.</p>
+      <ul>
+        <li>Section seating for up to 6</li>
+        <li>Hookah included</li>
+      </ul>
+      <a href="#" class="btn-primary vip-tier-btn" data-stripe-url="/checkout?vip=150">Reserve $150</a>
+    </article>
+    <article class="pricing-card">
+      <h3>VIP Section</h3>
+      <div class="price">$250</div>
+      <p>Section reservation for up to 10 people with a hookah and premium lounge access. Reservation includes the section only; entry or cover for individuals is not included.</p>
+      <ul>
+        <li>Section seating for up to 10</li>
+        <li>Hookah included</li>
+      </ul>
+      <a href="#" class="btn-primary vip-tier-btn" data-stripe-url="/checkout?vip=250">Reserve $250</a>
+    </article>
+    <article class="pricing-card">
+      <h3>VIP Section</h3>
+      <div class="price">$350</div>
+      <p>Section reservation for up to 15 people with a hookah and premium lounge access. Reservation includes the section only; entry or cover for individuals is not included.</p>
+      <ul>
+        <li>Section seating for up to 15</li>
+        <li>Hookah included</li>
+      </ul>
+      <a href="#" class="btn-primary vip-tier-btn" data-stripe-url="/checkout?vip=350">Reserve $350</a>
+    </article>
+  </div>
+  <div class="hero-form-note">These VIP section reservations include a hookah and premium lounge access; entry or cover for individuals is not included. Select your tier to continue to checkout.</div>
+</section>
+
+<section id="guestList">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Guest List</div>
+      <h2>Reserve Your Spot</h2>
+      <div class="ember-line left" style="margin-left:auto;margin-right:auto;"></div>
+    </div>
+    <form class="optin" id="guestForm">
+      <input type="text" id="gName" placeholder="First name" required>
+      <input type="text" id="gContact" placeholder="Phone or email" required>
+      <button type="submit" class="btn-primary" id="gSubmit">Reserve My Spot</button>
+    </form>
+    <div class="form-msg" id="gMsg"></div>
+    <div class="hero-form-note">No spam. Just guest list confirmations &amp; event drops.</div>
+  </div>
+</section>
+
+<section id="membershipPlans">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Membership Access</div>
+      <h2>Secure your VIP status</h2>
+      <div class="ember-line left" style="margin-left:auto;margin-right:auto;"></div>
+    </div>
+    <div class="pricing-cards">
+      <article class="pricing-card">
+        <h3>VIP MEMBERSHIP</h3>
+        <div class="price">$100/month</div>
+        <p>Reserve your place in the lounge up to 4 nights each month. This VIP pass gives you elevated access and entry privileges with priority member treatment.</p>
+        <ul>
+          <li>4 elite lounge entries each month</li>
+          <li>Member-only entry access</li>
+          <li>Perfect for exclusive nights out</li>
+        </ul>
+        <a href="https://buy.stripe.com/9B6dR96qmf1N52ggoq7IY2i" class="btn-primary membership-tier-btn" data-stripe-url="https://buy.stripe.com/9B6dR96qmf1N52ggoq7IY2i">Choose VIP MEMBERSHIP</a>
+      </article>
+      <article class="pricing-card">
+        <h3>Super ELITE Membership</h3>
+        <div class="price">$200/month</div>
+        <p>Access the lounge up to 12 nights a month with premium member benefits. This elite plan is designed for frequent guests who want the highest level of VIP access.</p>
+        <ul>
+          <li>12 premium lounge entries per month</li>
+          <li>Member-only entry access</li>
+          <li>Designed for frequent VIP nights</li>
+        </ul>
+        <a href="#" class="btn-primary membership-tier-btn" data-stripe-url="/checkout?membership=200">Choose Super ELITE</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="members">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Members Only</div>
+      <h2>Unlock the Lounge Gallery</h2>
+      <div class="ember-line left" style="margin-left:auto;margin-right:auto;"></div>
+    </div>
+    <div class="membership-grid">
+      <div class="membership-copy">
+        <p>Register with your email and password, then log in anytime to access the exclusive Fuego VIP photo gallery. Members get access to lounge images, event highlights, and insider access to new drops.</p>
+        <div class="member-status" id="memberStatus">Login or register to view the gallery.</div>
+      </div>
+      <div class="membership-card">
+        <div class="auth-tabs">
+          <button type="button" id="authJoinBtn" class="auth-tab active">Register</button>
+          <button type="button" id="authLoginBtn" class="auth-tab">Login</button>
+        </div>
+        <form id="memberForm" class="auth-form">
+          <div class="field-row" id="mNameField">
+            <input type="text" id="mName" placeholder="First name" autocomplete="name">
+          </div>
+          <div class="field-row" id="mContactField">
+            <input type="text" id="mContact" placeholder="Phone or contact details (optional)" autocomplete="tel">
+          </div>
+          <div class="field-row">
+            <input type="email" id="mEmail" placeholder="Email address" required autocomplete="email">
+          </div>
+          <div class="field-row">
+            <input type="password" id="mPassword" placeholder="Create a password" required autocomplete="new-password">
+          </div>
+          <button type="submit" class="btn-primary" id="memberSubmit">Create Membership</button>
+          <button type="button" class="btn secondary hidden" id="memberSignOut">Sign Out</button>
+          <div class="form-msg" id="memberMsg"></div>
+        </form>
+      </div>
+    </div>
+
+    <div class="member-lock" id="memberLocked">Register or log in above to unlock the members-only photo gallery.</div>
+    <div class="member-gallery hidden" id="memberGallery">
+      <div class="gallery" id="memberGalleryGrid">
+        <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
+        <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
+        <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section id="vibe">
@@ -559,7 +903,7 @@
 
 <div class="sticky-cta">
   <span>Skip the line tonight</span>
-  <a href="#join" class="btn-primary" onclick="document.getElementById('gName').focus()">Get On List</a>
+  <a href="#vipPricing" class="btn-primary" onclick="document.getElementById('vipPricing').scrollIntoView({ behavior: 'smooth' })">Reserve VIP</a>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -568,6 +912,199 @@
 <script src="firebase-config.js"></script>
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
+
+  let authMode = 'register';
+
+  const translations = {
+    en: {
+      htmlLang: 'en',
+      navCta: 'Reserve VIP',
+      heroEyebrow: "Tampa's VIP Nightlife & Hookah Lounge",
+      heroHeadline: 'Skip the Line.<br>Own the <span class="accent">Night.</span>',
+      heroCopy: 'Join the Fuego VIP guest list for instant access to the gallery, first updates from us, and first access to VIP sections. Open Fri–Sat, 3AM–6AM.',
+      heroNote: 'These VIP section reservations include a hookah and premium lounge access; entry or cover for individuals is not included. Select your tier to continue to checkout.',
+      guestEyebrow: 'Guest List',
+      guestTitle: 'Reserve Your Spot',
+      guestNamePlaceholder: 'First name',
+      guestContactPlaceholder: 'Phone or email',
+      guestSubmit: 'Reserve My Spot',
+      membershipSectionEyebrow: 'Membership Access',
+      membershipSectionTitle: 'Secure your VIP status',
+      vipMembershipTitle: 'VIP MEMBERSHIP',
+      vipMembershipCopy: 'Reserve your place in the lounge up to 4 nights each month. This VIP pass gives you elevated access and entry privileges with priority member treatment.',
+      vipMembershipItem1: '4 elite lounge entries each month',
+      vipMembershipItem2: 'Member-only entry access',
+      vipMembershipItem3: 'Perfect for exclusive nights out',
+      vipMembershipButton: 'Choose VIP MEMBERSHIP',
+      eliteMembershipTitle: 'Super ELITE Membership',
+      eliteMembershipCopy: 'Access the lounge up to 12 nights a month with premium member benefits. This elite plan is designed for frequent guests who want the highest level of VIP access.',
+      eliteMembershipItem1: '12 premium lounge entries per month',
+      eliteMembershipItem2: 'Member-only entry access',
+      eliteMembershipItem3: 'Designed for frequent VIP nights',
+      eliteMembershipButton: 'Choose Super ELITE',
+      membersEyebrow: 'Members Only',
+      membersTitle: 'Unlock the Lounge Gallery',
+      membersCopy: 'Register with your email and password, then log in anytime to access the exclusive Fuego VIP photo gallery. Members get access to lounge images, event highlights, and insider access to new drops.',
+      memberStatus: 'Login or register to view the gallery.',
+      authRegister: 'Register',
+      authLogin: 'Login',
+      namePlaceholder: 'First name',
+      contactPlaceholder: 'Phone or contact details (optional)',
+      emailPlaceholder: 'Email address',
+      passwordPlaceholder: 'Create a password',
+      memberCreate: 'Create Membership',
+      memberSignIn: 'Sign In',
+      memberLocked: 'Register or log in above to unlock the members-only photo gallery.',
+      vibeEyebrow: 'Inside Fuego',
+      vibeTitle: 'Feel The Room',
+      bottleEyebrow: 'Bottle Service, VIP Style',
+      bottleTitle: 'Top Shelf Only',
+      perksEyebrow: 'Why Join',
+      perksTitle: 'Why Insiders Never Wait In Line',
+      eventsEyebrow: "What's Coming Up",
+      eventsTitle: 'This Week At Fuego',
+      proofEyebrow: 'The Word On The Street',
+      proofTitle: 'People Keep Coming Back',
+      footerHeadline: 'Fuego VIP Lounge',
+      footerCopy: "Tampa's premier nightclub & hookah lounge. Reserve your table before you arrive — it's free.",
+      visitTitle: 'Visit',
+      followTitle: 'Follow',
+      stickyLabel: 'Skip the line tonight',
+      stickyButton: 'Reserve VIP'
+    },
+    es: {
+      htmlLang: 'es',
+      navCta: 'Reservar VIP',
+      heroEyebrow: 'Vida nocturna VIP y lounge de hookah en Tampa',
+      heroHeadline: 'Evita la fila.<br>Domina la <span class="accent">Noche.</span>',
+      heroCopy: 'Únete a la lista VIP de Fuego para acceso instantáneo a la galería, primeras novedades y acceso prioritario a secciones VIP. Abierto Vie–Sáb 3AM–6AM.',
+      heroNote: 'Estas reservaciones de sección VIP incluyen hookah y acceso premium al lounge; la entrada o la cover individual no está incluida. Selecciona tu nivel para continuar al pago.',
+      guestEyebrow: 'Guest List',
+      guestTitle: 'Reserva tu lugar',
+      guestNamePlaceholder: 'Nombre',
+      guestContactPlaceholder: 'Teléfono o correo',
+      guestSubmit: 'Reservar',
+      membershipSectionEyebrow: 'Acceso de Membresía',
+      membershipSectionTitle: 'Asegura tu estatus VIP',
+      vipMembershipTitle: 'VIP MEMBERSHIP',
+      vipMembershipCopy: 'Reserva tu lugar en el lounge hasta 4 noches al mes. Este pase VIP te da acceso preferencial y privilegios de entrada prioritarios.',
+      vipMembershipItem1: '4 entradas de lounge por mes',
+      vipMembershipItem2: 'Acceso exclusivo para miembros',
+      vipMembershipItem3: 'Perfecto para noches VIP exclusivas',
+      vipMembershipButton: 'Elige VIP MEMBERSHIP',
+      eliteMembershipTitle: 'Super ELITE Membership',
+      eliteMembershipCopy: 'Accede al lounge hasta 12 noches al mes con beneficios premium. Este plan elite está diseñado para invitados frecuentes que buscan el más alto nivel de acceso VIP.',
+      eliteMembershipItem1: '12 entradas premium al lounge por mes',
+      eliteMembershipItem2: 'Acceso exclusivo para miembros',
+      eliteMembershipItem3: 'Diseñado para noches VIP frecuentes',
+      eliteMembershipButton: 'Elige Super ELITE',
+      membersEyebrow: 'Solo Miembros',
+      membersTitle: 'Desbloquea la Galería del Lounge',
+      membersCopy: 'Regístrate con tu email y contraseña, luego inicia sesión en cualquier momento para acceder a la galería exclusiva de Fuego VIP. Los miembros obtienen acceso a imágenes del lounge, eventos destacados y acceso prioritario a nuevos drops.',
+      memberStatus: 'Inicia sesión o regístrate para ver la galería.',
+      authRegister: 'Registrarse',
+      authLogin: 'Iniciar sesión',
+      namePlaceholder: 'Nombre',
+      contactPlaceholder: 'Teléfono o detalles de contacto (opcional)',
+      emailPlaceholder: 'Correo electrónico',
+      passwordPlaceholder: 'Crea una contraseña',
+      memberCreate: 'Crear Membresía',
+      memberSignIn: 'Iniciar sesión',
+      memberLocked: 'Regístrate o inicia sesión arriba para desbloquear la galería exclusiva para miembros.',
+      vibeEyebrow: 'Dentro de Fuego',
+      vibeTitle: 'Siente la Sala',
+      bottleEyebrow: 'Servicio de Botellas, Estilo VIP',
+      bottleTitle: 'Solo Lo Mejor',
+      perksEyebrow: 'Por qué unirse',
+      perksTitle: 'Por qué los insiders nunca esperan en la fila',
+      eventsEyebrow: 'Lo que viene',
+      eventsTitle: 'Esta semana en Fuego',
+      proofEyebrow: 'Lo que se dice en la calle',
+      proofTitle: 'La gente sigue regresando',
+      footerHeadline: 'Fuego VIP Lounge',
+      footerCopy: 'El principal nightclub y lounge de hookah de Tampa. Reserva tu mesa antes de llegar — es gratis.',
+      visitTitle: 'Visítanos',
+      followTitle: 'Síguenos',
+      stickyLabel: 'Evita la fila esta noche',
+      stickyButton: 'Reservar VIP'
+    }
+  };
+
+  const i18nSelectors = [
+    { selector: '.nav-cta', property: 'textContent', key: 'navCta' },
+    { selector: '.hero .eyebrow', property: 'textContent', key: 'heroEyebrow' },
+    { selector: '.hero h1', property: 'innerHTML', key: 'heroHeadline' },
+    { selector: '.hero p', property: 'textContent', key: 'heroCopy' },
+    { selector: '.hero-form-note', property: 'textContent', key: 'heroNote' },
+    { selector: '#guestList .section-head .eyebrow', property: 'textContent', key: 'guestEyebrow' },
+    { selector: '#guestList .section-head h2', property: 'textContent', key: 'guestTitle' },
+    { selector: '#gSubmit', property: 'textContent', key: 'guestSubmit' },
+    { selector: '#membershipPlans .section-head .eyebrow', property: 'textContent', key: 'membershipSectionEyebrow' },
+    { selector: '#membershipPlans .section-head h2', property: 'textContent', key: 'membershipSectionTitle' },
+    { selector: '#membershipPlans article:nth-of-type(1) h3', property: 'textContent', key: 'vipMembershipTitle' },
+    { selector: '#membershipPlans article:nth-of-type(1) p', property: 'textContent', key: 'vipMembershipCopy' },
+    { selector: '#membershipPlans article:nth-of-type(1) ul li:nth-child(1)', property: 'textContent', key: 'vipMembershipItem1' },
+    { selector: '#membershipPlans article:nth-of-type(1) ul li:nth-child(2)', property: 'textContent', key: 'vipMembershipItem2' },
+    { selector: '#membershipPlans article:nth-of-type(1) ul li:nth-child(3)', property: 'textContent', key: 'vipMembershipItem3' },
+    { selector: '#membershipPlans article:nth-of-type(1) .btn-primary', property: 'textContent', key: 'vipMembershipButton' },
+    { selector: '#membershipPlans article:nth-of-type(2) h3', property: 'textContent', key: 'eliteMembershipTitle' },
+    { selector: '#membershipPlans article:nth-of-type(2) p', property: 'textContent', key: 'eliteMembershipCopy' },
+    { selector: '#membershipPlans article:nth-of-type(2) ul li:nth-child(1)', property: 'textContent', key: 'eliteMembershipItem1' },
+    { selector: '#membershipPlans article:nth-of-type(2) ul li:nth-child(2)', property: 'textContent', key: 'eliteMembershipItem2' },
+    { selector: '#membershipPlans article:nth-of-type(2) ul li:nth-child(3)', property: 'textContent', key: 'eliteMembershipItem3' },
+    { selector: '#membershipPlans article:nth-of-type(2) .btn-primary', property: 'textContent', key: 'eliteMembershipButton' },
+    { selector: '#members .section-head .eyebrow', property: 'textContent', key: 'membersEyebrow' },
+    { selector: '#members .section-head h2', property: 'textContent', key: 'membersTitle' },
+    { selector: '#members .membership-copy p', property: 'textContent', key: 'membersCopy' },
+    { selector: '#memberStatus', property: 'textContent', key: 'memberStatus' },
+    { selector: '#authJoinBtn', property: 'textContent', key: 'authRegister' },
+    { selector: '#authLoginBtn', property: 'textContent', key: 'authLogin' },
+    { selector: '#memberLocked', property: 'textContent', key: 'memberLocked' },
+    { selector: '#vibe .section-head .eyebrow', property: 'textContent', key: 'vibeEyebrow' },
+    { selector: '#vibe .section-head h2', property: 'textContent', key: 'vibeTitle' },
+    { selector: '#bottle .section-head .eyebrow', property: 'textContent', key: 'bottleEyebrow' },
+    { selector: '#bottle .section-head h2', property: 'textContent', key: 'bottleTitle' },
+    { selector: '#perks .section-head .eyebrow', property: 'textContent', key: 'perksEyebrow' },
+    { selector: '#perks .section-head h2', property: 'textContent', key: 'perksTitle' },
+    { selector: '#events .section-head .eyebrow', property: 'textContent', key: 'eventsEyebrow' },
+    { selector: '#events .section-head h2', property: 'textContent', key: 'eventsTitle' },
+    { selector: '#proof .section-head .eyebrow', property: 'textContent', key: 'proofEyebrow' },
+    { selector: '#proof .section-head h2', property: 'textContent', key: 'proofTitle' },
+    { selector: 'footer h3', property: 'textContent', key: 'footerHeadline', multiple: true },
+    { selector: 'footer .footer-grid p', property: 'textContent', key: 'footerCopy', multiple: true },
+    { selector: '.sticky-cta span', property: 'textContent', key: 'stickyLabel' },
+    { selector: '.sticky-cta .btn-primary', property: 'textContent', key: 'stickyButton' }
+  ];
+
+  const placeholderMap = [
+    { selector: '#gName', key: 'guestNamePlaceholder' },
+    { selector: '#gContact', key: 'guestContactPlaceholder' },
+    { selector: '#mName', key: 'namePlaceholder' },
+    { selector: '#mContact', key: 'contactPlaceholder' },
+    { selector: '#mEmail', key: 'emailPlaceholder' },
+    { selector: '#mPassword', key: 'passwordPlaceholder' }
+  ];
+
+  function applyLanguage(lang) {
+    const translation = translations[lang] || translations.en;
+    currentLanguage = lang;
+    document.documentElement.lang = translation.htmlLang;
+    i18nSelectors.forEach(({ selector, property, key, multiple }) => {
+      const elements = multiple ? document.querySelectorAll(selector) : [document.querySelector(selector)];
+      elements.forEach((element) => {
+        if (!element) return;
+        element[property] = translation[key];
+      });
+    });
+    placeholderMap.forEach(({ selector, key }) => {
+      const element = document.querySelector(selector);
+      if (element) element.placeholder = translation[key];
+    });
+    const memberSubmitBtn = document.getElementById('memberSubmit');
+    if (memberSubmitBtn) {
+      memberSubmitBtn.textContent = authMode === 'login' ? translation.memberSignIn : translation.memberCreate;
+    }
+  }
 
   // --- Load dynamic content from Firestore (falls back to hardcoded HTML above if it fails) ---
   async function loadSiteContent() {
@@ -619,6 +1156,26 @@
 
   loadSiteContent();
 
+  // --- VIP Stripe flow placeholders ---
+  document.querySelectorAll('.vip-tier-btn').forEach(btn => {
+    btn.addEventListener('click', (event) => {
+      event.preventDefault();
+      const url = btn.dataset.stripeUrl;
+      if (url) {
+        window.location.href = url;
+      }
+    });
+  });
+  document.querySelectorAll('.membership-tier-btn').forEach(btn => {
+    btn.addEventListener('click', (event) => {
+      event.preventDefault();
+      const url = btn.dataset.stripeUrl;
+      if (url) {
+        window.location.href = url;
+      }
+    });
+  });
+
   // --- Guest list opt-in form ---
   const form = document.getElementById('guestForm');
   const msg = document.getElementById('gMsg');
@@ -659,6 +1216,161 @@
       submitBtn.textContent = 'Reserve My Spot';
     }
   });
+
+  const authJoinBtn = document.getElementById('authJoinBtn');
+  const authLoginBtn = document.getElementById('authLoginBtn');
+  const memberForm = document.getElementById('memberForm');
+  const memberNameField = document.getElementById('mNameField');
+  const memberContactField = document.getElementById('mContactField');
+  const memberEmail = document.getElementById('mEmail');
+  const memberPassword = document.getElementById('mPassword');
+  const memberSubmit = document.getElementById('memberSubmit');
+  const memberSignOut = document.getElementById('memberSignOut');
+  const memberMsg = document.getElementById('memberMsg');
+  const memberStatus = document.getElementById('memberStatus');
+  const memberLocked = document.getElementById('memberLocked');
+  const memberGallery = document.getElementById('memberGallery');
+  const memberGalleryGrid = document.getElementById('memberGalleryGrid');
+
+  let authMode = 'register';
+
+  function setAuthMode(mode) {
+    authMode = mode;
+    authJoinBtn.classList.toggle('active', mode === 'register');
+    authLoginBtn.classList.toggle('active', mode === 'login');
+    if (mode === 'register') {
+      memberNameField.classList.remove('hidden');
+      memberContactField.classList.remove('hidden');
+      memberSubmit.textContent = 'Create Membership';
+    } else {
+      memberNameField.classList.add('hidden');
+      memberContactField.classList.add('hidden');
+      memberSubmit.textContent = 'Sign In';
+    }
+    memberMsg.textContent = '';
+    memberMsg.className = 'form-msg';
+  }
+
+  authJoinBtn.addEventListener('click', () => setAuthMode('register'));
+  authLoginBtn.addEventListener('click', () => setAuthMode('login'));
+
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      const displayName = user.displayName || user.email;
+      memberStatus.textContent = `You're logged in as ${displayName}. Enjoy the gallery.`;
+      memberSignOut.classList.remove('hidden');
+      memberLocked.classList.add('hidden');
+      memberGallery.classList.remove('hidden');
+      memberSubmit.textContent = authMode === 'login' ? 'Sign In' : 'Create Membership';
+      memberMsg.textContent = '';
+      loadMemberGallery();
+    } else {
+      memberStatus.textContent = 'Become a member to unlock the exclusive lounge gallery.';
+      memberSignOut.classList.add('hidden');
+      memberLocked.classList.remove('hidden');
+      memberGallery.classList.add('hidden');
+    }
+  });
+
+  memberForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = memberEmail.value.trim();
+    const password = memberPassword.value.trim();
+    if (!email || !password) {
+      memberMsg.textContent = 'Please enter both email and password.';
+      memberMsg.className = 'form-msg error';
+      return;
+    }
+
+    memberSubmit.disabled = true;
+    memberSubmit.textContent = authMode === 'register' ? 'Creating...' : 'Signing in...';
+    memberMsg.textContent = '';
+    memberMsg.className = 'form-msg';
+
+    try {
+      if (authMode === 'register') {
+        const name = document.getElementById('mName').value.trim();
+        const contact = document.getElementById('mContact').value.trim();
+        if (!name) {
+          memberMsg.textContent = 'Please enter your first name.';
+          memberMsg.className = 'form-msg error';
+          memberSubmit.disabled = false;
+          memberSubmit.textContent = 'Create Membership';
+          return;
+        }
+
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        await user.updateProfile({ displayName: name });
+        await db.collection('members').doc(user.uid).set({
+          name,
+          email,
+          contact,
+          contactType: contact.includes('@') ? 'email' : 'phone',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          membershipActive: true
+        });
+        memberMsg.textContent = `Welcome to Fuego VIP, ${name}! Your membership is active.`;
+        memberMsg.className = 'form-msg success';
+        memberForm.reset();
+      } else {
+        await auth.signInWithEmailAndPassword(email, password);
+        memberMsg.textContent = 'Membership login successful. Enjoy the gallery.';
+        memberMsg.className = 'form-msg success';
+        memberForm.reset();
+      }
+    } catch (err) {
+      console.error(err);
+      memberMsg.textContent = err.message || 'Unable to complete membership action. Try again.';
+      memberMsg.className = 'form-msg error';
+    } finally {
+      memberSubmit.disabled = false;
+      memberSubmit.textContent = authMode === 'register' ? 'Create Membership' : 'Sign In';
+    }
+  });
+
+  memberSignOut.addEventListener('click', async () => {
+    try {
+      await auth.signOut();
+      memberMsg.textContent = 'You have been signed out.';
+      memberMsg.className = 'form-msg success';
+    } catch (err) {
+      console.error(err);
+      memberMsg.textContent = 'Unable to sign out. Please try again.';
+      memberMsg.className = 'form-msg error';
+    }
+  });
+
+  async function loadMemberGallery() {
+    memberGalleryGrid.innerHTML = '<div class="gallery-item">Loading gallery...</div>';
+
+    try {
+      const snapshot = await db.collection('galleryItems').orderBy('createdAt', 'desc').get();
+      if (!snapshot.empty) {
+        memberGalleryGrid.innerHTML = snapshot.docs.map((doc) => {
+          const item = doc.data();
+          return `
+            <div>
+              <img src="${escapeHtml(item.url || 'images/gallery-1.jpg')}" alt="${escapeHtml(item.alt || 'Fuego VIP Lounge photo')}">
+            </div>
+          `;
+        }).join('');
+      } else {
+        memberGalleryGrid.innerHTML = `
+          <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
+          <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
+          <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
+        `;
+      }
+    } catch (err) {
+      console.warn('Failed to load member gallery:', err.message);
+      memberGalleryGrid.innerHTML = `
+        <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
+        <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
+        <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
+      `;
+    }
+  }
 </script>
 
 </body>

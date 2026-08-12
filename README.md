@@ -28,6 +28,7 @@ Static site for Fuego VIP Lounge (Tampa nightclub + hookah lounge). Guest-list o
 1. Go to **Build → Authentication → Get started**.
 2. Enable the **Email/Password** sign-in method.
 3. Go to the **Users** tab → **Add user**. Create yourself (or Rasheed) an admin login with email + password. This is the login you'll use at `/admin.html`.
+4. In Firestore, create a new document at `admins/{ADMIN_UID}` where `{ADMIN_UID}` is the Firebase Auth UID for that admin user. The document can be empty; its existence is used to verify admin permissions.
 
 > There's no self-serve signup on `admin.html` on purpose — admin accounts are only created by you, inside the Firebase console. Keep that login private.
 
