@@ -622,9 +622,69 @@
     .sticky-cta { display: flex; }
     body { padding-bottom: 70px; }
   }
+
+  /* --- Language select modal --- */
+  .lang-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(10,10,10,0.88);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .lang-modal {
+    background: var(--black-soft);
+    border: 1px solid rgba(201,162,40,0.25);
+    border-radius: 14px;
+    padding: 40px 36px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .lang-modal-emblem {
+    font-family: var(--display);
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    margin-bottom: 18px;
+  }
+  .lang-modal-title {
+    font-family: var(--body);
+    font-weight: 700;
+    font-size: 17px;
+    line-height: 1.4;
+    margin-bottom: 26px;
+  }
+  .lang-modal-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .lang-modal-btn { width: 100%; }
+  .lang-modal-btn[data-lang="es"] {
+    background: transparent;
+    border: 1px solid rgba(201,162,40,0.3);
+    color: var(--gold);
+  }
+  .lang-modal-btn[data-lang="es"]:hover { background: rgba(201,162,40,0.08); }
 </style>
 </head>
 <body>
+
+<div class="lang-modal-overlay" id="langModalOverlay">
+  <div class="lang-modal">
+    <div class="lang-modal-emblem">FUEGO</div>
+    <h2 class="lang-modal-title" id="langModalTitle">Choose your language / Elige tu idioma</h2>
+    <div class="lang-modal-buttons">
+      <button type="button" class="btn-primary lang-modal-btn" id="langModalEnBtn" data-lang="en">English</button>
+      <button type="button" class="btn-primary lang-modal-btn" id="langModalEsBtn" data-lang="es">Español</button>
+    </div>
+  </div>
+</div>
 
 <header>
   <nav>
@@ -913,6 +973,7 @@
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
 
+  let currentLanguage = 'en';
   let authMode = 'register';
 
   const translations = {
@@ -959,18 +1020,39 @@
       vibeTitle: 'Feel The Room',
       bottleEyebrow: 'Bottle Service, VIP Style',
       bottleTitle: 'Top Shelf Only',
+      bottleQuote1: 'Signature cocktails: Fuego Punch, Mango Habanero Margarita, Hennessy Lemonade, Passion Fruit Mojito.',
+      bottleWho1: 'Made fresh, every night',
+      bottleQuote2: 'Bottle brands: Hennessy, Patron, Ciroc, Don Julio, Moët & Chandon — served VIP style at your table.',
+      bottleWho2: 'Reserve ahead for best selection',
+      bottleQuote3: 'Custom bottle packages and reserved sections available for groups, birthdays, and private events.',
+      bottleWho3: 'Ask your host on arrival',
       perksEyebrow: 'Why Join',
       perksTitle: 'Why Insiders Never Wait In Line',
+      perk1Title: 'No Cover Before 3:30am',
+      perk1Copy: 'Guest list members walk in free before 3:30am, every Friday and Saturday.',
+      perk2Title: 'Priority Seating',
+      perk2Copy: 'Skip the wait for hookah lounge seating and get first pick of open tables.',
+      perk3Title: 'First Access',
+      perk3Copy: "Bottle service deals and event announcements land in your inbox before anyone else's.",
       eventsEyebrow: "What's Coming Up",
       eventsTitle: 'This Week At Fuego',
       proofEyebrow: 'The Word On The Street',
       proofTitle: 'People Keep Coming Back',
+      proofQuote1: 'Guest list got us straight in on a Saturday, no wait at all. Table was ready when we walked up.',
+      proofWho1: '— Tampa regular',
+      proofQuote2: 'Hookah lounge has the best vibe in the city. Perfect spot before hitting the floor.',
+      proofWho2: '— Instagram review',
+      proofQuote3: "Best bottle service deal I've found in Tampa. Staff remembered our order the second time.",
+      proofWho3: '— Google review',
       footerHeadline: 'Fuego VIP Lounge',
       footerCopy: "Tampa's premier nightclub & hookah lounge. Reserve your table before you arrive — it's free.",
       visitTitle: 'Visit',
       followTitle: 'Follow',
       stickyLabel: 'Skip the line tonight',
-      stickyButton: 'Reserve VIP'
+      stickyButton: 'Reserve VIP',
+      langModalTitle: 'Choose your language',
+      langModalEnglish: 'English',
+      langModalSpanish: 'Español'
     },
     es: {
       htmlLang: 'es',
@@ -1015,18 +1097,39 @@
       vibeTitle: 'Siente la Sala',
       bottleEyebrow: 'Servicio de Botellas, Estilo VIP',
       bottleTitle: 'Solo Lo Mejor',
+      bottleQuote1: 'Cócteles de la casa: Fuego Punch, Margarita de Mango Habanero, Limonada de Hennessy, Mojito de Maracuyá.',
+      bottleWho1: 'Preparados frescos, cada noche',
+      bottleQuote2: 'Marcas de botellas: Hennessy, Patrón, Ciroc, Don Julio, Moët & Chandon — servidas estilo VIP en tu mesa.',
+      bottleWho2: 'Reserva con anticipación para la mejor selección',
+      bottleQuote3: 'Paquetes de botellas personalizados y secciones reservadas disponibles para grupos, cumpleaños y eventos privados.',
+      bottleWho3: 'Pregunta a tu anfitrión al llegar',
       perksEyebrow: 'Por qué unirse',
       perksTitle: 'Por qué los insiders nunca esperan en la fila',
+      perk1Title: 'Sin Cover Antes De 3:30am',
+      perk1Copy: 'Los miembros de la guest list entran gratis antes de las 3:30am, todos los viernes y sábados.',
+      perk2Title: 'Asientos Prioritarios',
+      perk2Copy: 'Evita la espera para el lounge de hookah y ten la primera opción de mesas disponibles.',
+      perk3Title: 'Acceso Prioritario',
+      perk3Copy: 'Las ofertas de servicio de botellas y los anuncios de eventos llegan a tu correo antes que a nadie.',
       eventsEyebrow: 'Lo que viene',
       eventsTitle: 'Esta semana en Fuego',
       proofEyebrow: 'Lo que se dice en la calle',
       proofTitle: 'La gente sigue regresando',
+      proofQuote1: 'La guest list nos dejó entrar directo un sábado, sin espera. La mesa estaba lista cuando llegamos.',
+      proofWho1: '— Cliente habitual de Tampa',
+      proofQuote2: 'El lounge de hookah tiene el mejor ambiente de la ciudad. El lugar perfecto antes de salir a la pista.',
+      proofWho2: '— Reseña de Instagram',
+      proofQuote3: 'La mejor oferta de servicio de botellas que he encontrado en Tampa. El personal recordó nuestro pedido la segunda vez.',
+      proofWho3: '— Reseña de Google',
       footerHeadline: 'Fuego VIP Lounge',
       footerCopy: 'El principal nightclub y lounge de hookah de Tampa. Reserva tu mesa antes de llegar — es gratis.',
       visitTitle: 'Visítanos',
       followTitle: 'Síguenos',
       stickyLabel: 'Evita la fila esta noche',
-      stickyButton: 'Reservar VIP'
+      stickyButton: 'Reservar VIP',
+      langModalTitle: 'Elige tu idioma',
+      langModalEnglish: 'English',
+      langModalSpanish: 'Español'
     }
   };
 
@@ -1064,16 +1167,39 @@
     { selector: '#vibe .section-head h2', property: 'textContent', key: 'vibeTitle' },
     { selector: '#bottle .section-head .eyebrow', property: 'textContent', key: 'bottleEyebrow' },
     { selector: '#bottle .section-head h2', property: 'textContent', key: 'bottleTitle' },
+    { selector: '#bottle .quote:nth-of-type(1) p', property: 'textContent', key: 'bottleQuote1' },
+    { selector: '#bottle .quote:nth-of-type(1) .who', property: 'textContent', key: 'bottleWho1' },
+    { selector: '#bottle .quote:nth-of-type(2) p', property: 'textContent', key: 'bottleQuote2' },
+    { selector: '#bottle .quote:nth-of-type(2) .who', property: 'textContent', key: 'bottleWho2' },
+    { selector: '#bottle .quote:nth-of-type(3) p', property: 'textContent', key: 'bottleQuote3' },
+    { selector: '#bottle .quote:nth-of-type(3) .who', property: 'textContent', key: 'bottleWho3' },
     { selector: '#perks .section-head .eyebrow', property: 'textContent', key: 'perksEyebrow' },
     { selector: '#perks .section-head h2', property: 'textContent', key: 'perksTitle' },
+    { selector: '#perks .perk:nth-of-type(1) h3', property: 'textContent', key: 'perk1Title' },
+    { selector: '#perks .perk:nth-of-type(1) p', property: 'textContent', key: 'perk1Copy' },
+    { selector: '#perks .perk:nth-of-type(2) h3', property: 'textContent', key: 'perk2Title' },
+    { selector: '#perks .perk:nth-of-type(2) p', property: 'textContent', key: 'perk2Copy' },
+    { selector: '#perks .perk:nth-of-type(3) h3', property: 'textContent', key: 'perk3Title' },
+    { selector: '#perks .perk:nth-of-type(3) p', property: 'textContent', key: 'perk3Copy' },
     { selector: '#events .section-head .eyebrow', property: 'textContent', key: 'eventsEyebrow' },
     { selector: '#events .section-head h2', property: 'textContent', key: 'eventsTitle' },
     { selector: '#proof .section-head .eyebrow', property: 'textContent', key: 'proofEyebrow' },
     { selector: '#proof .section-head h2', property: 'textContent', key: 'proofTitle' },
-    { selector: 'footer h3', property: 'textContent', key: 'footerHeadline', multiple: true },
-    { selector: 'footer .footer-grid p', property: 'textContent', key: 'footerCopy', multiple: true },
+    { selector: '#proof .quote:nth-of-type(1) p', property: 'textContent', key: 'proofQuote1' },
+    { selector: '#proof .quote:nth-of-type(1) .who', property: 'textContent', key: 'proofWho1' },
+    { selector: '#proof .quote:nth-of-type(2) p', property: 'textContent', key: 'proofQuote2' },
+    { selector: '#proof .quote:nth-of-type(2) .who', property: 'textContent', key: 'proofWho2' },
+    { selector: '#proof .quote:nth-of-type(3) p', property: 'textContent', key: 'proofQuote3' },
+    { selector: '#proof .quote:nth-of-type(3) .who', property: 'textContent', key: 'proofWho3' },
+    { selector: 'footer .footer-grid > div:nth-child(1) h3', property: 'textContent', key: 'footerHeadline' },
+    { selector: 'footer .footer-grid > div:nth-child(1) p', property: 'textContent', key: 'footerCopy' },
+    { selector: 'footer .footer-grid > div:nth-child(2) h3', property: 'textContent', key: 'visitTitle' },
+    { selector: 'footer .footer-grid > div:nth-child(3) h3', property: 'textContent', key: 'followTitle' },
     { selector: '.sticky-cta span', property: 'textContent', key: 'stickyLabel' },
-    { selector: '.sticky-cta .btn-primary', property: 'textContent', key: 'stickyButton' }
+    { selector: '.sticky-cta .btn-primary', property: 'textContent', key: 'stickyButton' },
+    { selector: '#langModalTitle', property: 'textContent', key: 'langModalTitle' },
+    { selector: '#langModalEnBtn', property: 'textContent', key: 'langModalEnglish' },
+    { selector: '#langModalEsBtn', property: 'textContent', key: 'langModalSpanish' }
   ];
 
   const placeholderMap = [
@@ -1105,6 +1231,22 @@
       memberSubmitBtn.textContent = authMode === 'login' ? translation.memberSignIn : translation.memberCreate;
     }
   }
+
+  // --- First-visit language selection ---
+  const langModalOverlay = document.getElementById('langModalOverlay');
+  const savedLanguage = localStorage.getItem('fuegoLang');
+  if (savedLanguage) {
+    applyLanguage(savedLanguage);
+    langModalOverlay.classList.add('hidden');
+  }
+  document.querySelectorAll('.lang-modal-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const lang = btn.dataset.lang;
+      applyLanguage(lang);
+      localStorage.setItem('fuegoLang', lang);
+      langModalOverlay.classList.add('hidden');
+    });
+  });
 
   // --- Load dynamic content from Firestore (falls back to hardcoded HTML above if it fails) ---
   async function loadSiteContent() {
@@ -1231,8 +1373,6 @@
   const memberLocked = document.getElementById('memberLocked');
   const memberGallery = document.getElementById('memberGallery');
   const memberGalleryGrid = document.getElementById('memberGalleryGrid');
-
-  let authMode = 'register';
 
   function setAuthMode(mode) {
     authMode = mode;
