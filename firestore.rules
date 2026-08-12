@@ -7,6 +7,14 @@ service cloud.firestore {
              && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
+    // Admins: a signed-in user may only check whether THEIR OWN uid is an admin
+    // (used by admin.html to gate the dashboard UI after login) — they can't
+    // list other admins or write to this collection at all; admin docs are
+    // only ever added manually via the Firebase console.
+    match /admins/{adminId} {
+      allow read: if request.auth != null && request.auth.uid == adminId;
+    }
+
     // Guest list: anyone can submit a signup; only signed-in admins can read, update, or delete
     match /guestList/{docId} {
       allow create: if request.resource.data.keys().hasAll(['name', 'contact', 'contactType', 'createdAt'])

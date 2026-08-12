@@ -563,18 +563,36 @@
 
   document.getElementById('signOutBtn').addEventListener('click', () => auth.signOut());
 
-  auth.onAuthStateChanged(user => {
-    if (user) {
-      loginScreen.style.display = 'none';
-      dashboard.style.display = 'block';
-      loadGuestList();
-      loadContent();
-      loadGallery();
-      loadPortalMembers();
-    } else {
+  auth.onAuthStateChanged(async (user) => {
+    if (!user) {
       loginScreen.style.display = 'flex';
       dashboard.style.display = 'none';
+      return;
     }
+
+    let isAuthorizedAdmin = false;
+    try {
+      const adminDoc = await db.collection('admins').doc(user.uid).get();
+      isAuthorizedAdmin = adminDoc.exists;
+    } catch (err) {
+      console.warn('Admin check failed:', err.message);
+      isAuthorizedAdmin = false;
+    }
+
+    if (!isAuthorizedAdmin) {
+      await auth.signOut();
+      loginError.textContent = 'This account is not authorized for admin access.';
+      loginScreen.style.display = 'flex';
+      dashboard.style.display = 'none';
+      return;
+    }
+
+    loginScreen.style.display = 'none';
+    dashboard.style.display = 'block';
+    loadGuestList();
+    loadContent();
+    loadGallery();
+    loadPortalMembers();
   });
 
   // ---------------- TABS ----------------
