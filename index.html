@@ -215,6 +215,10 @@
     margin: 34px auto 0;
     justify-content: center;
   }
+  @media (max-width: 720px) {
+    .pricing-cards { grid-template-columns: 1fr; }
+    #membershipPlans .pricing-cards { grid-template-columns: 1fr; }
+  }
   .pricing-card {
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(245,245,240,0.12);
@@ -776,7 +780,7 @@
             <div class="field-row">
               <input type="password" id="mPassword" placeholder="Create a password" required autocomplete="new-password">
             </div>
-            <button type="submit" class="btn-primary" id="memberSubmit">Create Membership</button>
+            <button type="submit" class="btn-primary" id="memberSubmit">GIVE ME ACCESS</button>
             <button type="button" class="btn secondary hidden" id="memberSignOut">Sign Out</button>
             <div class="form-msg" id="memberMsg"></div>
           </form>
@@ -1040,7 +1044,7 @@
       contactPlaceholder: 'Phone or contact details (optional)',
       emailPlaceholder: 'Email address',
       passwordPlaceholder: 'Create a password',
-      memberCreate: 'Create Membership',
+      memberCreate: 'GIVE ME ACCESS',
       memberSignIn: 'Sign In',
       memberLocked: 'Register or log in above to unlock the members-only photo gallery.',
       vibeEyebrow: 'Inside Fuego',
@@ -1112,7 +1116,7 @@
       contactPlaceholder: 'Teléfono o detalles de contacto (opcional)',
       emailPlaceholder: 'Correo electrónico',
       passwordPlaceholder: 'Crea una contraseña',
-      memberCreate: 'Crear Membresía',
+      memberCreate: 'DAME ACCESO',
       memberSignIn: 'Iniciar sesión',
       memberLocked: 'Regístrate o inicia sesión arriba para desbloquear la galería exclusiva para miembros.',
       vibeEyebrow: 'Dentro de Fuego',
@@ -1361,7 +1365,7 @@
     if (mode === 'register') {
       memberNameField.classList.remove('hidden');
       memberContactField.classList.remove('hidden');
-      memberSubmit.textContent = 'Create Membership';
+      memberSubmit.textContent = 'GIVE ME ACCESS';
     } else {
       memberNameField.classList.add('hidden');
       memberContactField.classList.add('hidden');
@@ -1381,7 +1385,7 @@
       memberSignOut.classList.remove('hidden');
       memberLocked.classList.add('hidden');
       memberGallery.classList.remove('hidden');
-      memberSubmit.textContent = authMode === 'login' ? 'Sign In' : 'Create Membership';
+      memberSubmit.textContent = authMode === 'login' ? 'Sign In' : 'GIVE ME ACCESS';
       memberMsg.textContent = '';
       loadMemberGallery();
     } else {
@@ -1415,7 +1419,7 @@
           memberMsg.textContent = 'Please enter your first name.';
           memberMsg.className = 'form-msg error';
           memberSubmit.disabled = false;
-          memberSubmit.textContent = 'Create Membership';
+          memberSubmit.textContent = 'GIVE ME ACCESS';
           return;
         }
 
@@ -1445,7 +1449,7 @@
       memberMsg.className = 'form-msg error';
     } finally {
       memberSubmit.disabled = false;
-      memberSubmit.textContent = authMode === 'register' ? 'Create Membership' : 'Sign In';
+      memberSubmit.textContent = authMode === 'register' ? 'GIVE ME ACCESS' : 'Sign In';
     }
   });
 
