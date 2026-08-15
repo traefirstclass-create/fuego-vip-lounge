@@ -512,6 +512,40 @@
     .gallery { grid-template-columns: 1fr; }
   }
 
+  .video-placeholder {
+    aspect-ratio: 16/9;
+    border-radius: 10px;
+    background: linear-gradient(155deg, var(--charcoal), var(--black-soft));
+    border: 1px solid rgba(201,162,40,0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+  }
+  .video-placeholder-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 2px solid rgba(201,162,40,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .video-placeholder-icon::after {
+    content: '';
+    border-style: solid;
+    border-width: 10px 0 10px 16px;
+    border-color: transparent transparent transparent var(--gold);
+    margin-left: 4px;
+  }
+  .video-placeholder-label {
+    font-family: var(--display);
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--off-white-dim);
+  }
+
   /* --- Perks --- */
   .perks {
     display: grid;
@@ -876,9 +910,9 @@
       <h2>Feel The Room</h2>
       <div class="ember-line left" style="margin-left:auto;margin-right:auto;"></div>
     </div>
-    <div class="gallery">
-      <div><img src="images/gallery-1.jpg" alt="Crowd at the bar inside Fuego VIP Lounge"></div>
-      <div>More photos coming soon</div>
+    <div class="video-placeholder">
+      <div class="video-placeholder-icon"></div>
+      <div class="video-placeholder-label">Coming Soon</div>
     </div>
   </div>
 </section>
