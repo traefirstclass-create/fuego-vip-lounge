@@ -406,6 +406,25 @@
   }
   .member-gallery .gallery > div { min-height: 220px; position: relative; overflow: hidden; border-radius: 8px; }
   .member-gallery .gallery > div img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .gallery-dates {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 14px;
+  }
+  .gallery-date-card {
+    background: var(--black-soft);
+    border: 1px solid rgba(201,162,40,0.2);
+    border-radius: 10px;
+    padding: 22px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .gallery-date-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+  .gallery-date-card .date-label { font-family: var(--display); font-size: 22px; letter-spacing: 0.3px; color: var(--off-white); }
+  .gallery-date-card .date-count { font-family: var(--mono); font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--gold); margin-top: 6px; }
+  .gallery-back-btn { margin-bottom: 16px; }
   .gallery-item {
     min-height: 220px;
     display: flex;
@@ -766,10 +785,12 @@
 
       <div class="member-lock" id="memberLocked">Register or log in above to unlock the members-only photo gallery.</div>
       <div class="member-gallery hidden" id="memberGallery">
-        <div class="gallery" id="memberGalleryGrid">
-          <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
-          <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
-          <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
+        <div id="memberGalleryDateView">
+          <div class="gallery-dates" id="memberGalleryDates"></div>
+        </div>
+        <div id="memberGalleryPhotoView" class="hidden">
+          <button type="button" class="btn secondary gallery-back-btn" id="memberGalleryBackBtn" style="width:auto;">&larr; Back to Dates</button>
+          <div class="gallery" id="memberGalleryGrid"></div>
         </div>
       </div>
     </div>
@@ -1440,34 +1461,66 @@
     }
   });
 
+  const memberGalleryDateView = document.getElementById('memberGalleryDateView');
+  const memberGalleryPhotoView = document.getElementById('memberGalleryPhotoView');
+  const memberGalleryDates = document.getElementById('memberGalleryDates');
+  let memberGalleryByDate = {};
+
+  function formatGalleryDate(dateStr) {
+    const parsed = new Date(dateStr + 'T00:00:00');
+    if (isNaN(parsed)) return dateStr;
+    return parsed.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+  }
+
+  function showGalleryDateList() {
+    memberGalleryPhotoView.classList.add('hidden');
+    memberGalleryDateView.classList.remove('hidden');
+  }
+
+  function showGalleryDate(date) {
+    const items = memberGalleryByDate[date] || [];
+    memberGalleryGrid.innerHTML = items.map((item) => `
+      <div><img src="${escapeHtml(item.url || 'images/gallery-1.jpg')}" alt="${escapeHtml(item.alt || 'Fuego VIP Lounge photo')}"></div>
+    `).join('');
+    memberGalleryDateView.classList.add('hidden');
+    memberGalleryPhotoView.classList.remove('hidden');
+  }
+
+  document.getElementById('memberGalleryBackBtn').addEventListener('click', showGalleryDateList);
+
   async function loadMemberGallery() {
-    memberGalleryGrid.innerHTML = '<div class="gallery-item">Loading gallery...</div>';
+    memberGalleryDates.innerHTML = '<div class="gallery-item">Loading gallery...</div>';
+    showGalleryDateList();
 
     try {
-      const snapshot = await db.collection('galleryItems').orderBy('createdAt', 'desc').get();
-      if (!snapshot.empty) {
-        memberGalleryGrid.innerHTML = snapshot.docs.map((doc) => {
-          const item = doc.data();
-          return `
-            <div>
-              <img src="${escapeHtml(item.url || 'images/gallery-1.jpg')}" alt="${escapeHtml(item.alt || 'Fuego VIP Lounge photo')}">
-            </div>
-          `;
-        }).join('');
-      } else {
-        memberGalleryGrid.innerHTML = `
-          <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
-          <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
-          <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
-        `;
+      const snapshot = await db.collection('galleryItems').orderBy('eventDate', 'desc').get();
+      memberGalleryByDate = {};
+      snapshot.docs.forEach((doc) => {
+        const item = doc.data();
+        if (!item.eventDate) return;
+        if (!memberGalleryByDate[item.eventDate]) memberGalleryByDate[item.eventDate] = [];
+        memberGalleryByDate[item.eventDate].push(item);
+      });
+
+      const dates = Object.keys(memberGalleryByDate);
+      if (!dates.length) {
+        memberGalleryDates.innerHTML = '<div class="gallery-item">No photos yet — check back after your next visit.</div>';
+        return;
       }
+
+      memberGalleryDates.innerHTML = dates.map((date) => `
+        <div class="gallery-date-card" data-date="${date}">
+          <div class="date-label">${escapeHtml(formatGalleryDate(date))}</div>
+          <div class="date-count">${memberGalleryByDate[date].length} photo${memberGalleryByDate[date].length === 1 ? '' : 's'}</div>
+        </div>
+      `).join('');
+
+      memberGalleryDates.querySelectorAll('.gallery-date-card').forEach((card) => {
+        card.addEventListener('click', () => showGalleryDate(card.dataset.date));
+      });
     } catch (err) {
       console.warn('Failed to load member gallery:', err.message);
-      memberGalleryGrid.innerHTML = `
-        <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
-        <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
-        <div><img src="images/gallery-1.jpg" alt="Fuego VIP Lounge photo"></div>
-      `;
+      memberGalleryDates.innerHTML = '<div class="gallery-item">Gallery unavailable right now.</div>';
     }
   }
 </script>

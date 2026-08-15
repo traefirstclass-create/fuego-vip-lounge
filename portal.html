@@ -90,6 +90,21 @@
   .btn-primary:hover { background: var(--crimson-hover); transform: translateY(-2px); box-shadow: 0 10px 24px rgba(139,26,26,0.35); }
   .btn-primary:active { transform: translateY(0); box-shadow: none; }
 
+  .btn.secondary {
+    font-family: var(--body);
+    font-weight: 700;
+    font-size: 14px;
+    background: transparent;
+    border: 1px solid rgba(201,162,40,0.3);
+    color: var(--gold);
+    padding: 13px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+  }
+  .btn.secondary:hover { background: rgba(201,162,40,0.1); border-color: rgba(201,162,40,0.5); transform: translateY(-2px); }
+  .btn.secondary:active { transform: translateY(0); }
+
   /* --- Dashboard --- */
   #dashboard { display: none; }
   header {
@@ -195,6 +210,25 @@
     padding: 10px;
   }
 
+  .gallery-dates {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 14px;
+  }
+  .gallery-date-card {
+    background: var(--black-soft);
+    border: 1px solid rgba(201,162,40,0.2);
+    border-radius: 10px;
+    padding: 22px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .gallery-date-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+  .gallery-date-card .date-label { font-family: var(--display); font-size: 22px; letter-spacing: 0.3px; color: var(--off-white); }
+  .gallery-date-card .date-count { font-family: var(--mono); font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--gold); margin-top: 6px; }
+  .gallery-back-btn { margin-bottom: 16px; width: auto; }
+
   @media (max-width: 780px) {
     .status-grid { grid-template-columns: 1fr; }
     .gallery { grid-template-columns: 1fr 1fr; }
@@ -255,8 +289,14 @@
         <h2>Member Gallery</h2>
         <p>Exclusive lounge photos and event highlights, just for portal members.</p>
       </div>
-      <div class="gallery" id="portalGalleryGrid">
-        <div class="gallery-item">Loading gallery...</div>
+      <div id="portalGalleryDateView">
+        <div class="gallery-dates" id="portalGalleryDates">
+          <div class="gallery-item">Loading gallery...</div>
+        </div>
+      </div>
+      <div id="portalGalleryPhotoView" class="hidden">
+        <button type="button" class="btn secondary gallery-back-btn" id="portalGalleryBackBtn">&larr; Back to Dates</button>
+        <div class="gallery" id="portalGalleryGrid"></div>
       </div>
     </div>
   </section>
@@ -387,21 +427,64 @@
     }
   }
 
+  const portalGalleryDateView = document.getElementById('portalGalleryDateView');
+  const portalGalleryPhotoView = document.getElementById('portalGalleryPhotoView');
+  const portalGalleryDates = document.getElementById('portalGalleryDates');
+  const portalGalleryGrid = document.getElementById('portalGalleryGrid');
+  let portalGalleryByDate = {};
+
+  function formatGalleryDate(dateStr) {
+    const parsed = new Date(dateStr + 'T00:00:00');
+    if (isNaN(parsed)) return dateStr;
+    return parsed.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+  }
+
+  function showPortalGalleryDateList() {
+    portalGalleryPhotoView.classList.add('hidden');
+    portalGalleryDateView.classList.remove('hidden');
+  }
+
+  function showPortalGalleryDate(date) {
+    const items = portalGalleryByDate[date] || [];
+    portalGalleryGrid.innerHTML = items.map((item) => `
+      <div><img src="${escapeHtml(item.url || 'images/gallery-1.jpg')}" alt="${escapeHtml(item.alt || 'Fuego VIP Lounge photo')}"></div>
+    `).join('');
+    portalGalleryDateView.classList.add('hidden');
+    portalGalleryPhotoView.classList.remove('hidden');
+  }
+
+  document.getElementById('portalGalleryBackBtn').addEventListener('click', showPortalGalleryDateList);
+
   async function loadGallery() {
-    const grid = document.getElementById('portalGalleryGrid');
     try {
-      const snap = await db.collection('galleryItems').orderBy('createdAt', 'desc').get();
-      if (snap.empty) {
-        grid.innerHTML = '<div class="gallery-item">More photos coming soon</div>';
+      const snap = await db.collection('galleryItems').orderBy('eventDate', 'desc').get();
+      portalGalleryByDate = {};
+      snap.docs.forEach((doc) => {
+        const item = doc.data();
+        if (!item.eventDate) return;
+        if (!portalGalleryByDate[item.eventDate]) portalGalleryByDate[item.eventDate] = [];
+        portalGalleryByDate[item.eventDate].push(item);
+      });
+
+      const dates = Object.keys(portalGalleryByDate);
+      if (!dates.length) {
+        portalGalleryDates.innerHTML = '<div class="gallery-item">More photos coming soon</div>';
         return;
       }
-      grid.innerHTML = snap.docs.map((doc) => {
-        const item = doc.data();
-        return `<div><img src="${escapeHtml(item.url || 'images/gallery-1.jpg')}" alt="${escapeHtml(item.alt || 'Fuego VIP Lounge photo')}"></div>`;
-      }).join('');
+
+      portalGalleryDates.innerHTML = dates.map((date) => `
+        <div class="gallery-date-card" data-date="${date}">
+          <div class="date-label">${escapeHtml(formatGalleryDate(date))}</div>
+          <div class="date-count">${portalGalleryByDate[date].length} photo${portalGalleryByDate[date].length === 1 ? '' : 's'}</div>
+        </div>
+      `).join('');
+
+      portalGalleryDates.querySelectorAll('.gallery-date-card').forEach((card) => {
+        card.addEventListener('click', () => showPortalGalleryDate(card.dataset.date));
+      });
     } catch (err) {
       console.warn('Failed to load gallery:', err.message);
-      grid.innerHTML = '<div class="gallery-item">Gallery unavailable right now</div>';
+      portalGalleryDates.innerHTML = '<div class="gallery-item">Gallery unavailable right now</div>';
     }
   }
 </script>

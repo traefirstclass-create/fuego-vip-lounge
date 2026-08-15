@@ -457,11 +457,16 @@
     <div class="panel-head">
       <h2>Members Gallery</h2>
       <div>
+        <button class="btn secondary" id="cleanupLegacyBtn" style="width:auto; margin-left:16px; display:inline-block; padding:10px 16px;">Remove Undated Photos</button>
         <button class="btn secondary" id="saveGalleryBtn" style="width:auto; margin-left:16px; display:inline-block; padding:10px 16px;">Add Photo</button>
       </div>
     </div>
 
-    <div class="field-row" style="margin-bottom:20px; gap:16px;">
+    <div class="field-row" style="margin-bottom:20px; gap:16px; grid-template-columns: 0.8fr 1.6fr 1.2fr;">
+      <div class="field">
+        <label>Event Date</label>
+        <input type="date" id="gImageDate">
+      </div>
       <div class="field">
         <label>Image URL</label>
         <input type="text" id="gImageUrl" placeholder="https://.../photo.jpg">
@@ -472,6 +477,15 @@
       </div>
     </div>
     <span class="save-status" id="gallerySaveStatus"></span>
+
+    <div class="event-edit-card" style="margin-top:24px;">
+      <div class="field" style="margin-bottom:10px;">
+        <label>Bulk Import (one photo per line: <code>date | image URL | alt text</code>)</label>
+        <textarea id="bulkImportInput" rows="5" placeholder="2026-08-15 | https://.../photo1.jpg | Friday night crowd"></textarea>
+      </div>
+      <button class="btn secondary" id="bulkImportBtn" style="width:auto; padding:10px 16px;">Import All</button>
+      <span class="save-status" id="bulkImportStatus"></span>
+    </div>
 
     <div class="empty-state" id="galleryEmpty" style="display:none; margin-top:24px;">No gallery photos yet. Add image URLs to populate the members-only gallery.</div>
     <div id="galleryItemsEditor" style="margin-top:24px;"></div>
@@ -769,35 +783,58 @@
     }
   });
 
+  let galleryItemsCache = [];
+
   async function loadGallery() {
     const snap = await db.collection('galleryItems').orderBy('createdAt', 'desc').get();
-    const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    galleryItemsCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     const editor = document.getElementById('galleryItemsEditor');
     const empty = document.getElementById('galleryEmpty');
 
-    if (!items.length) {
+    if (!galleryItemsCache.length) {
       editor.innerHTML = '';
       empty.style.display = 'block';
       return;
     }
-
     empty.style.display = 'none';
-    editor.innerHTML = items.map(item => `
-      <div class="event-edit-card" style="display:flex; align-items:center; gap:14px;">
-        <div style="flex:1;">
-          <div class="field"><label>URL</label><input type="text" readonly value="${escapeAttr(item.url)}"></div>
-          <div class="field"><label>Alt text</label><input type="text" readonly value="${escapeAttr(item.alt || '')}"></div>
+
+    const groups = {};
+    galleryItemsCache.forEach((item) => {
+      const key = item.eventDate || 'Undated';
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(item);
+    });
+    const dateKeys = Object.keys(groups).sort((a, b) => b.localeCompare(a));
+
+    editor.innerHTML = dateKeys.map((date) => `
+      <div style="margin-bottom:18px;">
+        <div style="font-family:var(--mono); font-size:11px; letter-spacing:0.5px; text-transform:uppercase; color:var(--gold); margin-bottom:8px;">
+          ${escapeHtml(date === 'Undated' ? 'Undated (won\'t show in the date-grouped gallery)' : date)} — ${groups[date].length} photo${groups[date].length === 1 ? '' : 's'}
         </div>
-        <button class="btn secondary" style="width:auto; padding:10px 14px; height:44px;" onclick="deleteGalleryItem('${item.id}')">Delete</button>
+        ${groups[date].map(item => `
+          <div class="event-edit-card" style="display:flex; align-items:center; gap:14px;">
+            <div style="flex:1;">
+              <div class="field"><label>URL</label><input type="text" readonly value="${escapeAttr(item.url)}"></div>
+              <div class="field"><label>Alt text</label><input type="text" readonly value="${escapeAttr(item.alt || '')}"></div>
+            </div>
+            <button class="btn secondary" style="width:auto; padding:10px 14px; height:44px;" onclick="deleteGalleryItem('${item.id}')">Delete</button>
+          </div>
+        `).join('')}
       </div>
     `).join('');
   }
 
   async function addGalleryItem() {
+    const date = document.getElementById('gImageDate').value;
     const url = document.getElementById('gImageUrl').value.trim();
     const alt = document.getElementById('gImageAlt').value.trim();
     const status = document.getElementById('gallerySaveStatus');
 
+    if (!date) {
+      status.textContent = 'Pick the event date first.';
+      status.className = 'save-status err';
+      return;
+    }
     if (!url) {
       status.textContent = 'Enter a valid image URL first.';
       status.className = 'save-status err';
@@ -810,6 +847,7 @@
       await db.collection('galleryItems').add({
         url,
         alt,
+        eventDate: date,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
       document.getElementById('gImageUrl').value = '';
@@ -822,6 +860,60 @@
       status.className = 'save-status err';
     }
   }
+
+  document.getElementById('bulkImportBtn').addEventListener('click', async () => {
+    const raw = document.getElementById('bulkImportInput').value.trim();
+    const status = document.getElementById('bulkImportStatus');
+    if (!raw) return;
+
+    const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+    const rows = lines.map(line => {
+      const parts = line.split('|').map(p => p.trim());
+      return { date: parts[0] || '', url: parts[1] || '', alt: parts[2] || '' };
+    }).filter(r => r.date && r.url);
+
+    if (!rows.length) {
+      status.textContent = 'No valid rows found. Use: date | url | alt';
+      status.className = 'save-status err';
+      return;
+    }
+
+    status.textContent = `Importing ${rows.length} photo${rows.length === 1 ? '' : 's'}...`;
+    status.className = 'save-status';
+    try {
+      const batch = db.batch();
+      rows.forEach((row) => {
+        const ref = db.collection('galleryItems').doc();
+        batch.set(ref, {
+          url: row.url,
+          alt: row.alt,
+          eventDate: row.date,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      });
+      await batch.commit();
+      document.getElementById('bulkImportInput').value = '';
+      status.textContent = `Imported ${rows.length} photo${rows.length === 1 ? '' : 's'} ✓`;
+      status.className = 'save-status ok';
+      loadGallery();
+    } catch (err) {
+      status.textContent = 'Import failed: ' + err.message;
+      status.className = 'save-status err';
+    }
+  });
+
+  document.getElementById('cleanupLegacyBtn').addEventListener('click', async () => {
+    const undated = galleryItemsCache.filter(item => !item.eventDate);
+    if (!undated.length) {
+      alert('No undated photos to remove.');
+      return;
+    }
+    if (!confirm(`Delete ${undated.length} undated photo${undated.length === 1 ? '' : 's'}? This cannot be undone.`)) return;
+    const batch = db.batch();
+    undated.forEach(item => batch.delete(db.collection('galleryItems').doc(item.id)));
+    await batch.commit();
+    loadGallery();
+  });
 
   async function deleteGalleryItem(id) {
     if (!confirm('Delete this gallery photo?')) return;
