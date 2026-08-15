@@ -355,29 +355,6 @@
     outline: none;
   }
   .membership-card input:focus { border-color: var(--gold); }
-  .auth-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 22px;
-  }
-  .auth-tab {
-    flex: 1;
-    background: rgba(245,245,240,0.05);
-    border: 1px solid rgba(245,245,240,0.08);
-    color: var(--off-white-dim);
-    padding: 12px 14px;
-    border-radius: 8px;
-    font-family: var(--mono);
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-  }
-  .auth-tab.active {
-    background: rgba(201,162,40,0.12);
-    color: var(--gold);
-    border-color: rgba(201,162,40,0.22);
-  }
   .auth-form .field-row { margin-bottom: 14px; }
   .btn.secondary {
     font-family: var(--body);
@@ -849,26 +826,16 @@
       </div>
       <div class="membership-grid">
         <div class="membership-copy">
-          <p>Register with your email and password, then log in anytime to access the exclusive Fuego VIP photo gallery. As well as event highlights, and insider access to new drops, giveaways, and raffles!</p>
-          <div class="member-status" id="memberStatus">Login or register to view the gallery.</div>
+          <p>Enter your name and phone number to unlock the exclusive Fuego VIP photo gallery instantly &mdash; no password, no login. As well as event highlights, and insider access to new drops, giveaways, and raffles!</p>
+          <div class="member-status" id="memberStatus">Enter your name and phone to view the gallery.</div>
         </div>
         <div class="membership-card">
-          <div class="auth-tabs">
-            <button type="button" id="authJoinBtn" class="auth-tab active">Register</button>
-            <button type="button" id="authLoginBtn" class="auth-tab">Login</button>
-          </div>
           <form id="memberForm" class="auth-form">
             <div class="field-row" id="mNameField">
-              <input type="text" id="mName" placeholder="First name" autocomplete="name">
+              <input type="text" id="mName" placeholder="First name" autocomplete="name" required>
             </div>
             <div class="field-row" id="mContactField">
-              <input type="text" id="mContact" placeholder="Phone or contact details (optional)" autocomplete="tel">
-            </div>
-            <div class="field-row">
-              <input type="email" id="mEmail" placeholder="Email address" required autocomplete="email">
-            </div>
-            <div class="field-row">
-              <input type="password" id="mPassword" placeholder="Create a password" required autocomplete="new-password">
+              <input type="tel" id="mContact" placeholder="Phone number" autocomplete="tel" required>
             </div>
             <button type="submit" class="btn-primary" id="memberSubmit">GIVE ME ACCESS</button>
             <button type="button" class="btn secondary hidden" id="memberSignOut">Sign Out</button>
@@ -877,7 +844,7 @@
         </div>
       </div>
 
-      <div class="member-lock" id="memberLocked">Register or log in above to unlock the members-only photo gallery.</div>
+      <div class="member-lock" id="memberLocked">Enter your name and phone number above to unlock the members-only photo gallery.</div>
       <div class="member-gallery hidden" id="memberGallery">
         <div id="memberGalleryDateView">
           <div class="gallery-dates" id="memberGalleryDates"></div>
@@ -1094,7 +1061,6 @@
   document.getElementById('year').textContent = new Date().getFullYear();
 
   let currentLanguage = 'en';
-  let authMode = 'register';
 
   const translations = {
     en: {
@@ -1120,17 +1086,12 @@
       eliteMembershipButton: 'Choose Super ELITE',
       membersEyebrow: 'Exclusive Guest Access',
       membersTitle: 'Unlock the Lounge Gallery',
-      membersCopy: 'Register with your email and password, then log in anytime to access the exclusive Fuego VIP photo gallery. As well as event highlights, and insider access to new drops, giveaways, and raffles!',
-      memberStatus: 'Login or register to view the gallery.',
-      authRegister: 'Register',
-      authLogin: 'Login',
+      membersCopy: 'Enter your name and phone number to unlock the exclusive Fuego VIP photo gallery instantly — no password, no login. As well as event highlights, and insider access to new drops, giveaways, and raffles!',
+      memberStatus: 'Enter your name and phone to view the gallery.',
       namePlaceholder: 'First name',
-      contactPlaceholder: 'Phone or contact details (optional)',
-      emailPlaceholder: 'Email address',
-      passwordPlaceholder: 'Create a password',
+      contactPlaceholder: 'Phone number',
       memberCreate: 'GIVE ME ACCESS',
-      memberSignIn: 'Sign In',
-      memberLocked: 'Register or log in above to unlock the members-only photo gallery.',
+      memberLocked: 'Enter your name and phone number above to unlock the members-only photo gallery.',
       vibeEyebrow: 'Inside Fuego',
       vibeTitle: 'Feel The Room',
       bottleEyebrow: 'Bottle Service, VIP Style',
@@ -1186,17 +1147,12 @@
       eliteMembershipButton: 'Elige Super ELITE',
       membersEyebrow: 'Acceso Exclusivo Para Invitados',
       membersTitle: 'Desbloquea la Galería del Lounge',
-      membersCopy: 'Regístrate con tu email y contraseña, luego inicia sesión en cualquier momento para acceder a la galería exclusiva de Fuego VIP. Además, acceso a eventos destacados y acceso prioritario a nuevos drops, obsequios y sorteos!',
-      memberStatus: 'Inicia sesión o regístrate para ver la galería.',
-      authRegister: 'Registrarse',
-      authLogin: 'Iniciar sesión',
+      membersCopy: 'Ingresa tu nombre y número de teléfono para desbloquear la galería exclusiva de Fuego VIP al instante — sin contraseña, sin inicio de sesión. Además, acceso a eventos destacados y acceso prioritario a nuevos drops, obsequios y sorteos!',
+      memberStatus: 'Ingresa tu nombre y teléfono para ver la galería.',
       namePlaceholder: 'Nombre',
-      contactPlaceholder: 'Teléfono o detalles de contacto (opcional)',
-      emailPlaceholder: 'Correo electrónico',
-      passwordPlaceholder: 'Crea una contraseña',
+      contactPlaceholder: 'Número de teléfono',
       memberCreate: 'DAME ACCESO',
-      memberSignIn: 'Iniciar sesión',
-      memberLocked: 'Regístrate o inicia sesión arriba para desbloquear la galería exclusiva para miembros.',
+      memberLocked: 'Ingresa tu nombre y número de teléfono arriba para desbloquear la galería exclusiva.',
       vibeEyebrow: 'Dentro de Fuego',
       vibeTitle: 'Siente la Sala',
       bottleEyebrow: 'Servicio de Botellas, Estilo VIP',
@@ -1255,8 +1211,6 @@
     { selector: '#members .section-head h2', property: 'textContent', key: 'membersTitle' },
     { selector: '#members .membership-copy p', property: 'textContent', key: 'membersCopy' },
     { selector: '#memberStatus', property: 'textContent', key: 'memberStatus' },
-    { selector: '#authJoinBtn', property: 'textContent', key: 'authRegister' },
-    { selector: '#authLoginBtn', property: 'textContent', key: 'authLogin' },
     { selector: '#memberLocked', property: 'textContent', key: 'memberLocked' },
     { selector: '#vibe .section-head .eyebrow', property: 'textContent', key: 'vibeEyebrow' },
     { selector: '#vibe .section-head h2', property: 'textContent', key: 'vibeTitle' },
@@ -1293,9 +1247,7 @@
 
   const placeholderMap = [
     { selector: '#mName', key: 'namePlaceholder' },
-    { selector: '#mContact', key: 'contactPlaceholder' },
-    { selector: '#mEmail', key: 'emailPlaceholder' },
-    { selector: '#mPassword', key: 'passwordPlaceholder' }
+    { selector: '#mContact', key: 'contactPlaceholder' }
   ];
 
   function applyLanguage(lang) {
@@ -1315,7 +1267,7 @@
     });
     const memberSubmitBtn = document.getElementById('memberSubmit');
     if (memberSubmitBtn) {
-      memberSubmitBtn.textContent = authMode === 'login' ? translation.memberSignIn : translation.memberCreate;
+      memberSubmitBtn.textContent = translation.memberCreate;
     }
     document.querySelectorAll('.lang-toggle-btn').forEach((btn) => {
       btn.classList.toggle('active', btn.dataset.lang === lang);
@@ -1409,13 +1361,7 @@
     });
   });
 
-  const authJoinBtn = document.getElementById('authJoinBtn');
-  const authLoginBtn = document.getElementById('authLoginBtn');
   const memberForm = document.getElementById('memberForm');
-  const memberNameField = document.getElementById('mNameField');
-  const memberContactField = document.getElementById('mContactField');
-  const memberEmail = document.getElementById('mEmail');
-  const memberPassword = document.getElementById('mPassword');
   const memberSubmit = document.getElementById('memberSubmit');
   const memberSignOut = document.getElementById('memberSignOut');
   const memberMsg = document.getElementById('memberMsg');
@@ -1454,98 +1400,62 @@
     if (e.key === 'Escape') closeLightbox();
   });
 
-  function setAuthMode(mode) {
-    authMode = mode;
-    authJoinBtn.classList.toggle('active', mode === 'register');
-    authLoginBtn.classList.toggle('active', mode === 'login');
-    if (mode === 'register') {
-      memberNameField.classList.remove('hidden');
-      memberContactField.classList.remove('hidden');
-      memberSubmit.textContent = 'GIVE ME ACCESS';
-    } else {
-      memberNameField.classList.add('hidden');
-      memberContactField.classList.add('hidden');
-      memberSubmit.textContent = 'Sign In';
-    }
-    memberMsg.textContent = '';
-    memberMsg.className = 'form-msg';
-  }
-
-  authJoinBtn.addEventListener('click', () => setAuthMode('register'));
-  authLoginBtn.addEventListener('click', () => setAuthMode('login'));
-
   auth.onAuthStateChanged((user) => {
     if (user) {
-      const displayName = user.displayName || user.email;
-      memberStatus.textContent = `You're logged in as ${displayName}. Enjoy the gallery.`;
+      const displayName = user.displayName || 'there';
+      memberStatus.textContent = `You're in, ${displayName}. Enjoy the gallery.`;
       memberSignOut.classList.remove('hidden');
       memberLocked.classList.add('hidden');
       memberGallery.classList.remove('hidden');
-      memberSubmit.textContent = authMode === 'login' ? 'Sign In' : 'GIVE ME ACCESS';
+      memberForm.classList.add('hidden');
       memberMsg.textContent = '';
       loadMemberGallery();
     } else {
-      memberStatus.textContent = 'Sign up to unlock the exclusive lounge gallery!';
+      memberStatus.textContent = 'Enter your name and phone to view the gallery.';
       memberSignOut.classList.add('hidden');
       memberLocked.classList.remove('hidden');
       memberGallery.classList.add('hidden');
+      memberForm.classList.remove('hidden');
     }
   });
 
   memberForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const email = memberEmail.value.trim();
-    const password = memberPassword.value.trim();
-    if (!email || !password) {
-      memberMsg.textContent = 'Please enter both email and password.';
+    const name = document.getElementById('mName').value.trim();
+    const contact = document.getElementById('mContact').value.trim();
+    if (!name || !contact) {
+      memberMsg.textContent = 'Please enter both your name and phone number.';
       memberMsg.className = 'form-msg error';
       return;
     }
 
     memberSubmit.disabled = true;
-    memberSubmit.textContent = authMode === 'register' ? 'Creating...' : 'Signing in...';
+    memberSubmit.textContent = 'Unlocking...';
     memberMsg.textContent = '';
     memberMsg.className = 'form-msg';
 
     try {
-      if (authMode === 'register') {
-        const name = document.getElementById('mName').value.trim();
-        const contact = document.getElementById('mContact').value.trim();
-        if (!name) {
-          memberMsg.textContent = 'Please enter your first name.';
-          memberMsg.className = 'form-msg error';
-          memberSubmit.disabled = false;
-          memberSubmit.textContent = 'GIVE ME ACCESS';
-          return;
-        }
-
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        const user = userCredential.user;
-        await user.updateProfile({ displayName: name });
-        await db.collection('members').doc(user.uid).set({
-          name,
-          email,
-          contact,
-          contactType: contact.includes('@') ? 'email' : 'phone',
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          membershipActive: true
-        });
-        memberMsg.textContent = `Welcome to Fuego VIP, ${name}! Your membership is active.`;
-        memberMsg.className = 'form-msg success';
-        memberForm.reset();
-      } else {
-        await auth.signInWithEmailAndPassword(email, password);
-        memberMsg.textContent = 'Membership login successful. Enjoy the gallery.';
-        memberMsg.className = 'form-msg success';
-        memberForm.reset();
-      }
+      const userCredential = await auth.signInAnonymously();
+      const user = userCredential.user;
+      await user.updateProfile({ displayName: name });
+      await db.collection('members').doc(user.uid).set({
+        name,
+        contact,
+        contactType: 'phone',
+        email: '',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        membershipActive: true
+      });
+      memberMsg.textContent = `Welcome to Fuego VIP, ${name}!`;
+      memberMsg.className = 'form-msg success';
+      memberForm.reset();
     } catch (err) {
       console.error(err);
-      memberMsg.textContent = err.message || 'Unable to complete membership action. Try again.';
+      memberMsg.textContent = err.message || 'Unable to unlock the gallery. Try again.';
       memberMsg.className = 'form-msg error';
     } finally {
       memberSubmit.disabled = false;
-      memberSubmit.textContent = authMode === 'register' ? 'GIVE ME ACCESS' : 'Sign In';
+      memberSubmit.textContent = 'GIVE ME ACCESS';
     }
   });
 
