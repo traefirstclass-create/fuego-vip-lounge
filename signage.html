@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fuego VIP — Digital Signage</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" sizes="32x32" href="images/icons/favicon-32x32.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --black: #0A0A0A;
+    --black-soft: #141210;
+    --crimson: #8B1A1A;
+    --crimson-hover: #A82323;
+    --gold: #C9A228;
+    --gold-bright: #E8C25A;
+    --off-white: #F5F5F0;
+    --off-white-dim: #B8B4AC;
+    --display: 'Bebas Neue', sans-serif;
+    --body: 'Manrope', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--black);
+    font-family: var(--body);
+    cursor: none;
+  }
+
+  /* ============ Layered background ============ */
+  .bg-photo {
+    position: fixed;
+    inset: 0;
+    background-image: url('images/gallery-1.jpg');
+    background-size: cover;
+    background-position: center 35%;
+    opacity: 0.14;
+    filter: blur(1.5px) grayscale(0.25);
+  }
+  .bg-glow {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 65% 55% at 18% 15%, rgba(139,26,26,0.4), transparent 60%),
+      radial-gradient(ellipse 55% 50% at 85% 85%, rgba(201,162,40,0.22), transparent 60%),
+      radial-gradient(ellipse 80% 70% at 50% 100%, rgba(139,26,26,0.15), transparent 65%);
+    animation: bgPulse 14s ease-in-out infinite;
+  }
+  .bg-vignette {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse 90% 90% at 50% 50%, transparent 55%, rgba(0,0,0,0.65) 100%);
+  }
+  @keyframes bgPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.72; }
+  }
+
+  /* ============ Ember particles ============ */
+  .embers { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
+  .ember {
+    position: absolute;
+    bottom: -4vh;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--gold-bright), var(--gold) 55%, transparent 75%);
+    box-shadow: 0 0 10px 2px rgba(201,162,40,0.55);
+    opacity: 0;
+    animation-name: emberRise;
+    animation-timing-function: ease-in;
+    animation-iteration-count: infinite;
+  }
+  @keyframes emberRise {
+    0%   { transform: translate(0, 0); opacity: 0; }
+    8%   { opacity: 0.9; }
+    85%  { opacity: 0.4; }
+    100% { transform: translate(var(--drift), -112vh); opacity: 0; }
+  }
+
+  /* ============ Content layout ============ */
+  .stage {
+    position: relative;
+    z-index: 2;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5vh 4vw 5vh;
+    text-align: center;
+  }
+
+  .wordmark {
+    font-family: var(--display);
+    font-size: 6.2vh;
+    letter-spacing: 0.4vh;
+    color: var(--off-white);
+    text-shadow: 0 0 30px rgba(0,0,0,0.6);
+  }
+  .wordmark span { color: var(--gold); }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 2.1vh;
+    letter-spacing: 0.6vh;
+    text-transform: uppercase;
+    color: var(--gold-bright);
+    margin-top: 1.6vh;
+  }
+
+  .ember-line {
+    height: 4px;
+    width: 16vh;
+    margin-top: 2.4vh;
+    background: linear-gradient(90deg, transparent, var(--gold) 20%, var(--crimson-hover) 55%, var(--gold) 85%, transparent);
+    background-size: 200% 100%;
+    animation: flicker 3.2s ease-in-out infinite;
+    border-radius: 3px;
+  }
+  @keyframes flicker {
+    0%, 100% { background-position: 0% 50%; opacity: 1; }
+    50% { background-position: 100% 50%; opacity: 0.85; }
+  }
+
+  /* ============ QR panel ============ */
+  .qr-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .qr-panel {
+    width: 34vh;
+    height: 34vh;
+    background: var(--off-white);
+    border-radius: 2.4vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2vh;
+    box-shadow: 0 0 0 3px rgba(201,162,40,0.55), 0 0 60px 10px rgba(201,162,40,0.25);
+    animation: qrPulse 3.6s ease-in-out infinite;
+  }
+  @keyframes qrPulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(201,162,40,0.55), 0 0 60px 10px rgba(201,162,40,0.22); }
+    50% { box-shadow: 0 0 0 3px rgba(232,194,90,0.85), 0 0 90px 18px rgba(201,162,40,0.4); }
+  }
+  #signageQr img, #signageQr canvas { width: 100% !important; height: 100% !important; }
+
+  .qr-caption {
+    font-family: var(--display);
+    font-size: 5vh;
+    letter-spacing: 0.2vh;
+    color: var(--off-white);
+    margin-top: 2.6vh;
+  }
+  .qr-caption .accent { color: var(--crimson-hover); }
+  .qr-subcaption {
+    font-family: var(--mono);
+    font-size: 2vh;
+    letter-spacing: 0.3vh;
+    color: var(--off-white-dim);
+    margin-top: 1vh;
+  }
+
+  /* ============ Rotating taglines ============ */
+  .tagline-wrap {
+    height: 3.6vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .tagline {
+    font-family: var(--mono);
+    font-size: 2.2vh;
+    letter-spacing: 0.3vh;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0;
+    transition: opacity 0.9s ease;
+  }
+  .tagline.active { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="bg-photo"></div>
+<div class="bg-glow"></div>
+<div class="bg-vignette"></div>
+<div class="embers" id="embers"></div>
+
+<div class="stage">
+  <div>
+    <div class="wordmark">FUEGO <span>VIP LOUNGE</span></div>
+    <div class="eyebrow">Tonight's Photos Are Waiting</div>
+    <div class="ember-line"></div>
+  </div>
+
+  <div class="qr-block">
+    <div class="qr-panel" id="signageQr"></div>
+    <div class="qr-caption">Scan To Unlock Your <span class="accent">Photos</span></div>
+    <div class="qr-subcaption">Free to join &middot; No purchase necessary</div>
+  </div>
+
+  <div class="tagline-wrap" id="taglineWrap"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  // ---- EDIT THIS before deploying to the TVs ----
+  // Point it at the free members-only gallery section on the live site.
+  const SIGNAGE_URL = 'https://REPLACE-WITH-YOUR-DOMAIN.com/index.html#members';
+
+  new QRCode(document.getElementById('signageQr'), {
+    text: SIGNAGE_URL,
+    width: 480,
+    height: 480,
+    colorDark: '#0A0A0A',
+    colorLight: '#F5F5F0',
+    correctLevel: QRCode.CorrectLevel.M
+  });
+
+  // ---- Ember particles ----
+  const emberField = document.getElementById('embers');
+  const EMBER_COUNT = 26;
+  for (let i = 0; i < EMBER_COUNT; i++) {
+    const el = document.createElement('div');
+    el.className = 'ember';
+    const size = 3 + Math.random() * 5;
+    const duration = 9 + Math.random() * 10;
+    const delay = -Math.random() * duration;
+    const left = Math.random() * 100;
+    const drift = (Math.random() * 12 - 6) + 'vw';
+    el.style.width = size + 'px';
+    el.style.height = size + 'px';
+    el.style.left = left + 'vw';
+    el.style.setProperty('--drift', drift);
+    el.style.animationDuration = duration + 's';
+    el.style.animationDelay = delay + 's';
+    emberField.appendChild(el);
+  }
+
+  // ---- Rotating taglines ----
+  const taglines = [
+    'Tag us @fuegoviplounge',
+    'VIP Sections Available — Ask Your Host',
+    'New Photos Added Every Week',
+    'Reserve Your Next VIP Night Online'
+  ];
+  const taglineWrap = document.getElementById('taglineWrap');
+  let taglineIndex = 0;
+  let current = document.createElement('div');
+  current.className = 'tagline';
+  current.textContent = taglines[0];
+  taglineWrap.appendChild(current);
+  requestAnimationFrame(() => current.classList.add('active'));
+
+  setInterval(() => {
+    taglineIndex = (taglineIndex + 1) % taglines.length;
+    const next = document.createElement('div');
+    next.className = 'tagline';
+    next.textContent = taglines[taglineIndex];
+    taglineWrap.appendChild(next);
+    requestAnimationFrame(() => next.classList.add('active'));
+    current.classList.remove('active');
+    setTimeout(() => current.remove(), 950);
+    current = next;
+  }, 5500);
+</script>
+
+</body>
+</html>
