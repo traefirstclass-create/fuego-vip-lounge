@@ -29,10 +29,12 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // Member records: authenticated users may create and read their own membership data
+    // Member records: authenticated users may create and read their own membership data;
+    // admins may also manually add records (e.g. backfilling signups collected elsewhere),
+    // which is why doc IDs aren't required to match request.auth.uid for admin writes.
     match /members/{memberId} {
       allow create: if request.auth != null
-                    && request.auth.uid == memberId
+                    && (request.auth.uid == memberId || isAdmin())
                     && request.resource.data.keys().hasAll(['name', 'email', 'membershipActive', 'createdAt'])
                     && request.resource.data.name is string
                     && request.resource.data.email is string

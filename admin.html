@@ -552,7 +552,30 @@
       <h2>Gallery Members</h2>
       <span class="count" id="galleryMembersCount">0 members</span>
     </div>
-    <div id="galleryMembersTableWrap">
+
+    <div class="field-row" style="margin-bottom:12px; gap:16px;">
+      <div class="field">
+        <label>Name</label>
+        <input type="text" id="gmName" placeholder="First name">
+      </div>
+      <div class="field">
+        <label>Contact (phone or email)</label>
+        <input type="text" id="gmContact" placeholder="jane@email.com or (813) 555-0100">
+      </div>
+    </div>
+    <button class="btn secondary" id="addGalleryMemberBtn" style="width:auto; padding:10px 16px;">Add Member</button>
+    <span class="save-status" id="galleryMemberSaveStatus"></span>
+
+    <div class="event-edit-card" style="margin-top:20px;">
+      <div class="field" style="margin-bottom:10px;">
+        <label>Bulk Import (one member per line: <code>name | contact</code>)</label>
+        <textarea id="gmBulkImportInput" rows="5" placeholder="Jane Doe | jane@email.com"></textarea>
+      </div>
+      <button class="btn secondary" id="gmBulkImportBtn" style="width:auto; padding:10px 16px;">Import All</button>
+      <span class="save-status" id="gmBulkImportStatus"></span>
+    </div>
+
+    <div id="galleryMembersTableWrap" style="margin-top:24px;">
       <table>
         <thead>
           <tr>
@@ -1196,6 +1219,84 @@
     await db.collection('members').doc(id).delete();
     loadGalleryMembers();
   }
+
+  document.getElementById('addGalleryMemberBtn').addEventListener('click', async () => {
+    const name = document.getElementById('gmName').value.trim();
+    const contact = document.getElementById('gmContact').value.trim();
+    const status = document.getElementById('galleryMemberSaveStatus');
+
+    if (!name || !contact) {
+      status.textContent = 'Enter both a name and a contact.';
+      status.className = 'save-status err';
+      return;
+    }
+
+    status.textContent = 'Saving...';
+    status.className = 'save-status';
+    try {
+      const isEmail = contact.includes('@');
+      await db.collection('members').add({
+        name,
+        contact,
+        contactType: isEmail ? 'email' : 'phone',
+        email: isEmail ? contact : '',
+        membershipActive: true,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      document.getElementById('gmName').value = '';
+      document.getElementById('gmContact').value = '';
+      status.textContent = 'Member added ✓';
+      status.className = 'save-status ok';
+      loadGalleryMembers();
+    } catch (err) {
+      status.textContent = 'Save failed: ' + err.message;
+      status.className = 'save-status err';
+    }
+  });
+
+  document.getElementById('gmBulkImportBtn').addEventListener('click', async () => {
+    const raw = document.getElementById('gmBulkImportInput').value.trim();
+    const status = document.getElementById('gmBulkImportStatus');
+    if (!raw) return;
+
+    const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+    const rows = lines.map(line => {
+      const parts = line.split('|').map(p => p.trim());
+      return { name: parts[0] || '', contact: parts[1] || '' };
+    }).filter(r => r.name && r.contact);
+
+    if (!rows.length) {
+      status.textContent = 'No valid rows found. Use: name | contact';
+      status.className = 'save-status err';
+      return;
+    }
+
+    status.textContent = `Importing ${rows.length} member${rows.length === 1 ? '' : 's'}...`;
+    status.className = 'save-status';
+    try {
+      const batch = db.batch();
+      rows.forEach((row) => {
+        const isEmail = row.contact.includes('@');
+        const ref = db.collection('members').doc();
+        batch.set(ref, {
+          name: row.name,
+          contact: row.contact,
+          contactType: isEmail ? 'email' : 'phone',
+          email: isEmail ? row.contact : '',
+          membershipActive: true,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      });
+      await batch.commit();
+      document.getElementById('gmBulkImportInput').value = '';
+      status.textContent = `Imported ${rows.length} member${rows.length === 1 ? '' : 's'} ✓`;
+      status.className = 'save-status ok';
+      loadGalleryMembers();
+    } catch (err) {
+      status.textContent = 'Import failed: ' + err.message;
+      status.className = 'save-status err';
+    }
+  });
 
   // ---------------- helpers ----------------
   function escapeHtml(str) {
