@@ -356,6 +356,18 @@
   }
   .membership-card input:focus { border-color: var(--gold); }
   .auth-form .field-row { margin-bottom: 14px; }
+  .member-unlocked { text-align: center; padding: 10px 0; }
+  .member-unlocked-title {
+    font-family: var(--display);
+    font-size: 30px;
+    letter-spacing: 0.5px;
+    color: var(--gold);
+  }
+  .member-unlocked p {
+    color: var(--off-white-dim);
+    font-size: 14px;
+    margin: 10px 0 18px;
+  }
   .btn.secondary {
     font-family: var(--body);
     font-weight: 700;
@@ -838,9 +850,13 @@
               <input type="tel" id="mContact" placeholder="Phone number" autocomplete="tel" required>
             </div>
             <button type="submit" class="btn-primary" id="memberSubmit">GIVE ME ACCESS</button>
-            <button type="button" class="btn secondary hidden" id="memberSignOut">Sign Out</button>
-            <div class="form-msg" id="memberMsg"></div>
           </form>
+          <div class="member-unlocked hidden" id="memberUnlocked">
+            <div class="member-unlocked-title">You're In.</div>
+            <p>Scroll down to browse the gallery by date.</p>
+            <button type="button" class="btn secondary" id="memberSignOut">Sign Out</button>
+          </div>
+          <div class="form-msg" id="memberMsg"></div>
         </div>
       </div>
 
@@ -1363,6 +1379,7 @@
 
   const memberForm = document.getElementById('memberForm');
   const memberSubmit = document.getElementById('memberSubmit');
+  const memberUnlocked = document.getElementById('memberUnlocked');
   const memberSignOut = document.getElementById('memberSignOut');
   const memberMsg = document.getElementById('memberMsg');
   const memberStatus = document.getElementById('memberStatus');
@@ -1404,18 +1421,17 @@
     if (user) {
       const displayName = user.displayName || 'there';
       memberStatus.textContent = `You're in, ${displayName}. Enjoy the gallery.`;
-      memberSignOut.classList.remove('hidden');
       memberLocked.classList.add('hidden');
       memberGallery.classList.remove('hidden');
       memberForm.classList.add('hidden');
-      memberMsg.textContent = '';
+      memberUnlocked.classList.remove('hidden');
       loadMemberGallery();
     } else {
       memberStatus.textContent = 'Enter your name and phone to view the gallery.';
-      memberSignOut.classList.add('hidden');
       memberLocked.classList.remove('hidden');
       memberGallery.classList.add('hidden');
       memberForm.classList.remove('hidden');
+      memberUnlocked.classList.add('hidden');
     }
   });
 
