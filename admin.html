@@ -369,6 +369,7 @@
     <button class="tab" data-panel="galleryPanel">Gallery</button>
     <button class="tab" data-panel="scanPanel">Scan-In</button>
     <button class="tab" data-panel="portalPanel">Portal Members</button>
+    <button class="tab" data-panel="galleryMembersPanel">Gallery Members</button>
   </div>
 
   <!-- GUEST LIST PANEL -->
@@ -544,6 +545,28 @@
       <div class="empty-state" id="portalEmpty" style="display:none;">No portal members yet. They'll show up here after activating via their post-payment link.</div>
     </div>
   </div>
+
+  <!-- GALLERY MEMBERS PANEL (free "register to unlock the gallery" signups) -->
+  <div class="panel" id="galleryMembersPanel">
+    <div class="panel-head">
+      <h2>Gallery Members</h2>
+      <span class="count" id="galleryMembersCount">0 members</span>
+    </div>
+    <div id="galleryMembersTableWrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Contact</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="galleryMembersTableBody"></tbody>
+      </table>
+      <div class="empty-state" id="galleryMembersEmpty" style="display:none;">No one has registered for free gallery access yet.</div>
+    </div>
+  </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -607,6 +630,7 @@
     loadContent();
     loadGallery();
     loadPortalMembers();
+    loadGalleryMembers();
   });
 
   // ---------------- TABS ----------------
@@ -1120,6 +1144,57 @@
     }));
 
     body.innerHTML = rows.join('');
+  }
+
+  // ---------------- GALLERY MEMBERS (free "register to unlock the gallery" signups) ----------------
+  async function loadGalleryMembers() {
+    const body = document.getElementById('galleryMembersTableBody');
+    const empty = document.getElementById('galleryMembersEmpty');
+
+    let snap;
+    try {
+      snap = await db.collection('members').orderBy('createdAt', 'desc').limit(500).get();
+    } catch (err) {
+      console.warn('Failed to load gallery members:', err.message);
+      body.innerHTML = '';
+      empty.textContent = 'Could not load gallery members: ' + err.message;
+      empty.style.display = 'block';
+      return;
+    }
+
+    const members = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    document.getElementById('galleryMembersCount').textContent = `${members.length} member${members.length === 1 ? '' : 's'}`;
+
+    if (!members.length) {
+      body.innerHTML = '';
+      empty.textContent = 'No one has registered for free gallery access yet.';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    body.innerHTML = members.map((m) => {
+      const since = m.createdAt && m.createdAt.toDate ? m.createdAt.toDate().toLocaleDateString() : '—';
+      const contact = m.contact || m.email || '';
+      return `
+        <tr>
+          <td data-label="Name">${escapeHtml(m.name || '')}</td>
+          <td data-label="Contact" class="contact-cell">${escapeHtml(contact)} ${m.contactType ? `<span class="chip">${escapeHtml(m.contactType)}</span>` : ''}</td>
+          <td data-label="Date">${since}</td>
+          <td data-label="Actions">
+            <div class="row-actions">
+              <button onclick="deleteGalleryMember('${m.id}')">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  async function deleteGalleryMember(id) {
+    if (!confirm('Delete this gallery member? This cannot be undone.')) return;
+    await db.collection('members').doc(id).delete();
+    loadGalleryMembers();
   }
 
   // ---------------- helpers ----------------

@@ -37,7 +37,7 @@ service cloud.firestore {
                     && request.resource.data.name is string
                     && request.resource.data.email is string
                     && request.resource.data.membershipActive is bool;
-      allow read, update, delete: if request.auth != null && request.auth.uid == memberId;
+      allow read, update, delete: if request.auth != null && (request.auth.uid == memberId || isAdmin());
     }
 
     // Members-only gallery content: only signed-in users may read gallery items; only admins may manage them
