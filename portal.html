@@ -196,8 +196,64 @@
   .section-head h2 { font-family: var(--display); font-size: 30px; letter-spacing: 0.5px; }
   .section-head p { color: var(--off-white-dim); font-size: 14px; margin-top: 6px; }
   .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-  .gallery > div { aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid rgba(201,162,40,0.12); }
-  .gallery img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .gallery > div { aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid rgba(201,162,40,0.12); background: var(--charcoal); }
+  .gallery img { width: 100%; height: 100%; object-fit: contain; display: block; cursor: pointer; transition: transform 0.2s ease; }
+  .gallery img:hover { transform: scale(1.03); }
+
+  .lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    background: rgba(10,10,10,0.94);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+  }
+  .lightbox-overlay.show { display: flex; }
+  .lightbox-content {
+    max-width: 92vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+  .lightbox-content img {
+    max-width: 92vw;
+    max-height: 74vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  }
+  .lightbox-close {
+    position: fixed;
+    top: 24px;
+    right: 28px;
+    z-index: 301;
+    background: rgba(20,18,16,0.85);
+    border: 1px solid rgba(245,245,240,0.2);
+    color: var(--off-white);
+    font-family: var(--mono);
+    font-size: 22px;
+    line-height: 1;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .lightbox-close:hover { border-color: var(--gold); color: var(--gold); }
+  .lightbox-download {
+    font-family: var(--body);
+    font-weight: 700;
+    font-size: 14px;
+    background: var(--crimson);
+    color: var(--off-white);
+    padding: 13px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .lightbox-download:hover { background: var(--crimson-hover); transform: translateY(-2px); }
   .gallery-item {
     min-height: 160px;
     display: flex;
@@ -300,6 +356,14 @@
       </div>
     </div>
   </section>
+</div>
+
+<div class="lightbox-overlay" id="lightboxOverlay">
+  <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+  <div class="lightbox-content">
+    <img id="lightboxImg" src="" alt="">
+    <a id="lightboxDownload" class="lightbox-download" href="" download>Download Photo</a>
+  </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -432,6 +496,36 @@
   const portalGalleryDates = document.getElementById('portalGalleryDates');
   const portalGalleryGrid = document.getElementById('portalGalleryGrid');
   let portalGalleryByDate = {};
+
+  // --- Lightbox: click a gallery photo to view full-size + download ---
+  const lightboxOverlay = document.getElementById('lightboxOverlay');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxDownload = document.getElementById('lightboxDownload');
+  const lightboxClose = document.getElementById('lightboxClose');
+
+  function openLightbox(src, alt) {
+    lightboxImg.src = src;
+    lightboxImg.alt = alt || '';
+    lightboxDownload.href = src;
+    lightboxDownload.setAttribute('download', src.split('/').pop().split('?')[0] || 'fuego-photo.jpg');
+    lightboxOverlay.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    lightboxOverlay.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+  portalGalleryGrid.addEventListener('click', (e) => {
+    const img = e.target.closest('img');
+    if (img) openLightbox(img.src, img.alt);
+  });
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightboxOverlay.addEventListener('click', (e) => {
+    if (e.target === lightboxOverlay) closeLightbox();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeLightbox();
+  });
 
   function formatGalleryDate(dateStr) {
     const parsed = new Date(dateStr + 'T00:00:00');
