@@ -76,6 +76,7 @@
   @media (prefers-reduced-motion: reduce) {
     .ember-line { animation: none; }
     html { scroll-behavior: auto; }
+    #memberSubmit { animation: none; box-shadow: 0 0 14px 2px rgba(139,26,26,0.5); }
   }
 
   /* --- Nav --- */
@@ -508,6 +509,24 @@
   }
   .btn-primary:active { transform: translateY(0); box-shadow: none; }
   .btn-primary:disabled { opacity: 0.6; cursor: default; transform: none; }
+
+  #memberSubmit {
+    background: var(--gold);
+    color: var(--black);
+    border: 2px solid var(--crimson);
+    animation: memberSubmitGlow 2.4s ease-in-out infinite;
+  }
+  @keyframes memberSubmitGlow {
+    0%, 100% { box-shadow: 0 0 14px 2px rgba(139,26,26,0.5); }
+    50% { box-shadow: 0 0 28px 7px rgba(168,35,35,0.75); }
+  }
+  #memberSubmit:hover {
+    background: var(--gold);
+    border-color: var(--crimson-hover);
+    transform: translateY(-2px);
+  }
+  #memberSubmit:active { transform: translateY(0); }
+  #memberSubmit:disabled { opacity: 0.6; cursor: default; transform: none; animation: none; }
 
   .form-msg {
     margin-top: 14px;
