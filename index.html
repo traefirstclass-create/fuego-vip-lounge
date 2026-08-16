@@ -847,7 +847,7 @@
               <input type="text" id="mName" placeholder="First name" autocomplete="name" required>
             </div>
             <div class="field-row" id="mContactField">
-              <input type="tel" id="mContact" placeholder="Phone number" autocomplete="tel" required>
+              <input type="tel" id="mContact" placeholder="Phone number" autocomplete="tel" inputmode="tel" pattern="[0-9\+\-\(\)\.\s]{7,20}" title="Enter a valid phone number" required>
             </div>
             <button type="submit" class="btn-primary" id="memberSubmit">GIVE ME ACCESS</button>
           </form>
@@ -1435,12 +1435,24 @@
     }
   });
 
+  function isValidPhoneNumber(value) {
+    // Only digits and common phone formatting characters allowed -- no letters or symbols.
+    if (!/^[0-9()+\-.\s]+$/.test(value)) return false;
+    const digitsOnly = value.replace(/\D/g, '');
+    return digitsOnly.length >= 10 && digitsOnly.length <= 15;
+  }
+
   memberForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('mName').value.trim();
     const contact = document.getElementById('mContact').value.trim();
     if (!name || !contact) {
       memberMsg.textContent = 'Please enter both your name and phone number.';
+      memberMsg.className = 'form-msg error';
+      return;
+    }
+    if (!isValidPhoneNumber(contact)) {
+      memberMsg.textContent = 'Please enter a valid phone number.';
       memberMsg.className = 'form-msg error';
       return;
     }
