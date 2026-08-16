@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fuego VIP — Admin</title>
+<title>Fuego VIP - Admin</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/png" sizes="32x32" href="images/icons/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="images/icons/favicon-16x16.png">
@@ -699,7 +699,7 @@
     empty.style.display = 'none';
 
     body.innerHTML = guestCache.map(g => {
-      const date = g.createdAt && g.createdAt.toDate ? g.createdAt.toDate().toLocaleString() : '—';
+      const date = g.createdAt && g.createdAt.toDate ? g.createdAt.toDate().toLocaleString() : 'N/A';
       return `
         <tr class="${g.contacted ? 'contacted' : ''}">
           <td data-label="Name">${escapeHtml(g.name || '')}</td>
@@ -856,7 +856,7 @@
     editor.innerHTML = dateKeys.map((date) => `
       <div style="margin-bottom:18px;">
         <div style="font-family:var(--mono); font-size:11px; letter-spacing:0.5px; text-transform:uppercase; color:var(--gold); margin-bottom:8px;">
-          ${escapeHtml(date === 'Undated' ? 'Undated (won\'t show in the date-grouped gallery)' : date)} — ${groups[date].length} photo${groups[date].length === 1 ? '' : 's'}
+          ${escapeHtml(date === 'Undated' ? 'Undated (won\'t show in the date-grouped gallery)' : date)} (${groups[date].length} photo${groups[date].length === 1 ? '' : 's'})
         </div>
         ${groups[date].map(item => `
           <div class="event-edit-card" style="display:flex; align-items:center; gap:14px;">
@@ -970,8 +970,8 @@
 
   // ---------------- SCAN-IN ----------------
   const TIER_LABELS = {
-    vip100: 'VIP Membership — $100/month',
-    elite200: 'Super ELITE Membership — $200/month'
+    vip100: 'VIP Membership: $100/month',
+    elite200: 'Super ELITE Membership: $200/month'
   };
 
   const scanVideo = document.getElementById('scanVideo');
@@ -996,7 +996,7 @@
       await scanVideo.play();
       startScanBtn.classList.add('hidden');
       stopScanBtn.classList.remove('hidden');
-      scanCameraNote.textContent = 'Camera active — hold a member\'s QR code steady in frame.';
+      scanCameraNote.textContent = 'Camera active. Hold a member\'s QR code steady in frame.';
       scanLoopId = requestAnimationFrame(scanFrame);
     } catch (err) {
       console.error(err);
@@ -1078,7 +1078,7 @@
         <div class="scan-result-card">
           <div class="scan-result-name">${escapeHtml(member.name || 'Member')}</div>
           <div class="scan-result-tier">${escapeHtml(TIER_LABELS[member.tier] || member.tier || '')}</div>
-          <div class="scan-result-note">Visit logged, but the visit count couldn't load: ${escapeHtml(err.message)}${err.message && err.message.includes('index') ? ' — check the browser console for a Firestore "create index" link.' : ''}</div>
+          <div class="scan-result-note">Visit logged, but the visit count couldn't load: ${escapeHtml(err.message)}${err.message && err.message.includes('index') ? ' Check the browser console for a Firestore "create index" link.' : ''}</div>
         </div>
       `;
       return;
@@ -1100,7 +1100,7 @@
   }
 
   // Throws on failure (e.g. missing Firestore composite index) instead of
-  // silently returning 0 — callers must handle the error explicitly so a
+  // silently returning 0; callers must handle the error explicitly so a
   // failed count is never mistaken for a real "0 visits" result.
   async function countVisitsThisCycle(memberId) {
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
@@ -1142,7 +1142,7 @@
     empty.style.display = 'none';
 
     const rows = await Promise.all(members.map(async (m) => {
-      const since = m.createdAt && m.createdAt.toDate ? m.createdAt.toDate().toLocaleDateString() : '—';
+      const since = m.createdAt && m.createdAt.toDate ? m.createdAt.toDate().toLocaleDateString() : 'N/A';
 
       let visitsCell;
       let over = false;
@@ -1197,7 +1197,7 @@
     empty.style.display = 'none';
 
     body.innerHTML = members.map((m) => {
-      const since = m.createdAt && m.createdAt.toDate ? m.createdAt.toDate().toLocaleDateString() : '—';
+      const since = m.createdAt && m.createdAt.toDate ? m.createdAt.toDate().toLocaleDateString() : 'N/A';
       const contact = m.contact || m.email || '';
       return `
         <tr>

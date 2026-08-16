@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fuego VIP — Member Portal</title>
+<title>Fuego VIP - Member Portal</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/png" sizes="32x32" href="images/icons/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="images/icons/favicon-16x16.png">
@@ -332,7 +332,7 @@
       </div>
       <div class="status-card qr-card">
         <h2>Your Check-In Code</h2>
-        <p>Show this at the door — staff scan it to log your visit.</p>
+        <p>Show this at the door. Staff scan it to log your visit.</p>
         <div id="qrCodeBox"></div>
         <div class="qr-member-name" id="qrMemberName"></div>
       </div>
@@ -373,8 +373,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
   const TIER_LABELS = {
-    vip100: 'VIP Membership — $100/month',
-    elite200: 'Super ELITE Membership — $200/month'
+    vip100: 'VIP Membership: $100/month',
+    elite200: 'Super ELITE Membership: $200/month'
   };
 
   const loginScreen = document.getElementById('loginScreen');
@@ -422,7 +422,7 @@
       document.querySelector('.hero-band').innerHTML = `
         <div class="eyebrow">Portal</div>
         <h1>No active membership found</h1>
-        <p style="color:var(--off-white-dim); margin-top:14px;">This account isn't linked to a Fuego membership portal. If you just paid, use the private setup link from your confirmation — don't create a new account here.</p>
+        <p style="color:var(--off-white-dim); margin-top:14px;">This account isn't linked to a Fuego membership portal. If you just paid, use the private setup link from your confirmation. Don't create a new account here.</p>
       `;
       document.querySelector('.status-grid').classList.add('hidden');
       document.querySelector('.gallery-section').classList.add('hidden');
@@ -481,7 +481,7 @@
         historyEl.innerHTML = '<div class="visit-history-item"><span>No visits logged yet</span></div>';
       } else {
         historyEl.innerHTML = allVisits.slice(0, 8).map((v) => {
-          const date = v.scannedAt && v.scannedAt.toDate ? v.scannedAt.toDate().toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+          const date = v.scannedAt && v.scannedAt.toDate ? v.scannedAt.toDate().toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A';
           return `<div class="visit-history-item"><span>Visit</span><span>${escapeHtml(date)}</span></div>`;
         }).join('');
       }
