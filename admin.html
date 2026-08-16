@@ -550,7 +550,10 @@
   <div class="panel" id="galleryMembersPanel">
     <div class="panel-head">
       <h2>Gallery Members</h2>
-      <span class="count" id="galleryMembersCount">0 members</span>
+      <div>
+        <span class="count" id="galleryMembersCount">0 members</span>
+        <button class="btn secondary" id="galleryMembersExportBtn" style="width:auto; margin-left:16px; display:inline-block; padding:8px 14px;">Export CSV</button>
+      </div>
     </div>
 
     <div class="field-row" style="margin-bottom:12px; gap:16px;">
@@ -1170,6 +1173,8 @@
   }
 
   // ---------------- GALLERY MEMBERS (free "register to unlock the gallery" signups) ----------------
+  let galleryMembersCache = [];
+
   async function loadGalleryMembers() {
     const body = document.getElementById('galleryMembersTableBody');
     const empty = document.getElementById('galleryMembersEmpty');
@@ -1186,6 +1191,7 @@
     }
 
     const members = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    galleryMembersCache = members;
     document.getElementById('galleryMembersCount').textContent = `${members.length} member${members.length === 1 ? '' : 's'}`;
 
     if (!members.length) {
@@ -1219,6 +1225,23 @@
     await db.collection('members').doc(id).delete();
     loadGalleryMembers();
   }
+
+  document.getElementById('galleryMembersExportBtn').addEventListener('click', () => {
+    if (!galleryMembersCache.length) return;
+    const rows = [['Name', 'Contact', 'Contact Type', 'Date Registered']];
+    galleryMembersCache.forEach(m => {
+      const date = m.createdAt && m.createdAt.toDate ? m.createdAt.toDate().toISOString() : '';
+      rows.push([m.name || '', m.contact || m.email || '', m.contactType || '', date]);
+    });
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `fuego-gallery-members-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
 
   document.getElementById('addGalleryMemberBtn').addEventListener('click', async () => {
     const name = document.getElementById('gmName').value.trim();
