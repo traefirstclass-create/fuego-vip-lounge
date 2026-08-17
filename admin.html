@@ -225,6 +225,8 @@
     cursor: pointer;
   }
   .row-actions button:hover { color: var(--off-white); border-color: var(--gold); }
+  .row-actions button.wa-btn { color: #25D366; border-color: rgba(37,211,102,0.35); }
+  .row-actions button.wa-btn:hover { color: #25D366; border-color: #25D366; }
 
   .empty-state {
     text-align: center;
@@ -576,6 +578,14 @@
       </div>
       <button class="btn secondary" id="gmBulkImportBtn" style="width:auto; padding:10px 16px;">Import All</button>
       <span class="save-status" id="gmBulkImportStatus"></span>
+    </div>
+
+    <div class="event-edit-card" style="margin-top:20px;">
+      <div class="field" style="margin-bottom:10px;">
+        <label>WhatsApp Message (used by the WhatsApp button next to each phone number below)</label>
+        <textarea id="waMessageInput" rows="3" placeholder="Hey! New Fuego VIP photos are up 🔥 Check them out: https://www.fuegoviplounge.com/">New Fuego VIP photos just dropped 🔥 Check out the gallery: https://www.fuegoviplounge.com/</textarea>
+      </div>
+      <div class="save-status">Clicking WhatsApp next to a member opens a pre-filled chat with them in your WhatsApp -- you still hit Send yourself. Nothing goes out automatically.</div>
     </div>
 
     <div id="galleryMembersTableWrap" style="margin-top:24px;">
@@ -1205,6 +1215,7 @@
     body.innerHTML = members.map((m) => {
       const since = m.createdAt && m.createdAt.toDate ? m.createdAt.toDate().toLocaleDateString() : 'N/A';
       const contact = m.contact || m.email || '';
+      const isPhone = m.contactType === 'phone' || (!contact.includes('@') && contact.trim());
       return `
         <tr>
           <td data-label="Name">${escapeHtml(m.name || '')}</td>
@@ -1212,6 +1223,7 @@
           <td data-label="Date">${since}</td>
           <td data-label="Actions">
             <div class="row-actions">
+              ${isPhone ? `<button class="wa-btn" onclick="openWhatsApp('${escapeAttr(contact)}')">WhatsApp</button>` : ''}
               <button onclick="deleteGalleryMember('${m.id}')">Delete</button>
             </div>
           </td>
@@ -1224,6 +1236,18 @@
     if (!confirm('Delete this gallery member? This cannot be undone.')) return;
     await db.collection('members').doc(id).delete();
     loadGalleryMembers();
+  }
+
+  // Opens a pre-filled WhatsApp chat with this member -- the admin still has to hit Send
+  // themselves inside WhatsApp. Assumes a 10-digit number without a country code is US (+1),
+  // since that's this venue's local market; numbers already containing a country code pass through.
+  function openWhatsApp(rawContact) {
+    let digits = (rawContact || '').replace(/\D/g, '');
+    if (digits.length === 10) digits = '1' + digits;
+    if (!digits) return;
+    const message = document.getElementById('waMessageInput').value;
+    const url = `https://wa.me/${digits}` + (message ? `?text=${encodeURIComponent(message)}` : '');
+    window.open(url, '_blank', 'noopener');
   }
 
   document.getElementById('galleryMembersExportBtn').addEventListener('click', () => {
