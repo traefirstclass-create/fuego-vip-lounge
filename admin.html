@@ -585,7 +585,9 @@
         <label>WhatsApp Message (used by the WhatsApp button next to each phone number below)</label>
         <textarea id="waMessageInput" rows="3" placeholder="Hey! New Fuego VIP photos are up 🔥 Check them out: https://www.fuegoviplounge.com/">New Fuego VIP photos just dropped 🔥 Check out the gallery: https://www.fuegoviplounge.com/</textarea>
       </div>
-      <div class="save-status">Clicking WhatsApp next to a member opens a pre-filled chat with them in your WhatsApp -- you still hit Send yourself. Nothing goes out automatically.</div>
+      <button class="btn secondary" id="waChannelBtn" style="width:auto; padding:10px 16px;">Post to WhatsApp Channel</button>
+      <span class="save-status" id="waChannelStatus"></span>
+      <div class="save-status" style="margin-top:8px;">Clicking WhatsApp next to a member opens a pre-filled chat with them in your WhatsApp -- you still hit Send yourself. WhatsApp doesn't support pre-filling Channel posts, so "Post to WhatsApp Channel" copies the message and opens the FUEGOVIP LOUNGE channel -- paste (Cmd/Ctrl+V) and post it there.</div>
     </div>
 
     <div id="galleryMembersTableWrap" style="margin-top:24px;">
@@ -1249,6 +1251,22 @@
     const url = `https://wa.me/${digits}` + (message ? `?text=${encodeURIComponent(message)}` : '');
     window.open(url, '_blank', 'noopener');
   }
+
+  const FUEGO_WHATSAPP_CHANNEL_URL = 'https://whatsapp.com/channel/0029VbDEBP3IyPtMdCybML2F';
+
+  document.getElementById('waChannelBtn').addEventListener('click', async () => {
+    const message = document.getElementById('waMessageInput').value;
+    const status = document.getElementById('waChannelStatus');
+    try {
+      await navigator.clipboard.writeText(message);
+      status.textContent = 'Message copied -- paste it into the channel ✓';
+      status.className = 'save-status ok';
+    } catch (err) {
+      status.textContent = 'Could not copy automatically -- select and copy the message above manually.';
+      status.className = 'save-status err';
+    }
+    window.open(FUEGO_WHATSAPP_CHANNEL_URL, '_blank', 'noopener');
+  });
 
   document.getElementById('galleryMembersExportBtn').addEventListener('click', () => {
     if (!galleryMembersCache.length) return;
