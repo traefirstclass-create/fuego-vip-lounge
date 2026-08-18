@@ -608,7 +608,8 @@
             <th>#</th>
             <th>Name</th>
             <th>Contact</th>
-            <th>Date</th>
+            <th>First Sign-in</th>
+            <th>Last Sign-in</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -1254,6 +1255,7 @@
         contact: latest.contact || latest.email || first.contact || first.email || '',
         contactType: latest.contactType || first.contactType || '',
         firstDate: first.createdAt,
+        lastDate: latest.createdAt,
         signIns: docs.length
       });
     });
@@ -1291,13 +1293,15 @@
       const rows = groups.get(dateKey).map((d) => {
         rowNum++;
         const since = d.firstDate && d.firstDate.toDate ? d.firstDate.toDate().toLocaleDateString() : 'N/A';
+        const lastSince = d.lastDate && d.lastDate.toDate ? d.lastDate.toDate().toLocaleDateString() : 'N/A';
         const isPhone = d.contactType === 'phone' || (!d.contact.includes('@') && d.contact.trim());
         return `
           <tr>
             <td data-label="#" class="row-num">${rowNum}</td>
             <td data-label="Name">${escapeHtml(d.name)}</td>
             <td data-label="Contact" class="contact-cell">${escapeHtml(d.contact)} ${d.contactType ? `<span class="chip">${escapeHtml(d.contactType)}</span>` : ''} ${d.signIns > 1 ? `<span class="chip">${d.signIns} sign-ins</span>` : ''}</td>
-            <td data-label="Date">${since}</td>
+            <td data-label="First Sign-in">${since}</td>
+            <td data-label="Last Sign-in">${lastSince}</td>
             <td data-label="Actions">
               <div class="row-actions">
                 ${isPhone ? `<button class="wa-btn" onclick="openWhatsApp('${escapeAttr(d.contact)}')">WhatsApp</button>` : ''}
@@ -1308,7 +1312,7 @@
         `;
       }).join('');
 
-      return `<tr class="date-group-row"><td colspan="5">${escapeHtml(label)}</td></tr>${rows}`;
+      return `<tr class="date-group-row"><td colspan="6">${escapeHtml(label)}</td></tr>${rows}`;
     });
 
     body.innerHTML = sections.join('');
