@@ -72,5 +72,40 @@ service cloud.firestore {
       allow read: if isAdmin() || (request.auth != null && resource.data.memberId == request.auth.uid);
       allow update, delete: if isAdmin();
     }
+
+    // VIP reservation system. Public visitors can see event names and section
+    // availability, but guest names and phone numbers stay private.
+    match /vipEvents/{eventId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /vipSections/{sectionId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /vipEventSections/{inventoryId} {
+      allow read: if true;
+      allow create, update: if isAdmin()
+                            || (
+                              request.auth != null
+                              && request.resource.data.status == 'held'
+                              && request.resource.data.keys().hasAll(['eventId', 'sectionId', 'price', 'capacity', 'status', 'heldUntil', 'updatedAt'])
+                            );
+      allow delete: if isAdmin();
+    }
+
+    match /vipReservations/{reservationId} {
+      allow create: if request.auth != null
+                    && request.resource.data.createdByUid == request.auth.uid
+                    && request.resource.data.keys().hasAll(['eventId', 'sectionId', 'guestName', 'guestCount', 'phoneNumber', 'status', 'paymentStatus', 'amount', 'createdAt'])
+                    && request.resource.data.guestName is string
+                    && request.resource.data.phoneNumber is string
+                    && request.resource.data.guestCount is int
+                    && request.resource.data.guestCount >= 1;
+      allow read: if isAdmin() || (request.auth != null && resource.data.createdByUid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
   }
 }

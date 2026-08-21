@@ -202,6 +202,278 @@
     margin-top: 14px;
   }
 
+  .vip-reservation-experience {
+    width: 100%;
+    max-width: 1120px;
+    margin-top: 40px;
+    text-align: left;
+  }
+  .vip-reservation-head {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 24px;
+    align-items: end;
+    margin-bottom: 20px;
+  }
+  .vip-reservation-head h2 {
+    font-family: var(--display);
+    font-size: clamp(34px, 5vw, 58px);
+    line-height: 0.95;
+    letter-spacing: 0.5px;
+  }
+  .vip-reservation-head p {
+    max-width: none;
+    margin: 12px 0 0;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  .vip-event-select label,
+  .vip-booking-form label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 7px;
+  }
+  .vip-event-select select,
+  .vip-booking-form input,
+  .vip-booking-form select {
+    width: 100%;
+    background: var(--charcoal);
+    border: 1px solid rgba(245,245,240,0.16);
+    color: var(--off-white);
+    border-radius: 5px;
+    padding: 12px 14px;
+    font-family: var(--body);
+    font-size: 14px;
+    outline: none;
+  }
+  .vip-event-select select:focus,
+  .vip-booking-form input:focus,
+  .vip-booking-form select:focus { border-color: var(--gold); }
+  .vip-tip-panel {
+    margin: 4px 0 16px;
+    padding: 14px;
+    background: rgba(201,162,40,0.06);
+    border: 1px solid rgba(201,162,40,0.18);
+    border-radius: 6px;
+  }
+  .vip-tip-panel > label { margin-bottom: 10px; }
+  .vip-tip-presets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 7px;
+    margin-bottom: 9px;
+  }
+  .vip-tip-preset {
+    min-height: 38px;
+    border: 1px solid rgba(245,245,240,0.16);
+    border-radius: 5px;
+    background: var(--charcoal);
+    color: var(--off-white);
+    font-family: var(--body);
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .vip-tip-preset:hover,
+  .vip-tip-preset.active { border-color: var(--gold); color: var(--gold); }
+  .vip-tip-payment { margin-top: 12px; }
+  .vip-tip-action {
+    margin-top: 10px;
+    padding: 12px;
+    background: rgba(0,0,0,0.26);
+    border-radius: 6px;
+    text-align: center;
+  }
+  .vip-tip-action p {
+    margin: 8px 0 0;
+    color: var(--off-white-dim);
+    font-family: var(--mono);
+    font-size: 10px;
+    line-height: 1.5;
+  }
+  .vip-tip-link {
+    display: block;
+    padding: 11px 14px;
+    border-radius: 5px;
+    background: #00d64f;
+    color: #07130b;
+    font-weight: 800;
+    text-decoration: none;
+  }
+  .vip-zelle-qr-link {
+    display: block;
+    width: min(100%, 230px);
+    margin: 0 auto;
+  }
+  .vip-zelle-qr-frame {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1.13;
+    overflow: hidden;
+    border-radius: 6px;
+    background: #fff;
+  }
+  .vip-zelle-qr {
+    display: block;
+    width: 254%;
+    max-width: none;
+    transform: translate(-29.8%, -34.7%);
+  }
+  .vip-zelle-name { color: var(--off-white); font-weight: 700; }
+  .vip-tip-note {
+    margin: 10px 0 0;
+    color: var(--off-white-dim);
+    font-family: var(--mono);
+    font-size: 10px;
+    line-height: 1.5;
+  }
+  .vip-reservation-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.55fr);
+    gap: 22px;
+    align-items: start;
+  }
+  .fuego-floorplan-card {
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(201,162,40,0.16);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fuego-floorplan-wrapper {
+    position: relative;
+    width: 100%;
+    background: #050505;
+  }
+  .fuego-floorplan-image {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .fuego-section-hotspot {
+    position: absolute;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: rgba(201,162,40,0.01);
+    cursor: pointer;
+    transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  .fuego-section-hotspot::after {
+    content: attr(data-label);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--mono);
+    font-size: clamp(8px, 1.1vw, 12px);
+    color: transparent;
+    text-shadow: none;
+    pointer-events: none;
+  }
+  .fuego-section-hotspot:hover,
+  .fuego-section-hotspot.selected {
+    border-color: rgba(201,162,40,0.9);
+    background: rgba(201,162,40,0.12);
+    box-shadow: 0 0 18px rgba(201,162,40,0.28);
+  }
+  .fuego-section-hotspot.selected::after,
+  .fuego-section-hotspot:hover::after {
+    color: var(--off-white);
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+  }
+  .fuego-section-hotspot.sold,
+  .fuego-section-hotspot.held {
+    cursor: not-allowed;
+    border-color: rgba(139,26,26,0.8);
+    background: rgba(139,26,26,0.34);
+  }
+  .fuego-section-hotspot.sold::after { content: 'SOLD'; color: var(--off-white); }
+  .fuego-section-hotspot.held::after { content: 'HELD'; color: var(--off-white); }
+  .show-hotspots .fuego-section-hotspot {
+    border-color: rgba(201,162,40,0.85);
+    background: rgba(201,162,40,0.18);
+  }
+  .show-hotspots .fuego-section-hotspot::after { color: var(--off-white); }
+  .vip-floorplan-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px 16px;
+    border-top: 1px solid rgba(245,245,240,0.08);
+    color: var(--off-white-dim);
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+  .vip-floorplan-legend span::before {
+    content: '';
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+    margin-right: 7px;
+    vertical-align: -1px;
+    border: 1px solid rgba(201,162,40,0.9);
+  }
+  .vip-floorplan-legend .sold::before { border-color: rgba(139,26,26,0.9); background: rgba(139,26,26,0.5); }
+  .vip-booking-panel {
+    background: var(--black-soft);
+    border: 1px solid rgba(201,162,40,0.16);
+    border-radius: 8px;
+    padding: 20px;
+    position: sticky;
+    top: 92px;
+  }
+  .vip-booking-title {
+    font-family: var(--display);
+    font-size: 34px;
+    letter-spacing: 0.5px;
+  }
+  .vip-booking-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 14px 0 18px;
+  }
+  .vip-booking-meta div {
+    border: 1px solid rgba(245,245,240,0.1);
+    border-radius: 6px;
+    padding: 10px;
+  }
+  .vip-booking-meta span {
+    display: block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--off-white-dim);
+    margin-bottom: 4px;
+  }
+  .vip-booking-meta strong { color: var(--gold); }
+  .vip-booking-form .field-row { margin-bottom: 12px; }
+  .vip-reservation-message {
+    min-height: 18px;
+    margin-top: 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--off-white-dim);
+    line-height: 1.6;
+  }
+  .vip-reservation-message.error { color: #E07A7A; }
+  .vip-reservation-message.success { color: var(--gold); }
+  .vip-empty-selection {
+    color: var(--off-white-dim);
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  @media (max-width: 860px) {
+    .vip-reservation-head,
+    .vip-reservation-layout { grid-template-columns: 1fr; }
+    .vip-booking-panel { position: static; }
+  }
+
   .pricing-cards {
     display: grid;
     grid-template-columns: repeat(3, minmax(220px, 1fr));
@@ -219,6 +491,7 @@
   @media (max-width: 720px) {
     .pricing-cards { grid-template-columns: 1fr; }
     #membershipPlans .pricing-cards { grid-template-columns: 1fr; }
+    .vip-booking-meta { grid-template-columns: 1fr; }
   }
   .pricing-card {
     background: rgba(255,255,255,0.04);
@@ -838,7 +1111,7 @@
         <button type="button" class="lang-toggle-btn active" id="langToggleEnBtn" data-lang="en">EN</button>
         <button type="button" class="lang-toggle-btn" id="langToggleEsBtn" data-lang="es">ES</button>
       </div>
-      <a href="#vipPricing" class="nav-cta" onclick="setTimeout(() => document.getElementById('vipPricing').scrollIntoView({ behavior: 'smooth' }), 400)">Reserve VIP</a>
+      <a href="#vipReservations" class="nav-cta" onclick="setTimeout(() => document.getElementById('vipReservations').scrollIntoView({ behavior: 'smooth' }), 400)">Reserve VIP</a>
     </div>
   </nav>
 </header>
@@ -892,6 +1165,94 @@
       </div>
     </div>
   </section>
+
+  <div class="vip-reservation-experience" id="vipReservations">
+    <div class="vip-reservation-head">
+      <div>
+        <div class="eyebrow">VIP Reservations</div>
+        <h2>Choose Your Section</h2>
+        <p>Select an event, tap an available section on the floorplan, and enter your guest details before continuing to secure checkout.</p>
+        <div class="ember-line left"></div>
+      </div>
+      <div class="vip-event-select">
+        <label for="vipEventSelect">Event / Date</label>
+        <select id="vipEventSelect"></select>
+      </div>
+    </div>
+
+    <div class="vip-reservation-layout">
+      <div class="fuego-floorplan-card">
+        <div class="fuego-floorplan-wrapper" id="fuegoFloorplanWrapper">
+          <img src="images/fuego-floorplan.png" alt="Fuego VIP Lounge Floor Plan" class="fuego-floorplan-image">
+        </div>
+        <div class="vip-floorplan-legend">
+          <span>Available</span>
+          <span class="sold">Sold / Held</span>
+        </div>
+      </div>
+
+      <aside class="vip-booking-panel" id="vipBookingPanel">
+        <div class="vip-empty-selection" id="vipEmptySelection">Click an available VIP or main floor section to view pricing and reserve.</div>
+        <div id="vipBookingDetails" class="hidden">
+          <div class="vip-booking-title" id="vipSelectedName">VIP 1</div>
+          <div class="vip-booking-meta">
+            <div><span>Event</span><strong id="vipSelectedEvent">Fuego Weekend</strong></div>
+            <div><span>Date</span><strong id="vipSelectedDate">Tonight</strong></div>
+            <div><span>Capacity</span><strong id="vipSelectedCapacity">Up to 10</strong></div>
+            <div><span>Price</span><strong id="vipSelectedPrice">$250</strong></div>
+          </div>
+          <form class="vip-booking-form" id="vipBookingForm" novalidate>
+            <div class="field-row">
+              <label for="vipGuestName">Full Name</label>
+              <input type="text" id="vipGuestName" autocomplete="name" required>
+            </div>
+            <div class="field-row">
+              <label for="vipGuestCount">Number of Guests</label>
+              <input type="number" id="vipGuestCount" min="1" step="1" required>
+            </div>
+            <div class="field-row">
+              <label for="vipGuestPhone">Phone Number</label>
+              <input type="tel" id="vipGuestPhone" autocomplete="tel" inputmode="tel" pattern="[0-9\+\-\(\)\.\s]{7,20}" required>
+            </div>
+            <div class="field-row">
+              <label for="vipServerChoice">Choose Your Server</label>
+              <select id="vipServerChoice" required>
+                <option value="">Select a server</option>
+                <option value="Daniela">Daniela</option>
+                <option value="Pamela">Pamela</option>
+              </select>
+            </div>
+            <div class="vip-tip-panel hidden" id="vipTipPanel">
+              <label for="vipTipAmount">Optional Server Tip</label>
+              <div class="vip-tip-presets" aria-label="Quick tip amounts">
+                <button type="button" class="vip-tip-preset" data-tip-amount="5">$5</button>
+                <button type="button" class="vip-tip-preset" data-tip-amount="10">$10</button>
+                <button type="button" class="vip-tip-preset" data-tip-amount="20">$20</button>
+              </div>
+              <input type="number" id="vipTipAmount" min="0" max="500" step="1" inputmode="decimal" placeholder="Custom amount or leave blank">
+              <div class="vip-tip-payment hidden" id="vipTipPayment">
+                <label for="vipTipMethod">Tip Payment Method</label>
+                <select id="vipTipMethod"></select>
+                <div class="vip-tip-action hidden" id="vipCashAppAction">
+                  <a class="vip-tip-link" id="vipCashAppLink" href="#" target="_blank" rel="noopener">Open Cash App</a>
+                  <p id="vipCashAppInstructions"></p>
+                </div>
+                <div class="vip-tip-action hidden" id="vipZelleAction">
+                  <a class="vip-zelle-qr-link" href="images/daniela-zelle-qr.jpg" target="_blank" rel="noopener" aria-label="Open Daniela's full-size Zelle QR code">
+                    <span class="vip-zelle-qr-frame"><img class="vip-zelle-qr" src="images/daniela-zelle-qr.jpg" alt="Daniela's Zelle QR code"></span>
+                  </a>
+                  <p>Scan or tap the QR to send $<span id="vipZelleTipAmount">0.00</span> to<br><span class="vip-zelle-name">ELIANISS RIVERON SAN MARTIN</span></p>
+                </div>
+                <p class="vip-tip-note">Tips are paid directly to your server and are separate from the Stripe section payment.</p>
+              </div>
+            </div>
+            <button type="submit" class="btn-primary" id="vipCheckoutBtn">Continue To Secure Checkout</button>
+          </form>
+        </div>
+        <div class="vip-reservation-message" id="vipReservationMessage"></div>
+      </aside>
+    </div>
+  </div>
 
   <div class="pricing-cards" id="vipPricing">
     <article class="pricing-card">
@@ -1078,7 +1439,7 @@
 
 <div class="sticky-cta">
   <span>Reserve VIP tonight</span>
-  <a href="#vipPricing" class="btn-primary" onclick="document.getElementById('vipPricing').scrollIntoView({ behavior: 'smooth' })">Reserve VIP</a>
+  <a href="#vipReservations" class="btn-primary" onclick="document.getElementById('vipReservations').scrollIntoView({ behavior: 'smooth' })">Reserve VIP</a>
 </div>
 
 <div class="lightbox-overlay" id="lightboxOverlay">
@@ -1376,6 +1737,382 @@
   }
 
   loadSiteContent();
+
+  // --- Interactive VIP floorplan reservation flow ---
+  const SHOW_HOTSPOTS = false;
+  const HOLD_MINUTES = 10;
+  const STRIPE_LINKS_BY_PRICE = {
+    15000: 'https://book.stripe.com/3cI6oH5my9Znamvbz96Ri00',
+    25000: 'https://book.stripe.com/9B68wPdT44F33Y77iT6Ri03',
+    35000: 'https://book.stripe.com/28EfZhdT41sR7ajbz96Ri02'
+  };
+  const VIP_SERVER_PAYMENTS = {
+    Daniela: {
+      cashApp: { label: 'Cash App', cashtag: '$inadx3', url: 'https://cash.app/$inadx3' },
+      zelle: { label: 'Zelle', accountName: 'ELIANISS RIVERON SAN MARTIN' }
+    },
+    Pamela: {
+      cashApp: { label: 'Cash App', cashtag: '$capellan030', url: 'https://cash.app/$capellan030' }
+    }
+  };
+
+  const fuegoSections = [
+    { id: 'vip-1', name: 'VIP 1', category: 'VIP', defaultCapacity: 10, defaultPrice: 25000, hotspot: { left: 2.5, top: 53.5, width: 11.5, height: 22 } },
+    { id: 'vip-2', name: 'VIP 2', category: 'VIP', defaultCapacity: 10, defaultPrice: 25000, hotspot: { left: 3.5, top: 35.4, width: 10.5, height: 14.8 } },
+    { id: 'vip-3', name: 'VIP 3', category: 'VIP', defaultCapacity: 10, defaultPrice: 25000, hotspot: { left: 4.4, top: 12.4, width: 10, height: 17.4 } },
+    { id: 'vip-4', name: 'VIP 4', category: 'VIP', defaultCapacity: 10, defaultPrice: 25000, hotspot: { left: 27.1, top: 5.1, width: 11.5, height: 15 } },
+    { id: 'vip-5', name: 'VIP 5', category: 'VIP', defaultCapacity: 15, defaultPrice: 35000, hotspot: { left: 45.1, top: 4.2, width: 12.2, height: 15.8 } },
+    { id: 'vip-6', name: 'VIP 6', category: 'VIP', defaultCapacity: 10, defaultPrice: 25000, hotspot: { left: 64.2, top: 5.2, width: 11.2, height: 15 } },
+    { id: 'vip-7', name: 'VIP 7', category: 'VIP', defaultCapacity: 15, defaultPrice: 35000, hotspot: { left: 81.7, top: 45.1, width: 10.1, height: 20.8 } },
+    { id: 'm1', name: 'M1', category: 'Main Floor', defaultCapacity: 6, defaultPrice: 15000, hotspot: { left: 37.2, top: 59.1, width: 10.8, height: 10.1 } },
+    { id: 'm2', name: 'M2', category: 'Main Floor', defaultCapacity: 6, defaultPrice: 15000, hotspot: { left: 52.8, top: 59.2, width: 10.4, height: 9.8 } },
+    { id: 'm3', name: 'M3', category: 'Main Floor', defaultCapacity: 6, defaultPrice: 15000, hotspot: { left: 23.8, top: 45.2, width: 6.4, height: 20.6 } },
+    { id: 'm4', name: 'M4', category: 'Main Floor', defaultCapacity: 6, defaultPrice: 15000, hotspot: { left: 28.3, top: 28.3, width: 12.3, height: 12.8 } },
+    { id: 'm5', name: 'M5', category: 'Main Floor', defaultCapacity: 6, defaultPrice: 15000, hotspot: { left: 44.8, top: 28.3, width: 12.2, height: 12.8 } },
+    { id: 'm6', name: 'M6', category: 'Main Floor', defaultCapacity: 6, defaultPrice: 15000, hotspot: { left: 61.4, top: 28.3, width: 12.1, height: 12.8 } }
+  ];
+
+  const defaultVipEvent = {
+    id: 'fuego-weekend',
+    name: 'Fuego Weekend',
+    slug: 'fuego-weekend',
+    eventDate: '',
+    startTime: '3:00 AM',
+    endTime: '6:00 AM',
+    active: true
+  };
+
+  let vipEvents = [defaultVipEvent];
+  let vipInventory = {};
+  let selectedVipEvent = defaultVipEvent;
+  let selectedVipSection = null;
+
+  const fuegoFloorplanWrapper = document.getElementById('fuegoFloorplanWrapper');
+  const vipEventSelect = document.getElementById('vipEventSelect');
+  const vipEmptySelection = document.getElementById('vipEmptySelection');
+  const vipBookingDetails = document.getElementById('vipBookingDetails');
+  const vipBookingForm = document.getElementById('vipBookingForm');
+  const vipCheckoutBtn = document.getElementById('vipCheckoutBtn');
+  const vipReservationMessage = document.getElementById('vipReservationMessage');
+  const vipServerChoice = document.getElementById('vipServerChoice');
+  const vipTipPanel = document.getElementById('vipTipPanel');
+  const vipTipAmount = document.getElementById('vipTipAmount');
+  const vipTipPayment = document.getElementById('vipTipPayment');
+  const vipTipMethod = document.getElementById('vipTipMethod');
+  const vipCashAppAction = document.getElementById('vipCashAppAction');
+  const vipZelleAction = document.getElementById('vipZelleAction');
+
+  function updateVipTipPayment() {
+    const serverName = vipServerChoice.value;
+    const serverPayments = VIP_SERVER_PAYMENTS[serverName];
+    const tipAmount = Number(vipTipAmount.value);
+    vipTipPanel.classList.toggle('hidden', !serverPayments);
+    document.querySelectorAll('.vip-tip-preset').forEach(button => {
+      button.classList.toggle('active', Number(button.dataset.tipAmount) === tipAmount);
+    });
+
+    if (!serverPayments || !Number.isFinite(tipAmount) || tipAmount <= 0) {
+      vipTipPayment.classList.add('hidden');
+      return;
+    }
+
+    const currentMethod = vipTipMethod.value;
+    vipTipMethod.innerHTML = Object.entries(serverPayments).map(([key, payment]) =>
+      `<option value="${key}">${payment.label}</option>`
+    ).join('');
+    if (serverPayments[currentMethod]) vipTipMethod.value = currentMethod;
+    vipTipPayment.classList.remove('hidden');
+
+    const paymentMethod = vipTipMethod.value;
+    vipCashAppAction.classList.toggle('hidden', paymentMethod !== 'cashApp');
+    vipZelleAction.classList.toggle('hidden', paymentMethod !== 'zelle');
+    document.getElementById('vipZelleTipAmount').textContent = tipAmount.toFixed(2);
+    if (paymentMethod === 'cashApp') {
+      const cashApp = serverPayments.cashApp;
+      document.getElementById('vipCashAppLink').href = cashApp.url;
+      document.getElementById('vipCashAppLink').textContent = `Tip ${serverName} with Cash App`;
+      document.getElementById('vipCashAppInstructions').textContent = `Send $${tipAmount.toFixed(2)} to ${cashApp.cashtag}, then return here to continue checkout.`;
+    }
+  }
+
+  vipServerChoice.addEventListener('change', () => {
+    vipTipAmount.value = '';
+    updateVipTipPayment();
+  });
+  vipTipAmount.addEventListener('input', updateVipTipPayment);
+  vipTipMethod.addEventListener('change', updateVipTipPayment);
+  document.querySelectorAll('.vip-tip-preset').forEach(button => {
+    button.addEventListener('click', () => {
+      vipTipAmount.value = button.dataset.tipAmount;
+      updateVipTipPayment();
+    });
+  });
+
+  if (SHOW_HOTSPOTS) fuegoFloorplanWrapper.classList.add('show-hotspots');
+
+  function formatMoney(cents) {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format((cents || 0) / 100);
+  }
+
+  function formatVipEventDate(event) {
+    if (!event || !event.eventDate) return 'Upcoming';
+    const parsed = new Date(event.eventDate + 'T00:00:00');
+    if (isNaN(parsed)) return event.eventDate;
+    return parsed.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+  }
+
+  function getInventoryForSection(sectionId) {
+    const base = fuegoSections.find(section => section.id === sectionId);
+    return {
+      sectionId,
+      price: base.defaultPrice,
+      capacity: base.defaultCapacity,
+      status: 'available',
+      ...(vipInventory[sectionId] || {})
+    };
+  }
+
+  function setVipMessage(text, type = '') {
+    vipReservationMessage.textContent = text;
+    vipReservationMessage.className = `vip-reservation-message ${type}`.trim();
+  }
+
+  function renderVipHotspots() {
+    fuegoFloorplanWrapper.querySelectorAll('.fuego-section-hotspot').forEach(el => el.remove());
+    fuegoSections.forEach((section) => {
+      const inventory = getInventoryForSection(section.id);
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = `fuego-section-hotspot ${inventory.status || 'available'}`;
+      button.dataset.sectionId = section.id;
+      button.dataset.label = section.name;
+      button.setAttribute('aria-label', `${section.name}, ${inventory.status || 'available'}, ${formatMoney(inventory.price)}`);
+      button.style.left = `${section.hotspot.left}%`;
+      button.style.top = `${section.hotspot.top}%`;
+      button.style.width = `${section.hotspot.width}%`;
+      button.style.height = `${section.hotspot.height}%`;
+      button.disabled = inventory.status === 'sold' || inventory.status === 'held';
+      button.addEventListener('click', () => selectVipSection(section.id));
+      fuegoFloorplanWrapper.appendChild(button);
+    });
+  }
+
+  function renderVipEventSelect() {
+    vipEventSelect.innerHTML = vipEvents.map(event => `
+      <option value="${escapeHtml(event.id)}">${escapeHtml(event.name || 'Fuego Event')} · ${escapeHtml(formatVipEventDate(event))}</option>
+    `).join('');
+    vipEventSelect.value = selectedVipEvent.id;
+  }
+
+  function selectVipSection(sectionId) {
+    const section = fuegoSections.find(item => item.id === sectionId);
+    if (!section) return;
+    const inventory = getInventoryForSection(sectionId);
+    if (inventory.status === 'sold' || inventory.status === 'held') {
+      setVipMessage(`${section.name} is ${inventory.status === 'sold' ? 'sold' : 'temporarily held'}. Please choose another section.`, 'error');
+      return;
+    }
+    selectedVipSection = section;
+    document.querySelectorAll('.fuego-section-hotspot').forEach(el => {
+      el.classList.toggle('selected', el.dataset.sectionId === sectionId);
+    });
+    vipEmptySelection.classList.add('hidden');
+    vipBookingDetails.classList.remove('hidden');
+    document.getElementById('vipSelectedName').textContent = section.name;
+    document.getElementById('vipSelectedEvent').textContent = selectedVipEvent.name || 'Fuego Event';
+    document.getElementById('vipSelectedDate').textContent = formatVipEventDate(selectedVipEvent);
+    document.getElementById('vipSelectedCapacity').textContent = `Up to ${inventory.capacity}`;
+    document.getElementById('vipSelectedPrice').textContent = formatMoney(inventory.price);
+    document.getElementById('vipGuestCount').max = inventory.capacity;
+    document.getElementById('vipGuestCount').value = Math.min(Number(document.getElementById('vipGuestCount').value) || inventory.capacity, inventory.capacity);
+    setVipMessage('');
+  }
+
+  async function loadVipEvents() {
+    try {
+      const snap = await db.collection('vipEvents').where('active', '==', true).get();
+      const events = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      if (events.length) {
+        vipEvents = events.sort((a, b) => String(a.eventDate || '').localeCompare(String(b.eventDate || '')));
+        selectedVipEvent = vipEvents[0];
+      }
+    } catch (err) {
+      console.warn('VIP events unavailable; using default event:', err.message);
+    }
+    renderVipEventSelect();
+    await loadVipInventory();
+  }
+
+  async function loadVipInventory() {
+    vipInventory = {};
+    if (!selectedVipEvent) return;
+    try {
+      const snap = await db.collection('vipEventSections').where('eventId', '==', selectedVipEvent.id).get();
+      snap.docs.forEach(doc => {
+        const item = doc.data();
+        vipInventory[item.sectionId || doc.id.split('__').pop()] = item;
+      });
+    } catch (err) {
+      console.warn('VIP inventory unavailable; using default availability:', err.message);
+    }
+    renderVipHotspots();
+    if (selectedVipSection) selectVipSection(selectedVipSection.id);
+  }
+
+  vipEventSelect.addEventListener('change', async () => {
+    selectedVipEvent = vipEvents.find(event => event.id === vipEventSelect.value) || defaultVipEvent;
+    selectedVipSection = null;
+    vipEmptySelection.classList.remove('hidden');
+    vipBookingDetails.classList.add('hidden');
+    setVipMessage('');
+    await loadVipInventory();
+  });
+
+  async function createStaticReservationHold(payload, inventory) {
+    const eventSectionId = `${payload.eventId}__${payload.sectionId}`;
+    const reservationRef = db.collection('vipReservations').doc();
+    const inventoryRef = db.collection('vipEventSections').doc(eventSectionId);
+    const heldUntil = new Date(Date.now() + HOLD_MINUTES * 60 * 1000);
+
+    await db.runTransaction(async (transaction) => {
+      const inventoryDoc = await transaction.get(inventoryRef);
+      const current = inventoryDoc.exists ? inventoryDoc.data() : {};
+      const status = current.status || 'available';
+      const existingHeldUntil = current.heldUntil && current.heldUntil.toDate ? current.heldUntil.toDate() : null;
+      const holdExpired = status === 'held' && existingHeldUntil && existingHeldUntil.getTime() < Date.now();
+
+      if (status === 'sold' || (status === 'held' && !holdExpired)) {
+        throw new Error('This section was just reserved by another guest. Please choose another available section.');
+      }
+
+      transaction.set(inventoryRef, {
+        eventId: payload.eventId,
+        sectionId: payload.sectionId,
+        price: inventory.price,
+        capacity: inventory.capacity,
+        status: 'held',
+        heldUntil,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+
+      transaction.set(reservationRef, {
+        confirmationNumber: `FUEGO-${Date.now().toString().slice(-6)}`,
+        eventId: payload.eventId,
+        sectionId: payload.sectionId,
+        sectionName: selectedVipSection.name,
+        eventName: selectedVipEvent.name || '',
+        eventDate: selectedVipEvent.eventDate || '',
+        guestName: payload.guestName,
+        guestCount: payload.guestCount,
+        phoneNumber: payload.phoneNumber.replace(/\D/g, ''),
+        serverName: payload.serverName,
+        tipAmountCents: payload.tipAmountCents,
+        tipMethod: payload.tipMethod,
+        tipPaymentStatus: payload.tipAmountCents > 0 ? 'guest-directed' : 'not-requested',
+        createdByUid: auth.currentUser ? auth.currentUser.uid : null,
+        status: 'held',
+        paymentStatus: 'pending',
+        amount: inventory.price,
+        heldAt: firebase.firestore.FieldValue.serverTimestamp(),
+        heldUntil,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    });
+
+    return { reservationId: reservationRef.id };
+  }
+
+  vipBookingForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!selectedVipSection || !selectedVipEvent) return;
+
+    const inventory = getInventoryForSection(selectedVipSection.id);
+    const guestName = document.getElementById('vipGuestName').value.trim();
+    const guestCount = Number(document.getElementById('vipGuestCount').value);
+    const phoneNumber = document.getElementById('vipGuestPhone').value.trim();
+    const serverName = document.getElementById('vipServerChoice').value;
+    const tipAmount = vipTipAmount.value === '' ? 0 : Number(vipTipAmount.value);
+
+    if (!guestName) {
+      setVipMessage('Please enter your full name.', 'error');
+      return;
+    }
+    if (!Number.isInteger(guestCount) || guestCount < 1) {
+      setVipMessage('Please enter the number of guests.', 'error');
+      return;
+    }
+    if (guestCount > inventory.capacity) {
+      setVipMessage(`${selectedVipSection.name} accommodates up to ${inventory.capacity} guests.`, 'error');
+      return;
+    }
+    if (!isValidPhoneNumber(phoneNumber)) {
+      setVipMessage('Please enter a valid phone number.', 'error');
+      return;
+    }
+    if (!['Daniela', 'Pamela'].includes(serverName)) {
+      setVipMessage('Please choose Daniela or Pamela as your server.', 'error');
+      return;
+    }
+    if (!Number.isFinite(tipAmount) || tipAmount < 0 || tipAmount > 500) {
+      setVipMessage('Please enter a tip between $0 and $500.', 'error');
+      return;
+    }
+    const tipMethod = tipAmount > 0 ? vipTipMethod.value : '';
+    if (tipAmount > 0 && !VIP_SERVER_PAYMENTS[serverName][tipMethod]) {
+      setVipMessage('Please choose a valid tip payment method.', 'error');
+      return;
+    }
+
+    const payload = {
+      eventId: selectedVipEvent.id,
+      sectionId: selectedVipSection.id,
+      guestName,
+      guestCount,
+      phoneNumber,
+      serverName,
+      tipAmountCents: Math.round(tipAmount * 100),
+      tipMethod
+    };
+
+    vipCheckoutBtn.disabled = true;
+    vipCheckoutBtn.textContent = 'Preparing Checkout...';
+    setVipMessage('Securing your section while checkout opens...');
+
+    try {
+      const apiResponse = await fetch('/api/reservations/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (apiResponse.ok) {
+        const data = await apiResponse.json();
+        if (data.checkoutUrl) {
+          window.location.href = data.checkoutUrl;
+          return;
+        }
+      }
+
+      if (!auth.currentUser) {
+        await auth.signInAnonymously();
+      }
+      await createStaticReservationHold(payload, inventory);
+      const fallbackStripeUrl = STRIPE_LINKS_BY_PRICE[inventory.price];
+      if (!fallbackStripeUrl) throw new Error('Checkout is not configured for this section price yet.');
+      setVipMessage('Section held. Redirecting to secure checkout...', 'success');
+      window.location.href = fallbackStripeUrl;
+    } catch (err) {
+      console.error(err);
+      setVipMessage(err.message || 'Unable to start checkout. Please try another section.', 'error');
+      await loadVipInventory();
+    } finally {
+      vipCheckoutBtn.disabled = false;
+      vipCheckoutBtn.textContent = 'Continue To Secure Checkout';
+    }
+  });
+
+  loadVipEvents();
 
   // --- VIP Stripe flow placeholders ---
   document.querySelectorAll('.vip-tier-btn').forEach(btn => {

@@ -298,8 +298,34 @@
   .save-status.ok { color: var(--gold); }
   .save-status.err { color: #E07A7A; }
 
+  .vip-admin-grid {
+    display: grid;
+    grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.2fr);
+    gap: 20px;
+    align-items: start;
+  }
+  .vip-admin-card {
+    background: var(--black-soft);
+    border: 1px solid rgba(201,162,40,0.15);
+    border-radius: 8px;
+    padding: 18px;
+  }
+  .status-select {
+    width: 100%;
+    min-width: 110px;
+    background: var(--charcoal);
+    border: 1px solid rgba(245,245,240,0.15);
+    color: var(--off-white);
+    border-radius: 5px;
+    padding: 8px 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+
   @media (max-width: 700px) {
     .field-row, .event-edit-card .field-row-3 { grid-template-columns: 1fr; }
+    .vip-admin-grid { grid-template-columns: 1fr; }
     table, thead, tbody, th, td, tr { display: block; }
     thead { display: none; }
     tr { border-bottom: 1px solid rgba(245,245,240,0.1); padding: 10px 0; }
@@ -382,6 +408,7 @@
     <button class="tab" data-panel="galleryPanel">Gallery</button>
     <button class="tab" data-panel="scanPanel">Scan-In</button>
     <button class="tab" data-panel="portalPanel">Portal Members</button>
+    <button class="tab" data-panel="vipReservationsPanel">VIP Reservations</button>
     <button class="tab" data-panel="galleryMembersPanel">Gallery Members</button>
   </div>
 
@@ -559,6 +586,89 @@
     </div>
   </div>
 
+  <!-- VIP RESERVATIONS PANEL -->
+  <div class="panel" id="vipReservationsPanel">
+    <div class="panel-head">
+      <h2>VIP Reservations</h2>
+      <div>
+        <button class="btn secondary" id="seedVipDefaultsBtn" style="width:auto; margin-left:16px; display:inline-block; padding:8px 14px;">Create Default Event</button>
+        <button class="btn secondary" id="refreshVipReservationsBtn" style="width:auto; margin-left:16px; display:inline-block; padding:8px 14px;">Refresh</button>
+      </div>
+    </div>
+
+    <div class="vip-admin-grid">
+      <div class="vip-admin-card">
+        <div class="field">
+          <label>Event</label>
+          <select id="adminVipEventSelect" class="status-select"></select>
+        </div>
+        <div class="field">
+          <label>Event Name</label>
+          <input type="text" id="adminVipEventName" placeholder="Fuego Saturday Night">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Event Date</label>
+            <input type="date" id="adminVipEventDate">
+          </div>
+          <div class="field">
+            <label>Active</label>
+            <select id="adminVipEventActive" class="status-select">
+              <option value="true">Active</option>
+              <option value="false">Hidden</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn" id="saveVipEventBtn" style="width:auto;">Save Event</button>
+        <span class="save-status" id="vipAdminStatus"></span>
+      </div>
+
+      <div class="vip-admin-card">
+        <div class="panel-head" style="margin-bottom:10px;">
+          <h2 style="font-size:22px;">Event Section Inventory</h2>
+        </div>
+        <div id="vipInventoryTableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Section</th>
+                <th>Capacity</th>
+                <th>Price</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="vipInventoryTableBody"></tbody>
+          </table>
+          <div class="empty-state" id="vipInventoryEmpty" style="display:none;">Create or select an event to manage section inventory.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vip-admin-card" style="margin-top:20px;">
+      <div class="panel-head">
+        <h2 style="font-size:22px;">Reservations</h2>
+        <span class="count" id="vipReservationsCount">0 reservations</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Guest</th>
+            <th>Phone</th>
+            <th>Section</th>
+            <th>Server</th>
+            <th>Tip</th>
+            <th>Guests</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody id="vipReservationsTableBody"></tbody>
+      </table>
+      <div class="empty-state" id="vipReservationsEmpty" style="display:none;">No VIP reservations for this event yet.</div>
+    </div>
+  </div>
+
   <!-- GALLERY MEMBERS PANEL (free "register to unlock the gallery" signups) -->
   <div class="panel" id="galleryMembersPanel">
     <div class="panel-head">
@@ -681,6 +791,7 @@
     loadContent();
     loadGallery();
     loadPortalMembers();
+    loadVipAdmin();
     loadGalleryMembers();
   });
 
@@ -1451,6 +1562,284 @@
       status.textContent = 'Import failed: ' + err.message;
       status.className = 'save-status err';
     }
+  });
+
+  // ---------------- VIP RESERVATIONS ----------------
+  const vipDefaultSections = [
+    { id: 'vip-1', name: 'VIP 1', category: 'VIP', defaultCapacity: 10, defaultPrice: 25000, active: true },
+    { id: 'vip-2', name: 'VIP 2', category: 'VIP', defaultCapacity: 10, defaultPrice: 25000, active: true },
+    { id: 'vip-3', name: 'VIP 3', category: 'VIP', defaultCapacity: 10, defaultPrice: 25000, active: true },
+    { id: 'vip-4', name: 'VIP 4', category: 'VIP', defaultCapacity: 10, defaultPrice: 25000, active: true },
+    { id: 'vip-5', name: 'VIP 5', category: 'VIP', defaultCapacity: 15, defaultPrice: 35000, active: true },
+    { id: 'vip-6', name: 'VIP 6', category: 'VIP', defaultCapacity: 10, defaultPrice: 25000, active: true },
+    { id: 'vip-7', name: 'VIP 7', category: 'VIP', defaultCapacity: 15, defaultPrice: 35000, active: true },
+    { id: 'm1', name: 'M1', category: 'Main Floor', defaultCapacity: 6, defaultPrice: 15000, active: true },
+    { id: 'm2', name: 'M2', category: 'Main Floor', defaultCapacity: 6, defaultPrice: 15000, active: true },
+    { id: 'm3', name: 'M3', category: 'Main Floor', defaultCapacity: 6, defaultPrice: 15000, active: true },
+    { id: 'm4', name: 'M4', category: 'Main Floor', defaultCapacity: 6, defaultPrice: 15000, active: true },
+    { id: 'm5', name: 'M5', category: 'Main Floor', defaultCapacity: 6, defaultPrice: 15000, active: true },
+    { id: 'm6', name: 'M6', category: 'Main Floor', defaultCapacity: 6, defaultPrice: 15000, active: true }
+  ];
+
+  let adminVipEvents = [];
+  let adminVipInventory = [];
+
+  function formatAdminMoney(cents) {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format((cents || 0) / 100);
+  }
+
+  function selectedAdminVipEventId() {
+    return document.getElementById('adminVipEventSelect').value;
+  }
+
+  async function loadVipAdmin() {
+    await loadAdminVipEvents();
+    await loadAdminVipInventory();
+    await loadAdminVipReservations();
+  }
+
+  async function loadAdminVipEvents() {
+    const select = document.getElementById('adminVipEventSelect');
+    const status = document.getElementById('vipAdminStatus');
+    try {
+      const snap = await db.collection('vipEvents').orderBy('eventDate', 'desc').limit(100).get();
+      adminVipEvents = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (err) {
+      console.warn('Failed to load VIP events:', err.message);
+      adminVipEvents = [];
+      status.textContent = 'Could not load VIP events: ' + err.message;
+      status.className = 'save-status err';
+    }
+
+    if (!adminVipEvents.length) {
+      select.innerHTML = '<option value="">No events yet</option>';
+      document.getElementById('adminVipEventName').value = '';
+      document.getElementById('adminVipEventDate').value = '';
+      document.getElementById('adminVipEventActive').value = 'true';
+      return;
+    }
+
+    select.innerHTML = adminVipEvents.map(event => `
+      <option value="${escapeAttr(event.id)}">${escapeHtml(event.name || event.id)}${event.eventDate ? ` · ${escapeHtml(event.eventDate)}` : ''}</option>
+    `).join('');
+    renderSelectedAdminVipEvent();
+  }
+
+  function renderSelectedAdminVipEvent() {
+    const event = adminVipEvents.find(item => item.id === selectedAdminVipEventId());
+    document.getElementById('adminVipEventName').value = event ? (event.name || '') : '';
+    document.getElementById('adminVipEventDate').value = event ? (event.eventDate || '') : '';
+    document.getElementById('adminVipEventActive').value = event && event.active === false ? 'false' : 'true';
+  }
+
+  async function seedVipDefaults() {
+    const status = document.getElementById('vipAdminStatus');
+    status.textContent = 'Creating default event...';
+    status.className = 'save-status';
+    const eventId = `fuego-${new Date().toISOString().slice(0, 10)}`;
+    const batch = db.batch();
+    const eventRef = db.collection('vipEvents').doc(eventId);
+    batch.set(eventRef, {
+      name: 'Fuego Weekend',
+      slug: eventId,
+      eventDate: new Date().toISOString().slice(0, 10),
+      startTime: '3:00 AM',
+      endTime: '6:00 AM',
+      active: true,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+
+    vipDefaultSections.forEach((section) => {
+      batch.set(db.collection('vipSections').doc(section.id), {
+        ...section,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+      batch.set(db.collection('vipEventSections').doc(`${eventId}__${section.id}`), {
+        eventId,
+        sectionId: section.id,
+        price: section.defaultPrice,
+        capacity: section.defaultCapacity,
+        status: 'available',
+        heldUntil: null,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+    });
+
+    try {
+      await batch.commit();
+      status.textContent = 'Default VIP event created ✓';
+      status.className = 'save-status ok';
+      await loadVipAdmin();
+      document.getElementById('adminVipEventSelect').value = eventId;
+      renderSelectedAdminVipEvent();
+      await loadAdminVipInventory();
+      await loadAdminVipReservations();
+    } catch (err) {
+      status.textContent = 'Create failed: ' + err.message;
+      status.className = 'save-status err';
+    }
+  }
+
+  async function saveVipEvent() {
+    const eventId = selectedAdminVipEventId() || `fuego-${Date.now()}`;
+    const name = document.getElementById('adminVipEventName').value.trim();
+    const eventDate = document.getElementById('adminVipEventDate').value;
+    const active = document.getElementById('adminVipEventActive').value === 'true';
+    const status = document.getElementById('vipAdminStatus');
+    if (!name || !eventDate) {
+      status.textContent = 'Enter an event name and date.';
+      status.className = 'save-status err';
+      return;
+    }
+    status.textContent = 'Saving...';
+    status.className = 'save-status';
+    try {
+      await db.collection('vipEvents').doc(eventId).set({
+        name,
+        slug: eventId,
+        eventDate,
+        startTime: '3:00 AM',
+        endTime: '6:00 AM',
+        active,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+      const inventorySnap = await db.collection('vipEventSections').where('eventId', '==', eventId).limit(1).get();
+      if (inventorySnap.empty) {
+        const batch = db.batch();
+        vipDefaultSections.forEach((section) => {
+          batch.set(db.collection('vipEventSections').doc(`${eventId}__${section.id}`), {
+            eventId,
+            sectionId: section.id,
+            price: section.defaultPrice,
+            capacity: section.defaultCapacity,
+            status: 'available',
+            heldUntil: null,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+        });
+        await batch.commit();
+      }
+      status.textContent = 'Event saved ✓';
+      status.className = 'save-status ok';
+      await loadVipAdmin();
+      document.getElementById('adminVipEventSelect').value = eventId;
+      renderSelectedAdminVipEvent();
+    } catch (err) {
+      status.textContent = 'Save failed: ' + err.message;
+      status.className = 'save-status err';
+    }
+  }
+
+  async function loadAdminVipInventory() {
+    const eventId = selectedAdminVipEventId();
+    const body = document.getElementById('vipInventoryTableBody');
+    const empty = document.getElementById('vipInventoryEmpty');
+    if (!eventId) {
+      body.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    try {
+      const snap = await db.collection('vipEventSections').where('eventId', '==', eventId).get();
+      adminVipInventory = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (err) {
+      body.innerHTML = '';
+      empty.textContent = 'Could not load inventory: ' + err.message;
+      empty.style.display = 'block';
+      return;
+    }
+    if (!adminVipInventory.length) {
+      body.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+    const bySection = new Map(vipDefaultSections.map(section => [section.id, section]));
+    adminVipInventory.sort((a, b) => (bySection.get(a.sectionId)?.name || a.sectionId).localeCompare(bySection.get(b.sectionId)?.name || b.sectionId));
+    body.innerHTML = adminVipInventory.map((item) => {
+      const section = bySection.get(item.sectionId) || {};
+      return `
+        <tr>
+          <td data-label="Section">${escapeHtml(section.name || item.sectionId)}</td>
+          <td data-label="Capacity">${Number(item.capacity || section.defaultCapacity || 0)}</td>
+          <td data-label="Price">${formatAdminMoney(item.price || section.defaultPrice || 0)}</td>
+          <td data-label="Status">
+            <select class="status-select" onchange="updateVipSectionStatus('${escapeAttr(item.id)}', this.value)">
+              ${['available', 'held', 'sold'].map(status => `<option value="${status}" ${status === (item.status || 'available') ? 'selected' : ''}>${status}</option>`).join('')}
+            </select>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  async function updateVipSectionStatus(inventoryId, status) {
+    await db.collection('vipEventSections').doc(inventoryId).set({
+      status,
+      heldUntil: status === 'held' ? new Date(Date.now() + 10 * 60 * 1000) : null,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    loadAdminVipInventory();
+  }
+
+  async function loadAdminVipReservations() {
+    const eventId = selectedAdminVipEventId();
+    const body = document.getElementById('vipReservationsTableBody');
+    const empty = document.getElementById('vipReservationsEmpty');
+    if (!eventId) {
+      body.innerHTML = '';
+      empty.style.display = 'block';
+      document.getElementById('vipReservationsCount').textContent = '0 reservations';
+      return;
+    }
+    let reservations = [];
+    try {
+      const snap = await db.collection('vipReservations').where('eventId', '==', eventId).limit(500).get();
+      reservations = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (err) {
+      body.innerHTML = '';
+      empty.textContent = 'Could not load reservations: ' + err.message;
+      empty.style.display = 'block';
+      return;
+    }
+    reservations.sort((a, b) => {
+      const at = a.createdAt && a.createdAt.toMillis ? a.createdAt.toMillis() : 0;
+      const bt = b.createdAt && b.createdAt.toMillis ? b.createdAt.toMillis() : 0;
+      return bt - at;
+    });
+    document.getElementById('vipReservationsCount').textContent = `${reservations.length} reservation${reservations.length === 1 ? '' : 's'}`;
+    if (!reservations.length) {
+      body.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+    body.innerHTML = reservations.map((reservation) => {
+      const created = reservation.createdAt && reservation.createdAt.toDate ? reservation.createdAt.toDate().toLocaleString() : 'N/A';
+      return `
+        <tr>
+          <td data-label="Guest">${escapeHtml(reservation.guestName || '')}</td>
+          <td data-label="Phone" class="contact-cell">${escapeHtml(reservation.phoneNumber || '')}</td>
+          <td data-label="Section">${escapeHtml(reservation.sectionName || reservation.sectionId || '')}</td>
+          <td data-label="Server">${escapeHtml(reservation.serverName || 'Not selected')}</td>
+          <td data-label="Tip">${reservation.tipAmountCents ? `${formatAdminMoney(reservation.tipAmountCents)} via ${escapeHtml(reservation.tipMethod === 'cashApp' ? 'Cash App' : reservation.tipMethod || '')}` : 'None'}</td>
+          <td data-label="Guests">${Number(reservation.guestCount || 0)}</td>
+          <td data-label="Amount">${formatAdminMoney(reservation.amount || 0)}</td>
+          <td data-label="Status"><span class="chip">${escapeHtml(reservation.status || '')}</span> <span class="chip">${escapeHtml(reservation.paymentStatus || '')}</span></td>
+          <td data-label="Created">${created}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  document.getElementById('seedVipDefaultsBtn').addEventListener('click', seedVipDefaults);
+  document.getElementById('saveVipEventBtn').addEventListener('click', saveVipEvent);
+  document.getElementById('refreshVipReservationsBtn').addEventListener('click', loadVipAdmin);
+  document.getElementById('adminVipEventSelect').addEventListener('change', async () => {
+    renderSelectedAdminVipEvent();
+    await loadAdminVipInventory();
+    await loadAdminVipReservations();
   });
 
   // ---------------- helpers ----------------
