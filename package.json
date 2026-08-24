@@ -1,0 +1,20 @@
+{
+  "name": "fuego-vip-lounge",
+  "version": "1.0.0",
+  "description": "Static site for Fuego VIP Lounge (Tampa nightclub + hookah lounge)",
+  "scripts": {
+    "dev": "python3 -m http.server 8000",
+    "lint": "echo 'No linter configured for static HTML project'"
+  },
+  "keywords": [
+    "nightclub",
+    "vip",
+    "lounge",
+    "tampa"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
+  }
+}
