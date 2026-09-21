@@ -224,6 +224,25 @@
     color: var(--gold);
   }
 
+  .status-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    border: 1px solid transparent;
+  }
+  .status-badge.available { background: rgba(46,160,67,0.12); color: #4ADE80; border-color: rgba(74,222,128,0.3); }
+  .status-badge.held { background: rgba(201,162,40,0.12); color: var(--gold); border-color: rgba(201,162,40,0.35); }
+  .status-badge.sold { background: rgba(139,26,26,0.18); color: #E07A7A; border-color: rgba(224,122,122,0.35); }
+  .status-badge.disabled { background: rgba(245,245,240,0.06); color: var(--off-white-dim); border-color: rgba(245,245,240,0.15); }
+  .stat-tile { min-width: 140px; }
+  .stat-tile .stat-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--off-white-dim); }
+  .stat-tile .stat-value { font-family: var(--display); font-size: 26px; color: var(--off-white); margin-top: 2px; }
+  .stat-tile .stat-value.gold { color: var(--gold); }
+
   .row-actions { display: flex; gap: 8px; }
   .row-actions button {
     font-family: var(--mono);
@@ -383,6 +402,7 @@
     <button class="tab" data-panel="scanPanel">Scan-In</button>
     <button class="tab" data-panel="portalPanel">Portal Members</button>
     <button class="tab" data-panel="galleryMembersPanel">Gallery Members</button>
+    <button class="tab" data-panel="reservationsPanel">VIP Reservations</button>
   </div>
 
   <!-- GUEST LIST PANEL -->
@@ -618,6 +638,101 @@
       <div class="empty-state" id="galleryMembersEmpty" style="display:none;">No one has registered for free gallery access yet.</div>
     </div>
   </div>
+
+  <!-- VIP RESERVATIONS PANEL -->
+  <div class="panel" id="reservationsPanel">
+    <div class="panel-head">
+      <h2>VIP Reservations</h2>
+      <div class="field" style="margin:0; min-width:220px;">
+        <select id="resEventSelect" style="width:100%; background:var(--charcoal); border:1px solid rgba(245,245,240,0.15); color:var(--off-white); padding:9px 10px; border-radius:5px; font-family:var(--body); font-size:13px;"></select>
+      </div>
+    </div>
+
+    <div id="resSummary" class="event-edit-card" style="display:flex; flex-wrap:wrap; gap:24px; margin-bottom:20px;"></div>
+
+    <div class="event-edit-card" style="margin-bottom:24px;">
+      <div class="panel-head" style="margin-bottom:14px;">
+        <h2 style="font-size:18px;">Create New Event</h2>
+      </div>
+      <div class="field-row" style="margin-bottom:12px;">
+        <div class="field">
+          <label>Event Name</label>
+          <input type="text" id="resNewName" placeholder="Fuego Saturday Night">
+        </div>
+        <div class="field">
+          <label>Slug (unique, URL-safe)</label>
+          <input type="text" id="resNewSlug" placeholder="fuego-saturday-aug-29">
+        </div>
+      </div>
+      <div class="field-row" style="margin-bottom:12px;">
+        <div class="field">
+          <label>Event Date</label>
+          <input type="date" id="resNewDate">
+        </div>
+        <div class="field">
+          <label>Start / End Time</label>
+          <div style="display:flex; gap:8px;">
+            <input type="time" id="resNewStart" value="22:00">
+            <input type="time" id="resNewEnd" value="06:00">
+          </div>
+        </div>
+      </div>
+      <button class="btn secondary" id="resCreateEventBtn" style="width:auto; padding:10px 16px;">Create Event + Seed 13 Sections</button>
+      <span class="save-status" id="resCreateEventStatus"></span>
+    </div>
+
+    <div class="panel-head" style="margin-bottom:14px;">
+      <h2 style="font-size:20px;">Current Inventory</h2>
+      <span class="count" id="resInventoryCount">0 sections</span>
+    </div>
+    <div id="resInventoryWrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Section</th>
+            <th>Capacity</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Guest</th>
+            <th>Guests</th>
+            <th>Phone</th>
+            <th>Payment</th>
+            <th>Confirmation</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="resInventoryBody"></tbody>
+      </table>
+      <div class="empty-state" id="resInventoryEmpty" style="display:none;">No sections seeded for this event yet. Use "Create Event" above, or select a different event.</div>
+    </div>
+
+    <div class="panel-head" style="margin:32px 0 14px;">
+      <h2 style="font-size:20px;">Reservation History</h2>
+      <span class="count" id="resHistoryCount">0 reservations</span>
+    </div>
+    <div class="field" style="max-width:340px; margin-bottom:14px;">
+      <label>Search (name, phone, confirmation #, section)</label>
+      <input type="text" id="resHistorySearch" placeholder="Search reservations...">
+    </div>
+    <div id="resHistoryWrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Booked At</th>
+            <th>Section</th>
+            <th>Guest</th>
+            <th>Phone</th>
+            <th>Guests</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Confirmation</th>
+          </tr>
+        </thead>
+        <tbody id="resHistoryBody"></tbody>
+      </table>
+      <div class="empty-state" id="resHistoryEmpty" style="display:none;">No reservation history for this event yet.</div>
+    </div>
+  </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -682,6 +797,7 @@
     loadGallery();
     loadPortalMembers();
     loadGalleryMembers();
+    initReservationsTab();
   });
 
   // ---------------- TABS ----------------
@@ -1452,6 +1568,277 @@
       status.className = 'save-status err';
     }
   });
+
+  // ---------------- VIP RESERVATIONS ----------------
+  const FUEGO_BOOTH_ORDER = ['vip-1','vip-2','vip-3','vip-4','vip-5','vip-6','vip-7','m1','m2','m3','m4','m5','m6'];
+  const FUEGO_BOOTH_NAMES = {
+    'vip-1': 'VIP 1', 'vip-2': 'VIP 2', 'vip-3': 'VIP 3', 'vip-4': 'VIP 4',
+    'vip-5': 'VIP 5', 'vip-6': 'VIP 6', 'vip-7': 'VIP 7',
+    'm1': 'M1', 'm2': 'M2', 'm3': 'M3', 'm4': 'M4', 'm5': 'M5', 'm6': 'M6',
+  };
+
+  let resEventsCache = [];
+  let resSelectedEventId = null;
+  let resEventBoothsCache = [];
+  let resReservationsCache = [];
+  let unsubResEventBooths = null;
+  let unsubResReservations = null;
+  let resInitialized = false;
+
+  function formatCents(cents) {
+    return '$' + ((cents || 0) / 100).toLocaleString('en-US');
+  }
+  function formatPhoneDisplay(digits) {
+    if (!digits) return '';
+    const d = String(digits).replace(/\D/g, '');
+    if (d.length === 10) return `(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`;
+    return digits;
+  }
+  function formatMillis(ms) {
+    if (!ms) return 'N/A';
+    return new Date(ms).toLocaleString();
+  }
+
+  async function adminApiCall(path, body) {
+    const idToken = await auth.currentUser.getIdToken();
+    const res = await fetch(path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + idToken },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Request failed.');
+    return data;
+  }
+
+  function initReservationsTab() {
+    if (resInitialized) return;
+    resInitialized = true;
+
+    db.collection('events').orderBy('eventDate', 'desc').onSnapshot((snap) => {
+      resEventsCache = snap.docs.map(d => d.data());
+      const select = document.getElementById('resEventSelect');
+      const previousValue = resSelectedEventId;
+      select.innerHTML = resEventsCache.map(ev =>
+        `<option value="${escapeAttr(ev.id)}">${escapeHtml(ev.name)} — ${escapeHtml(ev.eventDate)}${ev.active ? '' : ' (inactive)'}</option>`
+      ).join('');
+
+      if (!resEventsCache.length) {
+        resSelectedEventId = null;
+        renderResInventory();
+        renderResHistory();
+        renderResSummary();
+        return;
+      }
+
+      const stillExists = resEventsCache.some(ev => ev.id === previousValue);
+      resSelectedEventId = stillExists ? previousValue : resEventsCache[0].id;
+      select.value = resSelectedEventId;
+      subscribeResEvent(resSelectedEventId);
+    }, (err) => {
+      console.warn('Failed to load events:', err.message);
+    });
+
+    document.getElementById('resEventSelect').addEventListener('change', (e) => {
+      resSelectedEventId = e.target.value;
+      subscribeResEvent(resSelectedEventId);
+    });
+
+    document.getElementById('resHistorySearch').addEventListener('input', renderResHistory);
+
+    document.getElementById('resCreateEventBtn').addEventListener('click', async () => {
+      const status = document.getElementById('resCreateEventStatus');
+      const name = document.getElementById('resNewName').value.trim();
+      const slug = document.getElementById('resNewSlug').value.trim();
+      const eventDate = document.getElementById('resNewDate').value;
+      const startTime = document.getElementById('resNewStart').value;
+      const endTime = document.getElementById('resNewEnd').value;
+
+      if (!name || !slug || !eventDate) {
+        status.textContent = 'Name, slug, and date are required.';
+        status.className = 'save-status err';
+        return;
+      }
+
+      status.textContent = 'Creating event and seeding 13 sections...';
+      status.className = 'save-status';
+      try {
+        const data = await adminApiCall('/api/admin/create-event', { name, slug, eventDate, startTime, endTime });
+        status.textContent = `Created "${data.event.name}" with 13 sections.`;
+        status.className = 'save-status ok';
+        document.getElementById('resNewName').value = '';
+        document.getElementById('resNewSlug').value = '';
+        resSelectedEventId = slug;
+      } catch (err) {
+        status.textContent = err.message;
+        status.className = 'save-status err';
+      }
+    });
+  }
+
+  function subscribeResEvent(eventId) {
+    if (unsubResEventBooths) unsubResEventBooths();
+    if (unsubResReservations) unsubResReservations();
+    resEventBoothsCache = [];
+    resReservationsCache = [];
+
+    if (!eventId) {
+      renderResInventory();
+      renderResHistory();
+      renderResSummary();
+      return;
+    }
+
+    unsubResEventBooths = db.collection('eventBooths').where('eventId', '==', eventId).onSnapshot((snap) => {
+      resEventBoothsCache = snap.docs.map(d => d.data());
+      renderResInventory();
+      renderResSummary();
+    }, (err) => console.warn('Failed to load event booths:', err.message));
+
+    unsubResReservations = db.collection('reservations').where('eventId', '==', eventId).orderBy('createdAt', 'desc').onSnapshot((snap) => {
+      resReservationsCache = snap.docs.map(d => d.data());
+      renderResInventory();
+      renderResHistory();
+      renderResSummary();
+    }, (err) => console.warn('Failed to load reservations:', err.message));
+  }
+
+  function reservationFor(eventBooth) {
+    if (!eventBooth.reservationId) return null;
+    return resReservationsCache.find(r => r.id === eventBooth.reservationId) || null;
+  }
+
+  function renderResSummary() {
+    const wrap = document.getElementById('resSummary');
+    const total = resEventBoothsCache.length;
+    const available = resEventBoothsCache.filter(b => b.status === 'available').length;
+    const held = resEventBoothsCache.filter(b => b.status === 'held').length;
+    const sold = resEventBoothsCache.filter(b => b.status === 'sold').length;
+    const revenue = resReservationsCache.filter(r => r.status === 'paid').reduce((sum, r) => sum + (r.amount || 0), 0);
+    const potential = resEventBoothsCache.filter(b => b.status === 'available').reduce((sum, b) => sum + (b.price || 0), 0);
+
+    const tiles = [
+      ['Total Sections', total, ''],
+      ['Available', available, ''],
+      ['Held', held, ''],
+      ['Sold', sold, ''],
+      ['Revenue Collected', formatCents(revenue), 'gold'],
+      ['Potential Remaining', formatCents(potential), ''],
+    ];
+    wrap.innerHTML = tiles.map(([label, value, cls]) => `
+      <div class="stat-tile">
+        <div class="stat-label">${label}</div>
+        <div class="stat-value ${cls}">${value}</div>
+      </div>
+    `).join('');
+  }
+
+  function renderResInventory() {
+    const body = document.getElementById('resInventoryBody');
+    const empty = document.getElementById('resInventoryEmpty');
+    const count = document.getElementById('resInventoryCount');
+    count.textContent = `${resEventBoothsCache.length} section${resEventBoothsCache.length === 1 ? '' : 's'}`;
+
+    if (!resEventBoothsCache.length) {
+      body.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    const sorted = [...resEventBoothsCache].sort((a, b) => FUEGO_BOOTH_ORDER.indexOf(a.boothId) - FUEGO_BOOTH_ORDER.indexOf(b.boothId));
+
+    body.innerHTML = sorted.map(booth => {
+      const reservation = reservationFor(booth);
+      const name = FUEGO_BOOTH_NAMES[booth.boothId] || booth.boothId;
+      let statusHtml = `<span class="status-badge ${booth.status}">${booth.status}</span>`;
+      if (booth.status === 'held' && booth.heldUntil) {
+        statusHtml += `<div style="font-size:11px; color:var(--off-white-dim); margin-top:4px;">Expires ${new Date(booth.heldUntil).toLocaleTimeString()}</div>`;
+      }
+
+      const guestName = reservation ? escapeHtml(reservation.guestName) : '—';
+      const guestCount = reservation ? `${reservation.guestCount} / ${booth.capacity}` : `— / ${booth.capacity}`;
+      const phone = reservation ? formatPhoneDisplay(reservation.phoneNumber) : '—';
+      const payment = reservation ? (reservation.paymentStatus === 'paid' ? 'PAID' : 'Pending') : '—';
+      const confirmation = reservation ? reservation.confirmationNumber : '—';
+
+      const showRelease = booth.status === 'held' || booth.status === 'sold';
+      const actions = showRelease
+        ? `<button type="button" class="release-booth-btn" data-event="${escapeAttr(booth.eventId)}" data-booth="${escapeAttr(booth.boothId)}">Release</button>`
+        : '';
+
+      return `
+        <tr>
+          <td data-label="Section"><strong>${escapeHtml(name)}</strong></td>
+          <td data-label="Capacity">${booth.capacity}</td>
+          <td data-label="Price">${formatCents(booth.price)}</td>
+          <td data-label="Status">${statusHtml}</td>
+          <td data-label="Guest">${guestName}</td>
+          <td data-label="Guests">${guestCount}</td>
+          <td data-label="Phone" class="contact-cell">${phone}</td>
+          <td data-label="Payment">${payment}</td>
+          <td data-label="Confirmation" class="contact-cell">${confirmation}</td>
+          <td data-label="Actions" class="row-actions">${actions}</td>
+        </tr>
+      `;
+    }).join('');
+
+    document.querySelectorAll('.release-booth-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm(`Release ${FUEGO_BOOTH_NAMES[btn.dataset.booth] || btn.dataset.booth} back to available? This cancels any attached reservation.`)) return;
+        btn.disabled = true;
+        btn.textContent = 'Releasing...';
+        try {
+          await adminApiCall('/api/admin/booth-action', { action: 'release', eventId: btn.dataset.event, boothId: btn.dataset.booth });
+        } catch (err) {
+          alert('Failed to release section: ' + err.message);
+          btn.disabled = false;
+          btn.textContent = 'Release';
+        }
+      });
+    });
+  }
+
+  function renderResHistory() {
+    const body = document.getElementById('resHistoryBody');
+    const empty = document.getElementById('resHistoryEmpty');
+    const count = document.getElementById('resHistoryCount');
+    const search = (document.getElementById('resHistorySearch').value || '').trim().toLowerCase();
+
+    let list = resReservationsCache;
+    if (search) {
+      list = list.filter(r =>
+        (r.guestName || '').toLowerCase().includes(search) ||
+        (r.phoneNumber || '').includes(search) ||
+        (r.confirmationNumber || '').toLowerCase().includes(search) ||
+        (r.boothId || '').toLowerCase().includes(search)
+      );
+    }
+
+    count.textContent = `${list.length} reservation${list.length === 1 ? '' : 's'}`;
+
+    if (!list.length) {
+      body.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    const statusLabel = { held: 'Held', pending_payment: 'Pending', paid: 'Paid', expired: 'Expired', cancelled: 'Cancelled' };
+
+    body.innerHTML = list.map(r => `
+      <tr>
+        <td data-label="Booked At">${formatMillis(r.createdAt)}</td>
+        <td data-label="Section">${FUEGO_BOOTH_NAMES[r.boothId] || r.boothId}</td>
+        <td data-label="Guest">${escapeHtml(r.guestName)}</td>
+        <td data-label="Phone" class="contact-cell">${formatPhoneDisplay(r.phoneNumber)}</td>
+        <td data-label="Guests">${r.guestCount}</td>
+        <td data-label="Amount">${formatCents(r.amount)}</td>
+        <td data-label="Status"><span class="status-badge ${r.status === 'paid' ? 'sold' : r.status === 'held' ? 'held' : 'disabled'}">${statusLabel[r.status] || r.status}</span></td>
+        <td data-label="Confirmation" class="contact-cell">${r.confirmationNumber}</td>
+      </tr>
+    `).join('');
+  }
 
   // ---------------- helpers ----------------
   function escapeHtml(str) {

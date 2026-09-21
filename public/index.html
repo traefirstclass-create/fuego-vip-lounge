@@ -893,6 +893,36 @@
     </div>
   </section>
 
+  <section id="fuegoInteractiveFloorPlan" style="margin: 3rem 0;">
+    <iframe
+      id="fuegoReserveFrame"
+      src="/reserve"
+      title="Fuego VIP Lounge interactive floor plan — reserve your section"
+      loading="lazy"
+      style="width:100%; border:0; border-radius:16px; min-height:900px; display:block; background:#0a0908;"
+    ></iframe>
+  </section>
+  <script>
+    (function () {
+      var frame = document.getElementById('fuegoReserveFrame');
+      function resize() {
+        try {
+          var doc = frame.contentWindow && frame.contentWindow.document;
+          if (doc && doc.body) frame.style.height = doc.body.scrollHeight + 'px';
+        } catch (e) {
+          // Cross-origin preview environments fall back to the min-height above.
+        }
+      }
+      frame.addEventListener('load', function () {
+        resize();
+        try {
+          new ResizeObserver(resize).observe(frame.contentWindow.document.body);
+        } catch (e) {}
+      });
+      window.addEventListener('resize', resize);
+    })();
+  </script>
+
   <div class="pricing-cards" id="vipPricing">
     <article class="pricing-card">
       <h3>VIP Section</h3>
