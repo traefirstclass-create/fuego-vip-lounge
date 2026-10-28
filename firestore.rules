@@ -92,6 +92,9 @@ service cloud.firestore {
                               request.auth != null
                               && request.resource.data.status == 'held'
                               && request.resource.data.keys().hasAll(['eventId', 'sectionId', 'price', 'capacity', 'status', 'heldUntil', 'updatedAt'])
+                              && request.resource.data.heldUntil is timestamp
+                              && request.resource.data.heldUntil > request.time
+                              && request.resource.data.heldUntil <= request.time + duration.value(5, 'm')
                             );
       allow delete: if isAdmin();
     }

@@ -1565,6 +1565,7 @@
   });
 
   // ---------------- VIP RESERVATIONS ----------------
+  const VIP_HOLD_MINUTES = 5;
   const vipDefaultSections = [
     { id: 'vip-1', name: 'VIP 1', category: 'VIP', defaultCapacity: 10, defaultPrice: 25000, active: true },
     { id: 'vip-2', name: 'VIP 2', category: 'VIP', defaultCapacity: 10, defaultPrice: 25000, active: true },
@@ -1742,7 +1743,22 @@
     }
     try {
       const snap = await db.collection('vipEventSections').where('eventId', '==', eventId).get();
-      adminVipInventory = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const expiredRefs = [];
+      adminVipInventory = snap.docs.map(doc => {
+        const item = { id: doc.id, ...doc.data() };
+        const heldUntil = item.heldUntil && item.heldUntil.toDate ? item.heldUntil.toDate() : null;
+        if (item.status === 'held' && heldUntil && heldUntil.getTime() <= Date.now()) {
+          item.status = 'available';
+          item.heldUntil = null;
+          expiredRefs.push(doc.ref);
+        }
+        return item;
+      });
+      await Promise.all(expiredRefs.map(ref => ref.set({
+        status: 'available',
+        heldUntil: null,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true })));
     } catch (err) {
       body.innerHTML = '';
       empty.textContent = 'Could not load inventory: ' + err.message;
@@ -1777,7 +1793,7 @@
   async function updateVipSectionStatus(inventoryId, status) {
     await db.collection('vipEventSections').doc(inventoryId).set({
       status,
-      heldUntil: status === 'held' ? new Date(Date.now() + 10 * 60 * 1000) : null,
+      heldUntil: status === 'held' ? new Date(Date.now() + VIP_HOLD_MINUTES * 60 * 1000) : null,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
     loadAdminVipInventory();
@@ -1817,6 +1833,12 @@
     empty.style.display = 'none';
     body.innerHTML = reservations.map((reservation) => {
       const created = reservation.createdAt && reservation.createdAt.toDate ? reservation.createdAt.toDate().toLocaleString() : 'N/A';
+      const heldUntil = reservation.heldUntil && reservation.heldUntil.toDate ? reservation.heldUntil.toDate() : null;
+      const isExpired = reservation.status === 'held'
+        && reservation.paymentStatus === 'pending'
+        && heldUntil
+        && heldUntil.getTime() <= Date.now();
+      const reservationStatus = isExpired ? 'expired' : (reservation.status || '');
       return `
         <tr>
           <td data-label="Guest">${escapeHtml(reservation.guestName || '')}</td>
@@ -1826,7 +1848,7 @@
           <td data-label="Tip">${reservation.tipAmountCents ? `${formatAdminMoney(reservation.tipAmountCents)} via ${escapeHtml(reservation.tipMethod === 'cashApp' ? 'Cash App' : reservation.tipMethod || '')}` : 'None'}</td>
           <td data-label="Guests">${Number(reservation.guestCount || 0)}</td>
           <td data-label="Amount">${formatAdminMoney(reservation.amount || 0)}</td>
-          <td data-label="Status"><span class="chip">${escapeHtml(reservation.status || '')}</span> <span class="chip">${escapeHtml(reservation.paymentStatus || '')}</span></td>
+          <td data-label="Status"><span class="chip">${escapeHtml(reservationStatus)}</span> <span class="chip">${escapeHtml(reservation.paymentStatus || '')}</span></td>
           <td data-label="Created">${created}</td>
         </tr>
       `;
@@ -1841,6 +1863,12 @@
     await loadAdminVipInventory();
     await loadAdminVipReservations();
   });
+  setInterval(() => {
+    if (auth.currentUser && document.getElementById('vipReservationsPanel').classList.contains('active')) {
+      loadAdminVipInventory();
+      loadAdminVipReservations();
+    }
+  }, 15000);
 
   // ---------------- helpers ----------------
   function escapeHtml(str) {

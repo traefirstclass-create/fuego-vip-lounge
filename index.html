@@ -1740,7 +1740,7 @@
 
   // --- Interactive VIP floorplan reservation flow ---
   const SHOW_HOTSPOTS = false;
-  const HOLD_MINUTES = 10;
+  const HOLD_MINUTES = 5;
   const STRIPE_LINKS_BY_PRICE = {
     15000: 'https://book.stripe.com/3cI6oH5my9Znamvbz96Ri00',
     25000: 'https://book.stripe.com/9B68wPdT44F33Y77iT6Ri03',
@@ -1861,15 +1861,28 @@
     return parsed.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
   }
 
+  function vipDateValue(value) {
+    if (!value) return null;
+    if (value.toDate) return value.toDate();
+    const parsed = value instanceof Date ? value : new Date(value);
+    return isNaN(parsed.getTime()) ? null : parsed;
+  }
+
   function getInventoryForSection(sectionId) {
     const base = fuegoSections.find(section => section.id === sectionId);
-    return {
+    const inventory = {
       sectionId,
       price: base.defaultPrice,
       capacity: base.defaultCapacity,
       status: 'available',
       ...(vipInventory[sectionId] || {})
     };
+    const heldUntil = vipDateValue(inventory.heldUntil);
+    if (inventory.status === 'held' && heldUntil && heldUntil.getTime() <= Date.now()) {
+      inventory.status = 'available';
+      inventory.heldUntil = null;
+    }
+    return inventory;
   }
 
   function setVipMessage(text, type = '') {
@@ -2113,6 +2126,9 @@
   });
 
   loadVipEvents();
+  setInterval(() => {
+    if (document.visibilityState === 'visible') loadVipInventory();
+  }, 15000);
 
   // --- VIP Stripe flow placeholders ---
   document.querySelectorAll('.vip-tier-btn').forEach(btn => {
