@@ -1166,7 +1166,7 @@
     </div>
   </section>
 
-  <div class="vip-reservation-experience" id="vipReservations">
+  <div class="vip-reservation-experience hidden" id="vipReservations" aria-hidden="true">
     <div class="vip-reservation-head">
       <div>
         <div class="eyebrow">VIP Reservations</div>
@@ -2125,10 +2125,14 @@
     }
   });
 
-  loadVipEvents();
-  setInterval(() => {
-    if (document.visibilityState === 'visible') loadVipInventory();
-  }, 15000);
+  // Temporarily disabled until secure checkout and webhook configuration are complete.
+  const VIP_RESERVATIONS_ENABLED = false;
+  if (VIP_RESERVATIONS_ENABLED) {
+    loadVipEvents();
+    setInterval(() => {
+      if (document.visibilityState === 'visible') loadVipInventory();
+    }, 15000);
+  }
 
   // --- VIP Stripe flow placeholders ---
   document.querySelectorAll('.vip-tier-btn').forEach(btn => {
