@@ -73,7 +73,7 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
 
-    // VIP reservation system —————————————————————————————————————————
+    // Server-backed VIP reservation system.
 
     // Events: public can read (the floor plan needs to list/select nights).
     // All writes go through the secured /api/admin/create-event server route
@@ -100,6 +100,44 @@ service cloud.firestore {
     match /reservations/{reservationId} {
       allow read: if isAdmin();
       allow write: if false;
+    }
+
+    // Static-site VIP reservation system. Public visitors can see event names and section
+    // availability, but guest names and phone numbers stay private.
+    match /vipEvents/{eventId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /vipSections/{sectionId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /vipEventSections/{inventoryId} {
+      allow read: if true;
+      allow create, update: if isAdmin()
+                            || (
+                              request.auth != null
+                              && request.resource.data.status == 'held'
+                              && request.resource.data.keys().hasAll(['eventId', 'sectionId', 'price', 'capacity', 'status', 'heldUntil', 'updatedAt'])
+                              && request.resource.data.heldUntil is timestamp
+                              && request.resource.data.heldUntil > request.time
+                              && request.resource.data.heldUntil <= request.time + duration.value(5, 'm')
+                            );
+      allow delete: if isAdmin();
+    }
+
+    match /vipReservations/{reservationId} {
+      allow create: if request.auth != null
+                    && request.resource.data.createdByUid == request.auth.uid
+                    && request.resource.data.keys().hasAll(['eventId', 'sectionId', 'guestName', 'guestCount', 'phoneNumber', 'status', 'paymentStatus', 'amount', 'createdAt'])
+                    && request.resource.data.guestName is string
+                    && request.resource.data.phoneNumber is string
+                    && request.resource.data.guestCount is int
+                    && request.resource.data.guestCount >= 1;
+      allow read: if isAdmin() || (request.auth != null && resource.data.createdByUid == request.auth.uid);
+      allow update, delete: if isAdmin();
     }
   }
 }
